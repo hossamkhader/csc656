@@ -122,6 +122,7 @@ public class SeedToSubwords {
 		return swArr;
 	}
 
+/*
 	public static void main(String[] args){
 
 		String seed;
@@ -158,5 +159,6 @@ public class SeedToSubwords {
 		System.out.println();
 
 	}
+*/
 
 }
