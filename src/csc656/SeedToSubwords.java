@@ -1,8 +1,69 @@
+package csc656;
+
 import java.util.*;
 
 public class SeedToSubwords {
 	
-	public static String[] processSeed(String seed, int maxSWLength){
+	public static String[] swOfLength(String seed, int swLength){
+
+		Set<String> swSet = new HashSet<String>();
+		int seedLen = seed.length();
+
+		int swLen = swLength;
+			
+		int startIndex = 0;
+		int endIndex = swLen;
+		boolean hitEnd = false;
+
+		while(!hitEnd){
+
+			swSet.add(seed.substring(startIndex, endIndex));
+
+			if(endIndex == seedLen){
+				hitEnd = true;
+			} else {
+				startIndex++;
+				endIndex++;
+			}
+		}
+
+		boolean containsH = true;
+
+		while(containsH) {
+			containsH = false;
+
+			Set<String> swSetCopy = new HashSet<String>(swSet);
+
+			for ( String sw : swSetCopy ){
+				int idx = sw.indexOf('H');				
+				if(idx > -1){
+				
+					containsH = true;
+
+					char[] charArr = sw.toCharArray();
+					charArr[idx] = '0';
+					swSet.add(String.valueOf(charArr));
+					charArr[idx] = '1';
+					swSet.add(String.valueOf(charArr));
+					
+					swSet.remove(sw);
+
+				}
+			}
+
+			swSetCopy = swSet;
+
+		}
+
+		String[] swArr = swSet.toArray(new String[swSet.size()]);
+
+		Arrays.sort(swArr, Comparator.comparingInt(String::length).thenComparing(Comparator.naturalOrder()));
+
+		return swArr;
+
+	}
+
+	public static String[] swUpToMax(String seed, int maxSWLength){
 
 		Set<String> swSet = new HashSet<String>();
 		int seedLen = seed.length();
@@ -80,12 +141,21 @@ public class SeedToSubwords {
 
 		System.out.println("Seed: " + seed);
 
-		String[] output = processSeed(seed, maxSWLength);
+		String[] output = swOfLength(seed, maxSWLength);
 
-		System.out.println("Output: ");
+		System.out.print("Output For Length " + maxSWLength + ":");
 		for(String s : output) {
-			System.out.println(s);
+			System.out.print(" " + s);
 		}
+		System.out.println();
+
+		output = swUpToMax(seed, maxSWLength);
+
+		System.out.print("Output Up To Length " + maxSWLength + ":");
+		for(String s : output) {
+			System.out.print(" " + s);
+		}
+		System.out.println();
 
 	}
 
