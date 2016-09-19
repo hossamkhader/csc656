@@ -32,6 +32,11 @@ public class Vertex
         }
     }
     
+    /**
+     * adds an in edge to the vertex
+     * @param edge
+     * @return true if edge was added successfully
+     */
     public boolean addInEdge(Edge edge){
         if(this.in_edges.contains(edge)){
             return false;
@@ -41,6 +46,11 @@ public class Vertex
         }
     }
     
+    /**
+     * adds an out edge the the vertex
+     * @param edge
+     * @return true if edge was added successfully
+     */
     public boolean addOutEdge(Edge edge){
         if(this.out_edges.contains(edge)){
             return false;

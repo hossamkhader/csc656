@@ -28,7 +28,7 @@ public class Graph
     private int numEdges;
     
     /**
-     * 
+     * The alphabet over which the graph will be built
      */
     private char[] alphabet;
     
@@ -41,6 +41,10 @@ public class Graph
         
     }
     
+    /**
+     * New constructor requiring a specific alphabet to be specified
+     * @param alphabet 
+     */
     public Graph(char[] alphabet){
         this.alphabet = alphabet;
         this.vertices = new HashMap<>();
@@ -48,7 +52,12 @@ public class Graph
         numVerts = 0;
         numEdges = 0;
     }
-	     
+    
+    /**
+     * Recursively constructs a de Bruijn graph from alphabet and n-length 
+     * subwords
+     * @param n the dimensionality of the graph (desired length of subwords) 
+     */
     public void buildGraph(int n){
         StringBuilder sb = new StringBuilder();
         //create initial vertex
@@ -63,6 +72,10 @@ public class Graph
         populate(root);
     }
     
+    /**
+     * recursive helper method that constructs the de Bruijn graph
+     * @param vertex 
+     */
     private void populate(Vertex vertex){
         if(vertex.getOutEdgesCount() >= this.alphabet.length){
             return;
