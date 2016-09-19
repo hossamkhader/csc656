@@ -4,9 +4,12 @@ public class Main
 {
     public static void main(String[] args)
     {
+        char[] alphabet = {'0', '1'};
+        Graph graph = new Graph(alphabet);
+        int dimensionality = 3;
+        graph.buildGraph(dimensionality);
+        /*
         int x = 2;
-        Graph graph = new Graph();
-        
         for (int i=0; i < Math.pow(2, x); i++)
         {
             String label = Integer.toBinaryString(i);
@@ -27,8 +30,8 @@ public class Main
                 }
                 graph.addEdge(v, graph.getVertex(end), start + end.substring(0,1));
             }
-        }
+        }*/        
         System.out.println(graph.vertexKeys());
-        System.out.println(graph.printEdges());
+        System.out.println(graph.printEdges());        
     }
 }

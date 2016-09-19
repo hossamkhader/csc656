@@ -7,8 +7,8 @@ public class Edge
     
     public Edge(Vertex one, Vertex two, String label)
     {
-        this.start = (one.getLabel().compareTo(two.getLabel()) <= 0) ? one : two;
-        this.end = (this.start == one) ? two : one;
+        this.start = one;
+        this.end = two;
         this.label = label;
     }
 	     

@@ -32,6 +32,24 @@ public class Vertex
         }
     }
     
+    public boolean addInEdge(Edge edge){
+        if(this.in_edges.contains(edge)){
+            return false;
+        }else{
+            this.in_edges.add(edge);
+            return true;
+        }
+    }
+    
+    public boolean addOutEdge(Edge edge){
+        if(this.out_edges.contains(edge)){
+            return false;
+        }else{
+            this.out_edges.add(edge);
+            return true;
+        }
+    }
+    
     public boolean containsEdge(Edge edge)
     {
         return this.in_edges.contains(edge) || this.in_edges.contains(edge);
@@ -68,6 +86,7 @@ public class Vertex
         return this.label;
     }
     
+        
     @Override
     public boolean equals(Object other)
     {
