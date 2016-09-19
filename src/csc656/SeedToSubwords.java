@@ -1,3 +1,4 @@
+package csc656;
 import java.util.*;
 
 public class SeedToSubwords {
