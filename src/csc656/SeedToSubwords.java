@@ -10,7 +10,10 @@ public class SeedToSubwords {
 		int seedLen = seed.length();
 
 		int swLen = swLength;
-			
+		if(swLen > seed.length()){
+			swLen = seed.length();
+		}		
+		
 		int startIndex = 0;
 		int endIndex = swLen;
 		boolean hitEnd = false;
@@ -28,8 +31,9 @@ public class SeedToSubwords {
 		}
 
 		boolean containsH = true;
-
+			
 		while(containsH) {
+
 			containsH = false;
 
 			Set<String> swSetCopy = new HashSet<String>(swSet);
@@ -47,20 +51,14 @@ public class SeedToSubwords {
 					swSet.add(String.valueOf(charArr));
 					
 					swSet.remove(sw);
-
 				}
 			}
-
-			swSetCopy = swSet;
-
 		}
-
 		String[] swArr = swSet.toArray(new String[swSet.size()]);
 
 		Arrays.sort(swArr, Comparator.comparingInt(String::length).thenComparing(Comparator.naturalOrder()));
 
 		return swArr;
-
 	}
 
 	public static String[] swUpToMax(String seed, int maxSWLength){
@@ -69,50 +67,12 @@ public class SeedToSubwords {
 		int seedLen = seed.length();
 
 		for( int swLen = 1; swLen <= seedLen && swLen <= maxSWLength; swLen++ ){
-			
-			int startIndex = 0;
-			int endIndex = swLen;
-			boolean hitEnd = false;
+	
+			String[] sws = swOfLength(seed, swLen);
 
-			while(!hitEnd){
-
-				swSet.add(seed.substring(startIndex, endIndex));
-
-				if(endIndex == seedLen){
-					hitEnd = true;
-				} else {
-					startIndex++;
-					endIndex++;
-				}
-			}
-		}
-
-		boolean containsH = true;
-
-		while(containsH) {
-			containsH = false;
-
-			Set<String> swSetCopy = new HashSet<String>(swSet);
-
-			for ( String sw : swSetCopy ){
-				int idx = sw.indexOf('H');				
-				if(idx > -1){
-				
-					containsH = true;
-
-					char[] charArr = sw.toCharArray();
-					charArr[idx] = '0';
-					swSet.add(String.valueOf(charArr));
-					charArr[idx] = '1';
-					swSet.add(String.valueOf(charArr));
-					
-					swSet.remove(sw);
-
-				}
-			}
-
-			swSetCopy = swSet;
-
+			for( String s : sws){
+				swSet.add(s);
+			}	
 		}
 
 		String[] swArr = swSet.toArray(new String[swSet.size()]);
@@ -132,6 +92,9 @@ public class SeedToSubwords {
 			seed = args[0];
 			try {
 				maxSWLength = Integer.parseInt(args[1]);
+				if(maxSWLength > seed.length()){
+					maxSWLength = seed.length();
+				}
 			} catch (Exception e) {
 				maxSWLength = seed.length();
 			}
