@@ -20,16 +20,6 @@ public class Graph
     private char[] alphabet;
     
     /**
-     * Constructor for a graph with no specifications
-     */
-    public Graph()
-    {
-        this.vertices = new HashMap<>();
-        this.edges = new HashMap<>();
-        this.alphabet = null;
-    }
-    
-    /**
      * New constructor requiring a specific alphabet to be specified
      * @param alphabet over which de Bruijn graph will be constructed
      */
@@ -37,6 +27,16 @@ public class Graph
         this.alphabet = alphabet;
         this.vertices = new HashMap<>();
         this.edges = new HashMap<>();
+    }
+    
+    /**
+     * Copy Constructor
+     */
+    public Graph(Graph graph){
+        this.edges = new HashMap<>(graph.edges);
+        this.vertices = new HashMap<>(graph.vertices);
+        this.alphabet = new char[graph.alphabet.length];
+        System.arraycopy(graph.alphabet, 0, this.alphabet, 0, this.alphabet.length);
     }
     
     /**
