@@ -5,22 +5,22 @@ package csc656;
  */
 public class SeedGenerator {
 
-    private final String INPUT_ERROR = "Invalid input.";
-
     /**
      * Generate a seed, first calculating if n - r is odd or even.
-     * @param n integer >= 2.
-     * @param r integer >= 0.
+     * @param n length of subwords, integer >= 2.
+     * @param h number of holes in the seed
      * @return the seed as a String.
      *         'H' characters in returned String represent holes in the seed.
      */
-    public String generateSeed(int n, int r){
+    public String generateSeed(int n, int h){
+        int r = n - h;
+
         //Check for valid inputs.
         if(n < 2)
-            return INPUT_ERROR;
+            return null;
 
-        if(r < 0)
-            return INPUT_ERROR;
+        if(r < 2)
+            return null;
 
         // n - r is even
         if((n - r) % 2 == 0){
