@@ -1,12 +1,17 @@
 package csc656;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
+
+
 
 public class SeedToSubwords {
 	
 	public static String[] swOfLength(String seed, int swLength){
 
-		Set<String> swSet = new HashSet<String>();
+		Set<String> swSet = new HashSet<>();
 		int seedLen = seed.length();
 
 		int swLen = swLength;
@@ -36,7 +41,7 @@ public class SeedToSubwords {
 
 			containsH = false;
 
-			Set<String> swSetCopy = new HashSet<String>(swSet);
+			Set<String> swSetCopy = new HashSet<>(swSet);
 
 			for ( String sw : swSetCopy ){
 				int idx = sw.indexOf('H');				
@@ -63,16 +68,14 @@ public class SeedToSubwords {
 
 	public static String[] swUpToMax(String seed, int maxSWLength){
 
-		Set<String> swSet = new HashSet<String>();
+		Set<String> swSet = new HashSet<>();
 		int seedLen = seed.length();
 
 		for( int swLen = 1; swLen <= seedLen && swLen <= maxSWLength; swLen++ ){
 	
 			String[] sws = swOfLength(seed, swLen);
 
-			for( String s : sws){
-				swSet.add(s);
-			}	
+                        swSet.addAll(Arrays.asList(sws));	
 		}
 
 		String[] swArr = swSet.toArray(new String[swSet.size()]);
@@ -81,47 +84,4 @@ public class SeedToSubwords {
 
 		return swArr;
 	}
-
-/*
-	public static void main(String[] args){
-
-		String seed;
-		int maxSWLength;
-
-		if(args.length != 0){
-			seed = args[0];
-			try {
-				maxSWLength = Integer.parseInt(args[1]);
-				if(maxSWLength > seed.length()){
-					maxSWLength = seed.length();
-				}
-			} catch (Exception e) {
-				maxSWLength = seed.length();
-			}
-		} else {
-			seed = "001H10";
-			maxSWLength = seed.length();
-		}
-
-		System.out.println("Seed: " + seed);
-
-		String[] output = swOfLength(seed, maxSWLength);
-
-		System.out.print("Output For Length " + maxSWLength + ":");
-		for(String s : output) {
-			System.out.print(" " + s);
-		}
-		System.out.println();
-
-		output = swUpToMax(seed, maxSWLength);
-
-		System.out.print("Output Up To Length " + maxSWLength + ":");
-		for(String s : output) {
-			System.out.print(" " + s);
-		}
-		System.out.println();
-
-	}
-*/
-
 }
