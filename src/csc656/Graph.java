@@ -226,4 +226,28 @@ public class Graph
         }
         return tmp;
     }
+
+    /**
+     * Method compresses a graph (this)
+     * @return a compressed copy of the graph
+     */
+    public Graph compressGraph(String seed, int n){
+
+        Graph graphCopy = new Graph(this);
+
+        String[] subwords = SeedToSubwords.swOfLength(seed, n);
+
+        for(String sw : subwords){
+        	
+        	graphCopy.removeEdge(edges.get(sw));
+        	
+        	// debug //
+        	System.out.println(sw + " removed");
+            //
+        }
+
+        return graphCopy;
+        
+    }
+
 }
