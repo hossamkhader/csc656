@@ -27,23 +27,30 @@ public class Main
     	
     	n = d + 1;
     	System.out.println("d: " + d + ", h: " + h + ", n: " + n);
+
+
     	
         char[] alphabet = {'0', '1'};
         Graph graph = new Graph(alphabet);
         graph.buildGraph(d);
+        System.out.println(graph.vertexKeys());
+        System.out.println(graph.printEdges());   
+
+	// debug //
+	for(String vStr : graph.vertexKeys()){
+		Vertex v = graph.getVertex(vStr);
+		System.out.println("Vertex " + vStr + " with " + v.getInEdgesCount() + " in, " + v.getOutEdgesCount() + " out");
+	}
         
         // int dimensionality = 3;
         // graph.buildGraph(dimensionality);
         
-        System.out.println(graph.vertexKeys());
-        System.out.println(graph.printEdges());   
-
         SeedGenerator seedGen = new SeedGenerator();
         String seed = seedGen.generateSeed(n, h);
-        System.out.println("seed: " + seed);
+	seed = "001H110";
+	System.out.println("seed: " + seed);
         
         Graph graphCopy = graph.compressGraph(seed, n);
-
         System.out.println(graphCopy.vertexKeys());
         System.out.println(graphCopy.printEdges());  
     }

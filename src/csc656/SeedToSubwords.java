@@ -65,7 +65,7 @@ public class SeedToSubwords {
 		}
 		String[] swArr = swSet.toArray(new String[swSet.size()]);
 
-		Arrays.sort(swArr, Comparator.comparingInt(String::length).thenComparing(Comparator.naturalOrder()));
+		Arrays.sort(swArr);
 
 		return swArr;
 	}
@@ -88,7 +88,7 @@ public class SeedToSubwords {
 
 		String[] swArr = swSet.toArray(new String[swSet.size()]);
 
-		Arrays.sort(swArr, Comparator.comparingInt(String::length).thenComparing(Comparator.naturalOrder()));
+		Arrays.sort(swArr);
 
 		return swArr;
 	}

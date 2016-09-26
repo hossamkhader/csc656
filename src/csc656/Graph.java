@@ -227,6 +227,24 @@ public class Graph
         return tmp;
     }
 
+   public String printVertices(){
+
+      String tmp = "";
+      for(String key : vertices.keySet()){
+         tmp += key + " ";
+      }
+      return tmp;
+
+   }
+
+   public void removeVertex(Vertex v){
+
+      this.vertices.remove(v.getLabel());
+
+      // debug //
+      System.out.println("Vertex " + v.getLabel() + " removed");
+   }
+
     /**
      * Method compresses a graph (this)
      * @return a compressed copy of the graph
@@ -235,6 +253,7 @@ public class Graph
 
         Graph graphCopy = new Graph(this);
 
+
         String[] subwords = SeedToSubwords.swOfLength(seed, n);
 
         for(String sw : subwords){
@@ -242,9 +261,25 @@ public class Graph
         	graphCopy.removeEdge(edges.get(sw));
         	
         	// debug //
-        	System.out.println(sw + " removed");
-            //
+        	System.out.println("Edge " + sw + " removed");
         }
+
+	Graph graphCopyIter = new Graph(graphCopy);
+
+	for(String vStr: graphCopyIter.vertexKeys()){
+
+		Vertex v = graphCopy.getVertex(vStr);
+
+		System.out.println("Vertex " + vStr + " with " + v.getInEdgesCount() + " in, " + v.getOutEdgesCount() + " out");
+
+		// if vertex has zero edges, remove
+		if(v.getInEdgesCount() == 0 && v.getOutEdgesCount() == 0){
+			graphCopy.removeVertex(v);
+		}
+
+		System.out.println(graphCopy.printVertices());
+
+	}
 
         return graphCopy;
         
