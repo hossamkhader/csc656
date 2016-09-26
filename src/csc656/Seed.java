@@ -24,16 +24,24 @@ public class Seed {
     public Seed(String seed, char hole){
         seedStr = seed;
         holeChar = hole;
-        length = getLength();
-        numHoles = getNumHoles();
+        setLength();
+        setNumHoles();
     }
 
     public String getSeedStr() {
         return seedStr;
     }
 
+    /**
+     * Change the String value of the seed,
+     * re-compute the number of holes and length of the seed.
+     *
+     * This does allow any value to be saved as a new hole...this will have to be guarded against later.
+     */
     public void setSeedStr(String seedStr) {
         this.seedStr = seedStr;
+        setNumHoles();
+        setLength();
     }
 
     public int getLength() {
