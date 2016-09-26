@@ -54,7 +54,7 @@ public class Seed {
     /**
      * Compute the number of holes in the seed.
      */
-    private void setHoles() {
+    private void setNumHoles() {
         //Traverse the seed, counting the number of holes encountered.
         int counter = 0;
         for(int i = 0; i < seedStr.length(); i++){
