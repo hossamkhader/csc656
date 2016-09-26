@@ -117,7 +117,6 @@ public class TypeChecker {
         //variable m is used to track the number of 0's
         int r, n, j, i, m;
         i = 0;
-        m = 0;
         n = label.length() - 1;
         r = n - h;
         
