@@ -5,6 +5,9 @@ package csc656;
  */
 public class SeedGenerator {
 
+    //Character representation of the holes in the seed
+    private final char HOLE_CHAR = 'H';
+
     /**
      * Generate a seed, first calculating if n - r is odd or even.
      * @param n length of subwords, integer >= 2.
@@ -12,8 +15,11 @@ public class SeedGenerator {
      * @return the seed as a String.
      *         'H' characters in returned String represent holes in the seed.
      */
-    public String generateSeed(int n, int h){
+    public Seed generateSeed(int n, int h){
         int r = n - h;
+
+        //String value of the seed
+        String str;
 
         //Check for valid inputs.
         if(n < 2)
@@ -24,9 +30,11 @@ public class SeedGenerator {
 
         // n - r is even
         if((n - r) % 2 == 0){
-            return generateForEven(n, r);
+            str = generateForEven(n, r);
         }else //odd
-            return generateForOdd(n, r);
+            str = generateForOdd(n, r);
+
+        return new Seed(str, HOLE_CHAR);
     }
 
     /**
@@ -37,11 +45,10 @@ public class SeedGenerator {
      */
     private String generateForEven(int n, int r){
         String seed;
-        String hole = "H";
-        String zero = "0";
-        String one = "1";
+        char zero = '0';
+        char one = '1';
 
-        seed = addCharacters(zero, n - 2) + one + addCharacters(hole, n - r) + addCharacters(zero, r - 2) +
+        seed = addCharacters(zero, n - 2) + one + addCharacters(HOLE_CHAR, n - r) + addCharacters(zero, r - 2) +
                 addCharacters(one, (n - r)/2) + addCharacters(zero, (n - r + 2)/2);
 
         return seed;
@@ -55,11 +62,10 @@ public class SeedGenerator {
      */
     private String generateForOdd(int n, int r){
         String seed;
-        String hole = "H";
-        String zero = "0";
-        String one = "1";
+        char zero = '0';
+        char one = '1';
 
-        seed = addCharacters(zero, n - 2) + one + addCharacters(hole, n - r) + addCharacters(zero, r - 2) +
+        seed = addCharacters(zero, n - 2) + one + addCharacters(HOLE_CHAR, n - r) + addCharacters(zero, r - 2) +
                 addCharacters(one, (n - r + 1)/2) + addCharacters(zero, (n - r + 1)/2);
 
         return seed;
@@ -71,7 +77,7 @@ public class SeedGenerator {
      * @param num Number of characters in string.
      * @return String of given characters.
      */
-    private String addCharacters(String chtr, int num){
+    private String addCharacters(char chtr, int num){
         String str = "";
 
         for(int i = 0; i < num; i++){
