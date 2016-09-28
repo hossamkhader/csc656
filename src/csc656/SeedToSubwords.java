@@ -5,11 +5,15 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
-
-
 public class SeedToSubwords {
 	
+    /**
+     * Method generates all subwords of the given length of the given seed
+     * @return the array of subwords
+     */
 	public static String[] swOfLength(String seed, int swLength){
+
+		// debug // System.out.println(seed + " " + swLength);
 
 		Set<String> swSet = new HashSet<>();
 		int seedLen = seed.length();
@@ -61,11 +65,15 @@ public class SeedToSubwords {
 		}
 		String[] swArr = swSet.toArray(new String[swSet.size()]);
 
-		Arrays.sort(swArr, Comparator.comparingInt(String::length).thenComparing(Comparator.naturalOrder()));
+		Arrays.sort(swArr);
 
 		return swArr;
 	}
-
+	
+    /**
+     * Method generates all subwords from length 1 up to the given length of the given seed
+     * @return the array of subwords
+     */
 	public static String[] swUpToMax(String seed, int maxSWLength){
 
 		Set<String> swSet = new HashSet<>();
@@ -80,7 +88,7 @@ public class SeedToSubwords {
 
 		String[] swArr = swSet.toArray(new String[swSet.size()]);
 
-		Arrays.sort(swArr, Comparator.comparingInt(String::length).thenComparing(Comparator.naturalOrder()));
+		Arrays.sort(swArr);
 
 		return swArr;
 	}
