@@ -37,21 +37,29 @@ public class Main
         System.out.println(graph.printEdges());   
 
 	// debug //
+	/* 
 	for(String vStr : graph.vertexKeys()){
 		Vertex v = graph.getVertex(vStr);
 		System.out.println("Vertex " + vStr + " with " + v.getInEdgesCount() + " in, " + v.getOutEdgesCount() + " out");
 	}
+	*/
         
         // int dimensionality = 3;
         // graph.buildGraph(dimensionality);
         
-        SeedGenerator seedGen = new SeedGenerator();
-        String seed = seedGen.generateSeed(n, h);
-	seed = "001H110";
-	System.out.println("seed: " + seed);
-        
+
+	String seed = "001H110";
+	System.out.println("seed: " + seed);       
         Graph graphCopy = graph.compressGraph(seed, n);
         System.out.println(graphCopy.vertexKeys());
         System.out.println(graphCopy.printEdges());  
+
+        SeedGenerator seedGen = new SeedGenerator();
+        seed = seedGen.generateSeed(n, h);
+	System.out.println("seed: " + seed);       
+        Graph graphCopy2 = graph.compressGraph(seed, n);
+        System.out.println(graphCopy2.vertexKeys());
+        System.out.println(graphCopy2.printEdges());  
+
     }
 }

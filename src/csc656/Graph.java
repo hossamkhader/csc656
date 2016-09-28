@@ -44,7 +44,7 @@ public class Graph
      * subwords
      * @param n the dimensionality of the graph (desired length of subwords) 
      */
-    public void buildGraph(int n){
+    /*public void buildGraph(int n){
         StringBuilder sb = new StringBuilder();
         //create initial vertex
         for(int i=0; i<n; i++){
@@ -52,15 +52,54 @@ public class Graph
         }
         Vertex root = new Vertex(sb.toString());
         this.addVertex(root);
+	// debug // System.out.println(sb.toString());
         
         //recursively build de Bruijn Graph
         populate(root);
     }
+   */
+
+	public void buildGraph(int d){
+
+		// edge and subword length = n, dimentionality = d
+		int n = d + 1;
+
+		String[] edgeStrs = new String[ (int)Math.pow((double)2,(double)n) ];
+		// debug // System.out.println((int)Math.pow((double)2,(double)n));
+		String frmt = "%" + n + "s";
+		// debug // System.out.println(frmt);
+		for(int i = 0; i < edgeStrs.length; i++){
+			edgeStrs[i] = String.format(frmt, Integer.toBinaryString(i)).replace(' ', '0');
+			// debug // System.out.println("creating edge " + edgeStrs[i]);
+			Vertex origin;
+			String originLabel = edgeStrs[i].substring(0, (edgeStrs[i].length() - 1));
+			if(this.vertices.containsKey(originLabel)){
+				origin = this.vertices.get(originLabel);
+			} else {
+				origin = new Vertex(originLabel);
+				this.addVertex(origin);
+			}
+
+			Vertex destination;
+			String destLabel = edgeStrs[i].substring(1);
+			if(this.vertices.containsKey(destLabel)){
+				destination = this.vertices.get(destLabel);
+			} else {
+				destination = new Vertex(destLabel);
+				this.addVertex(destination);
+			}
+
+	    		addEdge(origin, destination, edgeStrs[i]);
+			/// debug // System.out.println("adding edge " + edgeStrs[i]);	
+		}
+
+	}
     
     /**
      * recursive helper method that constructs the de Bruijn graph
      * @param vertex 
      */
+	/*
     private void populate(Vertex vertex){
         if(vertex.getOutEdgesCount() >= this.alphabet.length){
             return;
@@ -77,12 +116,22 @@ public class Graph
                 this.addVertex(destination);
             }
             //create new edge and link to graph
-            addEdge(vertex, destination, edgeLabel);
-            
+	    boolean shouldAddEdge = true;
+	    for(String val : edges.keySet()){
+		if(val.equals(edgeLabel)){
+			shouldAddEdge = false;
+			break;
+		}
+	    }
+	    if(shouldAddEdge){
+	    	addEdge(vertex, destination, edgeLabel);
+            	System.out.println("adding edge " + edgeLabel);
+	    }
             //populate destination vertex
             populate(destination);
         }
     }
+	*/
 
     /**
      * Method checks for existence of an edge in the graph 
@@ -253,7 +302,6 @@ public class Graph
 
         Graph graphCopy = new Graph(this);
 
-
         String[] subwords = SeedToSubwords.swOfLength(seed, n);
 
         for(String sw : subwords){
@@ -270,14 +318,14 @@ public class Graph
 
 		Vertex v = graphCopy.getVertex(vStr);
 
-		System.out.println("Vertex " + vStr + " with " + v.getInEdgesCount() + " in, " + v.getOutEdgesCount() + " out");
+		// debug // System.out.println("Vertex " + vStr + " with " + v.getInEdgesCount() + " in, " + v.getOutEdgesCount() + " out");
 
 		// if vertex has zero edges, remove
 		if(v.getInEdgesCount() == 0 && v.getOutEdgesCount() == 0){
 			graphCopy.removeVertex(v);
 		}
 
-		System.out.println(graphCopy.printVertices());
+		// debug // System.out.println(graphCopy.printVertices());
 
 	}
 
