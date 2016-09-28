@@ -6,10 +6,10 @@ package csc656;
 public class SeedGeneratorDriver {
     public static void main(String[] args) {
         SeedGenerator generator = new SeedGenerator();
-        String seed;
+        Seed seed;
 
-        seed = generator.generateSeed(4, 3);
+        seed = generator.generateSeed(4, 1);
 
-        System.out.println(seed);
+        System.out.println(seed.toString());
     }
 }
