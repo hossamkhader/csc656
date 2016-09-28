@@ -48,16 +48,16 @@ public class Main
         // graph.buildGraph(dimensionality);
         
 
-	String seed = "001H110";
-	System.out.println("seed: " + seed);       
-        Graph graphCopy = graph.compressGraph(seed, n);
+	Seed seed = new Seed("001H110", 'H');
+	System.out.println("seed: " + seed.toString());       
+        Graph graphCopy = graph.compressGraph(seed.toString(), n);
         System.out.println(graphCopy.vertexKeys());
         System.out.println(graphCopy.printEdges());  
 
         SeedGenerator seedGen = new SeedGenerator();
         seed = seedGen.generateSeed(n, h);
 	System.out.println("seed: " + seed);       
-        Graph graphCopy2 = graph.compressGraph(seed, n);
+        Graph graphCopy2 = graph.compressGraph(seed.toString(), n);
         System.out.println(graphCopy2.vertexKeys());
         System.out.println(graphCopy2.printEdges());  
 
