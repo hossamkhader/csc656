@@ -1,5 +1,7 @@
 package csc656;
 
+import java.util.ArrayList;
+
 public class Main
 {
     public static void main(String[] args)
@@ -28,28 +30,30 @@ public class Main
     	n = d + 1;
     	System.out.println("d: " + d + ", h: " + h + ", n: " + n);
 
-
-    	
-        char[] alphabet = {'0', '1'};
-        Graph graph = new Graph(alphabet);
+        Graph graph = new Graph();
         graph.buildGraph(d);
         System.out.println(graph.vertexKeys());
         System.out.println(graph.printEdges());   
 
-	// debug //
-	/* 
+	
 	for(String vStr : graph.vertexKeys()){
 		Vertex v = graph.getVertex(vStr);
-		System.out.println("Vertex " + vStr + " with " + v.getInEdgesCount() + " in, " + v.getOutEdgesCount() + " out");
+                ArrayList<String> inEdges = new ArrayList();
+                ArrayList<String> outEdges = new ArrayList();
+                for(Edge e : v.getInEdges()){
+                    inEdges.add(e.getLabel());
+                }
+                for(Edge e : v.getOutEdges()){
+                    outEdges.add(e.getLabel());
+                }
+		System.out.println("Vertex " + vStr + " with:\n" 
+                        + v.getInEdgesCount() + " in: " + inEdges.toString() 
+                        + "\n" + v.getOutEdgesCount() +  " out: " 
+                        + outEdges.toString());
 	}
-	*/
-        
-        // int dimensionality = 3;
-        // graph.buildGraph(dimensionality);
-        
-
+	
 	Seed seed = new Seed("001H110", 'H');
-	System.out.println("seed: " + seed.toString());       
+	System.out.println("\nseed: " + seed.toString());       
         Graph graphCopy = graph.compressGraph(seed.toString(), n);
         System.out.println(graphCopy.vertexKeys());
         System.out.println(graphCopy.printEdges());  
