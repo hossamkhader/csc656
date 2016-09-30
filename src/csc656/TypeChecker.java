@@ -4,15 +4,13 @@ import java.util.ArrayList;
 
 public class TypeChecker {
     int n;
-    int h; //Number of holes
     int r; //n - h
     String label;
 
     public TypeChecker(String label, int numHoles){
         this.label = label;
         n = label.length() + 1;
-        h = numHoles;
-        r = n - h;
+        r = n - numHoles;
     }
 
     public ArrayList<Integer> getType(){
@@ -140,7 +138,7 @@ public class TypeChecker {
         i = 0;
 
         //gets count of 1's in suffix and verifies within range 
-        for (j = label.length() - 1; j >= 0; j--) {
+        for (j = label.length() - 1; j <= 0; j--) {
             if (label.charAt(j) == '1') {
                 i++;
             } else {
@@ -161,36 +159,73 @@ public class TypeChecker {
     }
 
     private boolean checkType6(){
-	int lastChar = label.length() - 1;
-
-	// check 1s at end
-	for(int i = 0; i < (int)((n - r) / 2); i++){
-		if(label.charAt(lastChar) != '1'){
-			return false;
-		} else {
-			lastChar--;
-		}
-	}
-
-	// check 0s
-	for(int i = 0; i < (r - 2); i++){
-		if(label.charAt(lastChar) != '0'){
-			return false;
-		} else {
-			lastChar--;
-		}
-	}
-
-
-	// check remaining length
-	if((lastChar + 1) == ((n - r + 2) / 2)){
-		return true;
-	}	
 
         return false;
     }
 
     private boolean checkType7(){
+        int num1 = (n - r)/2;
+        int numMid0 = (r - 2);
+        int iUpper = (n - r)/2; //upper limit on i value
+        int currIndex = label.length() - 1; //start at end of the label
+
+        //Verify number of 0's at end of string
+        //Must be i number of 0'
+        int zeroCount = 0;
+        for(int i = currIndex; i >= 0; i--){
+            if(label.charAt(i) == '0') { //get string of zeroes
+                zeroCount++;
+                currIndex --;
+            }
+            else
+                i = -1; //break out of loop
+        }
+
+        boolean isValid = false;
+        for(int i = 1; i <= iUpper && !isValid; i++){
+            if(zeroCount == i)
+                isValid = true;
+        }
+
+        if(!isValid)
+            return false;
+
+        //Verifiy number of 1's before 0's at end
+        //Must be (n - r)/2
+        int oneCount = 0;
+        for(int i = currIndex; i >= 0; i--){
+            if(label.charAt(i) == '1'){
+                oneCount ++;
+                currIndex --;
+            }
+            else
+                i = -1; //break out of loop
+        }
+
+        if(oneCount != num1)
+            return false;
+
+        //Verify the number of 0's in middle of string
+        //Must be (r - 2)
+        int midZeroCount = 0;
+        for(int i = currIndex; i >= 0; i--){
+            if(label.charAt(i) == '0'){
+                midZeroCount ++;
+                currIndex --;
+
+                //Rest of string is 'holes'
+                if(midZeroCount == numMid0){
+                    //Verify number of any characters (holes) at beginning of string
+                    //Must be (n - r - 2i + 2)/2
+                    for(int j = 1; i <= iUpper; j++){
+                        if((currIndex + 1) == (n - r - (2*j) + 2)/2)
+                            return true;
+                    }
+                }
+            }
+            else
+                i = -1; //break out of loop
+        }
         return false;
     }
 }
