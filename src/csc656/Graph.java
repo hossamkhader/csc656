@@ -234,9 +234,14 @@ public class Graph {
             // debug //
             System.out.println("Edge " + sw + " removed");
         }
-
+        
+        //add seed edge
+        Vertex sOrigin = graphCopy.getVertex(seed.substring(0, n-1));
+        Vertex sDestination = 
+                this.getVertex(seed.substring(seed.length()-n-1));
+        graphCopy.addEdge(sOrigin, sDestination, seed);
+        
         Graph graphCopyIter = new Graph(graphCopy);
-
         for (String vStr : graphCopyIter.vertexKeys()) {
 
             Vertex v = graphCopy.getVertex(vStr);
