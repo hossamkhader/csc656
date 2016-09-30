@@ -140,7 +140,7 @@ public class TypeChecker {
         i = 0;
 
         //gets count of 1's in suffix and verifies within range 
-        for (j = label.length() - 1; j <= 0; j--) {
+        for (j = label.length() - 1; j >= 0; j--) {
             if (label.charAt(j) == '1') {
                 i++;
             } else {
