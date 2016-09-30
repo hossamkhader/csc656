@@ -10,7 +10,10 @@ public class Edge
      * Edge label
      */
     private final String label;
-    
+    /**
+     * Visited flag
+     */
+    private boolean visited;
     /**
      * Creates an edge
      * @param one origin vertex
@@ -22,6 +25,7 @@ public class Edge
         this.start = one;
         this.end = two;
         this.label = label;
+        this.visited = false;
     }
 	
     /**
@@ -49,5 +53,10 @@ public class Edge
     public String getLabel()
     {
         return this.label;
+    }
+    
+    public void setVisited()
+    {
+        this.visited = true;
     }
 }
