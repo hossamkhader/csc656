@@ -161,6 +161,32 @@ public class TypeChecker {
     }
 
     private boolean checkType6(){
+	int lastChar = label.length() - 1;
+
+	// check 1s at end
+	for(int i = 0; i < (int)((n - r) / 2); i++){
+		if(label.charAt(lastChar) != '1'){
+			return false;
+		} else {
+			lastChar--;
+		}
+	}
+
+	// check 0s
+	for(int i = 0; i < (r - 2); i++){
+		if(label.charAt(lastChar) != '0'){
+			return false;
+		} else {
+			lastChar--;
+		}
+	}
+
+
+	// check remaining length
+	if((lastChar + 1) == ((n - r + 2) / 2)){
+		return true;
+	}	
+
         return false;
     }
 
