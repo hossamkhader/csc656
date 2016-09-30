@@ -35,13 +35,9 @@ public class Graph {
      * Constructs a graph with vertices of length d. First constructs each edge
      * and then attaches it to the appropriate vertices, constructing them if
      * necessary
-     * @param d length of vertices
+     * @param n length of edges/subwords
      */
-    public void buildGraph(int d) {
-
-        // edge and subword length = n, dimentionality = d
-        int n = d + 1;
-
+    public void buildGraph(int n) {
         String[] edgeStrs = new String[(int) Math.pow((double) 2, (double) n)];
         // debug // System.out.println((int)Math.pow((double)2,(double)n));
         String frmt = "%" + n + "s";
@@ -72,7 +68,6 @@ public class Graph {
             addEdge(origin, destination, edgeStrs[i]);
             /// debug // System.out.println("adding edge " + edgeStrs[i]);	
         }
-
     }
 
     /**
