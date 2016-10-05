@@ -237,8 +237,15 @@ public class Graph {
         
         //add seed edge
         Vertex sOrigin = graphCopy.getVertex(seed.substring(0, n-1));
+	// debug // System.out.println(sOrigin.getLabel());
         Vertex sDestination = 
-                this.getVertex(seed.substring(seed.length()-n-1));
+                this.getVertex(seed.substring(seed.length() - n + 1));
+	// debug // System.out.println(sDestination.getLabel());
+
+	// debug //
+	System.out.print("Adding seed edge " + seed);
+	System.out.println(" from " + sOrigin.getLabel() + " to " + sDestination.getLabel());
+
         graphCopy.addEdge(sOrigin, sDestination, seed);
         
         Graph graphCopyIter = new Graph(graphCopy);

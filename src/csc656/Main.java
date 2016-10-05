@@ -50,12 +50,15 @@ public class Main
                         + "\n" + v.getOutEdgesCount() +  " out: " 
                         + outEdges.toString());
 	}
-	
+
+	Seed seed;	
+	/*
 	Seed seed = new Seed("001H110", 'H');
 	System.out.println("\nseed: " + seed.toString());       
         Graph graphCopy = graph.compressGraph(seed.toString(), n);
         System.out.println(graphCopy.vertexKeys());
         System.out.println(graphCopy.printEdges());  
+	*/
 
         SeedGenerator seedGen = new SeedGenerator();
         seed = seedGen.generateSeed(n, h);
