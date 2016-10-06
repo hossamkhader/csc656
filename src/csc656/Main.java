@@ -31,7 +31,10 @@ public class Main
 
         Graph graph = new Graph();
         graph.buildGraph(n);
+	System.out.println("De Bruijn Graph");
+	System.out.println("\nVertices:");
         System.out.println(graph.vertexKeys());
+	System.out.println("\nEdges:");
         System.out.println(graph.printEdges());   
 
 	
@@ -45,10 +48,12 @@ public class Main
                 for(Edge e : v.getOutEdges()){
                     outEdges.add(e.getLabel());
                 }
+/*
 		System.out.println("Vertex " + vStr + " with:\n" 
                         + v.getInEdgesCount() + " in: " + inEdges.toString() 
                         + "\n" + v.getOutEdgesCount() +  " out: " 
                         + outEdges.toString());
+*/
 	}
 
 	Seed seed;	
@@ -62,9 +67,11 @@ public class Main
 
         SeedGenerator seedGen = new SeedGenerator();
         seed = seedGen.generateSeed(n, h);
-	System.out.println("seed: " + seed);       
+	System.out.println("Seed: " + seed);       
         Graph graphCopy2 = graph.compressGraph(seed.toString(), n);
-        System.out.println(graphCopy2.vertexKeys());
+	System.out.println("\nVertices:"); 
+	System.out.println(graphCopy2.vertexKeys());
+	System.out.println("\nEdges:");
         System.out.println(graphCopy2.printEdges());  
 
     }

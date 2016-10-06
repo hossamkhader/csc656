@@ -188,9 +188,9 @@ public class Graph {
         String tmp = "";
         for (String key : edges.keySet()) {
             tmp += edges.get(key).getLabel();
-            tmp += ":";
+            tmp += " : ";
             tmp += edges.get(key).getStartVertex().getLabel();
-            tmp += "->";
+            tmp += " --> ";
             tmp += edges.get(key).getEndVertex().getLabel();
             tmp += "\n";
         }
