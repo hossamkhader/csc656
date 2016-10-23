@@ -2,17 +2,32 @@ package csc656;
 
 import java.util.ArrayList;
 
+/**
+ * Class authors: Michael Branon, Hossam Khader, Kenneth Short, Jonathon Tovey.
+ */
 public class TypeChecker {
     int n;
     int r; //n - h
     String label;
 
+    /**
+     * Method author:  Kenneth Short
+     *
+     * Constructor that takes a label (vertex string) and an integer number of holes.
+     * Sets variables and calculates an 'r' value to be used in type checking.
+     */
     public TypeChecker(String label, int numHoles){
         this.label = label;
         n = label.length() + 1;
         r = n - numHoles;
     }
 
+    /**
+     * Method author:  Kenneth Short
+     *
+     * Sends the vertex label to each type checker method.
+     * If compatible with a type, the type gets added to a "types" array list.
+     */
     public ArrayList<Integer> getType(){
         ArrayList typesArr = new ArrayList<Integer>();
 
@@ -192,6 +207,13 @@ public class TypeChecker {
         return false;
     }
 
+    /**
+     * Method author:  Kenneth Short
+     *
+     * Check to see if a type 7 node using equation:
+     * 'hole'^[(n - r - 2i + 2)/2] 0^(r - 2) 1^[(n - r)/2] 0^i
+     * for some i in [1...(n - r)/2].
+     */
     private boolean checkType7(){
         int num1 = (n - r)/2;
         int numMid0 = (r - 2);

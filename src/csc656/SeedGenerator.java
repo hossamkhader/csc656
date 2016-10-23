@@ -1,11 +1,14 @@
 package csc656;
 
 /**
- * Generate a seed.
+ * Class author:  Kenneth Short
+ *
+ * Generate a seed given a subword length n and a number of holes h.
  */
 public class SeedGenerator {
 
     //Character representation of the holes in the seed
+    //This will be passed to the Seed class when seed in created. 
     private final char HOLE_CHAR = 'H';
 
     /**
