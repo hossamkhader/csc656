@@ -158,6 +158,10 @@ public class TypeChecker {
         return m+1==(n-r-i+1); 
     }
 
+/*
+  method author: Jonathon Tovey
+*/
+
     private boolean checkType6(){
         int lastChar = label.length() - 1;
 

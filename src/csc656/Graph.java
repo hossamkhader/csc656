@@ -31,6 +31,11 @@ public class Graph {
         this.vertices = new HashMap<>(graph.vertices);
     }
 
+/*
+  original method author: Michael Branon
+  rewrite/refactoring: Jonathon Tovey
+*/
+
     /**
      * Constructs a graph with vertices of length d. First constructs each edge
      * and then attaches it to the appropriate vertices, constructing them if
@@ -197,6 +202,9 @@ public class Graph {
         return tmp;
     }
 
+/*
+  method author: Jonathon Tovey
+*/
     public String printVertices() {
 
         String tmp = "";
@@ -207,6 +215,10 @@ public class Graph {
 
     }
 
+/*
+  method author: Jonathon Tovey
+*/
+
     public void removeVertex(Vertex v) {
 
         this.vertices.remove(v.getLabel());
@@ -214,6 +226,10 @@ public class Graph {
         // debug //
         System.out.println("Vertex " + v.getLabel() + " removed");
     }
+
+/*
+  method author: Jonathon Tovey
+*/
 
     /**
      * Method compresses a graph (this)

@@ -11,7 +11,9 @@ public class Main
     	// must be true: n > (h + 2)
     	// n is the length of edges
     	// h is number of holes
-    	
+/*
+  block author: Jonathon Tovey
+*/    	
         int n = 0, h = 0;
     	if(args.length != 0){
         	try {
@@ -37,6 +39,9 @@ public class Main
 	System.out.println("\nEdges:");
         System.out.println(graph.printEdges());   
 
+/*
+  block author: Michael Branon
+*/
 	
 	for(String vStr : graph.vertexKeys()){
 		Vertex v = graph.getVertex(vStr);
@@ -56,11 +61,16 @@ public class Main
 */
 	}
 
+/*
+  block author: Jonathon Tovey
+*/
+
 	Seed seed;	
-	/*
-	Seed seed = new Seed("001H110", 'H');
-	System.out.println("\nseed: " + seed.toString());       
-        Graph graphCopy = graph.compressGraph(seed.toString(), n);
+	/*	
+	seed = new Seed("001H110", 'H');
+	System.out.println("\nSeed: " + seed.toString());
+	int n2 = 4;       
+        Graph graphCopy = graph.compressGraph(seed.toString(), n2);
         System.out.println(graphCopy.vertexKeys());
         System.out.println(graphCopy.printEdges());  
 	*/
