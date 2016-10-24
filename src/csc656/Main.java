@@ -1,6 +1,7 @@
 package csc656;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class Authors: Hossam Khader, Michael Branon, Jonathon Tovey, Kenneth Short
@@ -28,8 +29,8 @@ public class Main
         		h = 1;
         	}
         } else {
-        	n = 4;
-        	h = 1;
+        	n = 7;
+        	h = 4;
         }
     	
     	System.out.println("n: " + n + ", h: " + h);
@@ -86,6 +87,17 @@ public class Main
 	System.out.println(graphCopy2.vertexKeys());
 	System.out.println("\nEdges:");
         System.out.println(graphCopy2.printEdges());  
-
+        
+        /*
+        block author: Michael Branon
+        */
+        System.out.println("Vertices with Types:");
+        for(String vertex : graphCopy2.vertexKeys()){
+            TypeChecker tCheck=new TypeChecker(vertex, h);
+            List<Integer> typeList = tCheck.getType();
+            if(!typeList.isEmpty()){
+                System.out.println(vertex + ": " + tCheck.getType().toString());
+            }            
+        }        
     }
 }
