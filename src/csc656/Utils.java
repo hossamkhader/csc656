@@ -1,5 +1,8 @@
 package csc656;
 
+/**
+ * Class Authors: Hossam Khader
+ */
 public class Utils {
     
     public static String power(String s, int n){
