@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Class Authors: Hossam Khader, Michael Branon, Jonathon Tovey
+ */
 public class Graph {
 
     /**

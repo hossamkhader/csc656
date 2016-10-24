@@ -3,6 +3,9 @@ package csc656;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * Class Authors: Hossam Khader, Michael Branon
+ */
 public class Vertex
 {
     /**

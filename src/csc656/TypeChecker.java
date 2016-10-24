@@ -50,6 +50,9 @@ public class TypeChecker {
         return  typesArr;
     }
 
+    /**
+     * Method author: Michael Branon
+     */
     private boolean checkType1() {
         int i, j;
         i = 0;
@@ -67,6 +70,9 @@ public class TypeChecker {
         return label.charAt(j) == '1' && label.substring(j + 1).length() == n - i - 2;
     }
 
+    /**
+     * Method author: Michael Branon
+     */
     private boolean checkType2() {
         int i, j;
         i = 0;
@@ -85,6 +91,8 @@ public class TypeChecker {
     }
 
     /**
+     * Method author: Michael Branon
+     * 
      * Method checks if vertex is of type 3 as per:
      * 0^(i) 1 @^(n-r) 0^(r-i-2) for some i in [0..r-3]
      * @return 
@@ -123,6 +131,8 @@ public class TypeChecker {
     }
     
     /**
+     *  Method author: Michael Branon
+     * 
      * Method checks if vertex is of type 4 as per:
      * @^(n-r) 0^(r-2) 1
      * @return 
@@ -141,6 +151,8 @@ public class TypeChecker {
     }
 
     /**
+     *  Method author: Michael Branon
+     * 
      * Method checks if vertex is of type 5 as per:
      * @^(n-r-i+1) 0^(r-2) 1^i for some i in [2..(n-r-2)/2] 
      * unlike similar methods, this one is checked in reverse to more easily 

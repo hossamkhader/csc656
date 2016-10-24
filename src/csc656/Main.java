@@ -2,6 +2,9 @@ package csc656;
 
 import java.util.ArrayList;
 
+/**
+ * Class Authors: Hossam Khader, Michael Branon, Jonathon Tovey, Kenneth Short
+ */
 public class Main
 {
     public static void main(String[] args)
