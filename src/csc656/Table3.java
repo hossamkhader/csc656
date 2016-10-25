@@ -2,35 +2,73 @@ package csc656;
 
 public class Table3 {
     
-    int n;
-    int r; //n - h
-    String label;
-
-    public Table3(String label, int numHoles){
-        this.label = label;
+    private final int n;
+    private final int r; //n - h
+    private final String label;
+    private final Vertex vertex;
+    
+    public Table3(Vertex vertex, int numHoles)
+    {
+        this.vertex = vertex;
+        this.label = vertex.getLabel();
         n = label.length() + 1;
         r = n - numHoles;
     }
     
-    public Table3Output getType()
+    
+    public void checkType(int [] type)
     {
-        Table3Output result = new Table3Output();
-        if(checkType1())
+        if(checkType1(type) != null)
         {
-            result.setIn(1);
-            result.setType(1);
-            int [] degree = {1,0};
-            result.setDegree(degree);
+            vertex.setClassification(checkType1(type));
         }
-        return result;
+        
+        if(checkType2(type) != null)
+        {
+            vertex.setClassification(checkType2(type));
+        }
+        vertex.setClassification(null);
     }
     
-    private boolean checkType1()
+    private VertexClassification checkType1(int [] type)
     {
-        return checkType1_1() || checkType1_2() || checkType1_3() || checkType1_4();
+        if(type[0] != 1 && type.length != 1)
+        {
+            return null;
+        }
+        if(checkType1_1() != null)
+            return checkType1_1();
+        if(checkType1_2() != null)
+            return checkType1_2();
+        if(checkType1_3() != null)
+            return checkType1_3();
+        if(checkType1_4() != null)
+            return checkType1_4();
+        return null;
     }
     
-    private boolean checkType1_1()
+    private VertexClassification checkType2(int [] type)
+    {
+        if(type[0] != 2 || type[1] != 2)
+        {
+            return null;
+        }
+        if(checkType2_1() != null)
+            return checkType2_1();
+        if(checkType2_2() != null)
+            return checkType2_2();
+        if(checkType2_3() != null)
+            return checkType2_3();
+        if(checkType2_4() != null)
+            return checkType2_4();
+        if(checkType2_5() != null)
+            return checkType2_5();
+        if(checkType2_6() != null)
+            return checkType2_6();
+        return null;
+    }
+    
+    private VertexClassification checkType1_1()
     {
         int i, j;
         i = 0;
@@ -43,17 +81,22 @@ public class Table3 {
             }
         }
         if (!(i >= (n + r - 2)/2 && i <= n - 3)) {
-            return false;
+            return null;
         }
         if(label.charAt(i+1) == '1' && label.charAt(label.length() - 1) == '0')
         {
-            return true;
+            VertexClassification result = new VertexClassification();
+            result.setInBit(1);
+            result.addType(1);
+            int [] degree = {1,0};
+            result.setDegree(degree);
+            return result;
         }
-        return false;
+        return null;
     }
     
     
-    private boolean checkType1_2()
+    private VertexClassification checkType1_2()
     {
         int i, j;
         i = 0;
@@ -66,7 +109,7 @@ public class Table3 {
             }
         }
         if (!(i >= (n + r - 2)/2 && i <= n - 3)) {
-            return false;
+            return null;
         }
         if(label.charAt(i+1) == '1' && 
            label.charAt(label.length() - 1) == '1' && 
@@ -76,16 +119,21 @@ public class Table3 {
             {
                 if(Utils.suffex(label.substring(i+1, label.length()-2), r-2+k) == (Utils.power("0", r-2) + Utils.power("1", k)))
                 {
-                    return false;
+                    return null;
                 }
             }
-            return true;
+            VertexClassification result = new VertexClassification();
+            result.setInBit(1);
+            result.addType(1);
+            int [] degree = {1,0};
+            result.setDegree(degree);
+            return result;
         }
-        return false;
+        return null;
     }
     
     
-    private boolean checkType1_3()
+    private VertexClassification checkType1_3()
     {
         int i, j;
         i = 0;
@@ -98,7 +146,7 @@ public class Table3 {
             }
         }
         if (!(i >= r-1 && i <= (n+r-4)/2)) {
-            return false;
+            return null;
         }
         if(label.charAt(i+1) == '1' && 
            label.charAt(label.length() - 1) == '1')
@@ -107,16 +155,21 @@ public class Table3 {
             {
                 if(Utils.suffex(label.substring(i+1, label.length()-2), r-2+k) == (Utils.power("0", r-2) + Utils.power("1", k)))
                 {
-                    return false;
+                    return null;
                 }
             }
-            return true;
+            VertexClassification result = new VertexClassification();
+            result.setInBit(1);
+            result.addType(1);
+            int [] degree = {1,0};
+            result.setDegree(degree);
+            return result;
         }
-        return false;
+        return null;
     }
     
     
-    private boolean checkType1_4()
+    private VertexClassification checkType1_4()
     {
         int i, j;
         i = 0;
@@ -129,7 +182,7 @@ public class Table3 {
             }
         }
         if (!(i >= r-1 && i <= (n+r-4)/2)) {
-            return false;
+            return null;
         }
         if(label.charAt(i+1) == '1' && 
            label.charAt(label.length() - 1) == '1' && 
@@ -139,13 +192,320 @@ public class Table3 {
             {
                 if(Utils.suffex(label.substring(i+1, label.length()-2), r-2+k) == (Utils.power("0", r-2) + Utils.power("1", (n-r)/2) + Utils.power("0", k)))
                 {
-                    return false;
+                    return null;
                 }
             }
-            return true;
+            VertexClassification result = new VertexClassification();
+            result.setInBit(1);
+            result.addType(1);
+            int [] degree = {1,0};
+            result.setDegree(degree);
+            return result;
         }
-        return false;
+        return null;
     }
     
+    
+    private VertexClassification checkType2_1()
+    {
+        int i, j;
+        
+        i = 0;
+        for (j = 0; j < r - 2 ; j++) {
+            if (label.charAt(j) == '0') {
+                i++;
+            } else {
+                break;
+            }
+        }
+        if (i != r - 2) {
+            return null;
+        }
+        
+        i = 0;
+        for (j = r - 2 ; j < r - 2 + ((n-r)/2) ; j++) {
+            if (label.charAt(j) == '1') {
+                i++;
+            } else {
+                break;
+            }
+        }
+        if (i != (n - r )/2) {
+            return null;
+        }
+        
+        i = 0;
+        for (j = r - 2 + ((n-r)/2) ; j < (n - r + 2)/2 ; j++) {
+            if (label.charAt(j) == '0') {
+                i++;
+            } else {
+                break;
+            }
+        }
+        if (i != (n - r + 2)/2) {
+            return null;
+        }
+        
+        VertexClassification result = new VertexClassification();
+        result.addType(2);
+        int [] degree = {0,1};
+        result.setDegree(degree);
+        result.setOutBit(1);
+        return result;
+    }
+    
+    private VertexClassification checkType2_2()
+    {
+        int i, j;
+        
+        i = 0;
+        for (j = 0; j < r - 2 ; j++) {
+            if (label.charAt(j) == '0') {
+                i++;
+            } else {
+                break;
+            }
+        }
+        if (i != r - 2) {
+            return null;
+        }
+        
+        if (label.charAt(i) != '1') {
+            return null;
+        }
+        
+        i = 0;
+        for (j = label.length() - 1 ; j > label.length() - 1 - ((n-r)/2) ; j--) {
+            if (label.charAt(j) == '1') {
+                i++;
+            } else {
+                break;
+            }
+        }
+        if (i != (n - r)/2) {
+            return null;
+        }
+        
+        i = 0;
+        for (j = j ; j < label.length() - 1 - ((n-r)/2) - (r - 2) ; j--) {
+            if (label.charAt(j) == '0') {
+                i++;
+            } else {
+                break;
+            }
+        }
+        if (i != r - 2) {
+            return null;
+        }
+        
+        VertexClassification result = new VertexClassification();
+        result.addType(2);
+        result.addType(6);
+        int [] degree = {0,1};
+        result.setDegree(degree);
+        result.setOutBit(1);
+        return result;
+    }
+    
+    
+    private VertexClassification checkType2_3()
+    {
+        int i, j;
+        
+        i = 0;
+        for (j = 0; j < r - 2 ; j++) {
+            if (label.charAt(j) == '0') {
+                i++;
+            } else {
+                break;
+            }
+        }
+        if (i != r - 2) {
+            return null;
+        }
+        
+        if (label.charAt(i) != '1') {
+            return null;
+        }
+        
+        i = 0;
+        for (j = label.length() - 1 ; j > label.length() - 1 - ((n - 3*r + 4)/2) ; j--) {
+            if (label.charAt(j) == '0') {
+                i++;
+            } else {
+                break;
+            }
+        }
+        if (!(i >= 1  && i <= (n - 3*r + 4)/2)) {
+            return null;
+        }
+        
+        int ii = i;
+        i = 0;
+        for (j = j ; j > label.length() - 1 - ((n-r)/2) - ii ; j--) {
+            if (label.charAt(j) == '1') {
+                i++;
+            } else {
+                break;
+            }
+        }
+        if (i != (n - r)/2) {
+            return null;
+        }
+        
+        i = 0;
+        for (j = j ; j < label.length() - 1 - ((n-r)/2) - (r - 2) - ii ; j--) {
+            if (label.charAt(j) == '0') {
+                i++;
+            } else {
+                break;
+            }
+        }
+        if (i != r - 2) {
+            return null;
+        }
+        
+        VertexClassification result = new VertexClassification();
+        result.addType(2);
+        result.addType(7);
+        int [] degree = {0,1};
+        result.setDegree(degree);
+        result.setOutBit(1);
+        return result;
+    }
+    
+    private VertexClassification checkType2_4()
+    {
+        int i, j;
+        
+        i = 0;
+        for (j = 0; j < r - 2 ; j++) {
+            if (label.charAt(j) == '0') {
+                i++;
+            } else {
+                break;
+            }
+        }
+        if (i != r - 2) {
+            return null;
+        }
+        
+        if (label.charAt(i) != '1') {
+            return null;
+        }
+        
+        if (label.charAt(label.length() -1) != '0') {
+            return null;
+        }
+        
+        VertexClassification result = new VertexClassification();
+        result.addType(2);
+        int [] degree = {1,1};
+        result.setDegree(degree);
+        result.setInBit(1);
+        result.setOutBit(1);
+        return result;
+    }
+    
+    private VertexClassification checkType2_5()
+    {
+        int i, j;
+        
+        i = 0;
+        for (j = 0; j < r - 2 ; j++) {
+            if (label.charAt(j) == '0') {
+                i++;
+            } else {
+                break;
+            }
+        }
+        if (i != r - 2) {
+            return null;
+        }
+        
+        if (label.charAt(i) != '1') {
+            return null;
+        }
+        
+        i = 0;
+        for (j = label.length() - 1 ; j > label.length() - 1 - ((n-r)/2) ; j--) {
+            if (label.charAt(j) == '1') {
+                i++;
+            } else {
+                break;
+            }
+        }
+        if (i != (n - r)/2) {
+            return null;
+        }
+        
+        VertexClassification result = new VertexClassification();
+        result.addType(2);
+        int [] degree = {1,1};
+        result.setDegree(degree);
+        result.setInBit(1);
+        result.setOutBit(1);
+        return result;
+    }
+    
+    private VertexClassification checkType2_6()
+    {
+        int i, j;
+        
+        i = 0;
+        for (j = 0; j < r - 2 ; j++) {
+            if (label.charAt(j) == '0') {
+                i++;
+            } else {
+                break;
+            }
+        }
+        if (i != r - 2) {
+            return null;
+        }
+        
+        if (label.charAt(i) != '1') {
+            return null;
+        }
+        
+        i = 0;
+        for (j = label.length() - 1 ; j > label.length() - 1 - ((n-r)/2) ; j--) {
+            if (label.charAt(j) == '1') {
+                i++;
+            } else {
+                break;
+            }
+        }
+        if (!(i >= 1 && i <= (n - r - 2)/2)) {
+            return null;
+        }
+        
+        int ii = i;
+        i = 0;
+        
+        for (j = j ; j > label.length() - 1 - (r-3) - ii ; j--) {
+            if (label.charAt(j) == '0') {
+                i++;
+            } else {
+                break;
+            }
+        }
+        if (!(i >= 1 && i <= r - 3)) {
+            return null;
+        }
+        
+        if (label.charAt(j) != '1') {
+            return null;
+        }
+        
+        
+        VertexClassification result = new VertexClassification();
+        result.addType(2);
+        int [] degree = {1,1};
+        result.setDegree(degree);
+        result.setInBit(1);
+        result.setOutBit(1);
+        return result;
+    }
     
 }

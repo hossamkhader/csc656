@@ -17,7 +17,10 @@ public class Vertex
      * Label for vertex
      */
     private final String label;
-	     
+    /**
+     * Classification for vertex
+     */
+    private VertexClassification classification;
     /**
      * Constructs a new vertex
      * @param label 
@@ -151,5 +154,11 @@ public class Vertex
         return hash;
     }
     
+    public VertexClassification getVertexClassification() {
+        return this.classification;
+    }
     
+    public void setClassification(VertexClassification classification ) {
+        this.classification = classification;
+    }
 }
