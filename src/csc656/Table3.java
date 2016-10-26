@@ -507,5 +507,19 @@ public class Table3 {
         result.setOutBit(1);
         return result;
     }
-    
+
+    /**
+     * 0 1 x 0^(r - 2) 1^[(n - r)/2] 0^i for some i in [1...(r - 4)].
+     * @return
+     */
+    private VertexClassification checkType7_2(){
+        VertexClassification result = new VertexClassification();
+
+        //Check prefix
+
+
+        //Check suffix
+
+        return result;
+    }
 }
