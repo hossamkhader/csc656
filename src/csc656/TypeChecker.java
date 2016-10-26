@@ -88,7 +88,7 @@ public class TypeChecker {
                 break;
             }
         }
-        if (!(i >= 0 && i <= r - 3 && j == 1)) {
+        if (!(i >= 0 && i <= r - 3)) {
             return false;
         }
         
@@ -116,13 +116,15 @@ public class TypeChecker {
         int j;
 
         //begins counting 0's after @'s, verifying their number
-        for (j = (n - r); j < (n - r) + (r - 2); j++) {
-            if (label.charAt(j) != '0') {
+        if(this.label.charAt(this.label.length()-1)!='1'){
+            return false;
+        }
+        for(j=this.label.length()-2; j>n-r-1; j--){
+            if(this.label.charAt(j)!='0'){
                 return false;
             }
         }
-        //verfies that the final char is 1
-        return (j == label.length() - 1 && label.charAt(j) == 1);
+        return j==n-r-1;
     }
 
     /**
