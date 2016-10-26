@@ -8,7 +8,7 @@ package csc656;
 public class SeedGenerator {
 
     //Character representation of the holes in the seed
-    //This will be passed to the Seed class when seed in created. 
+    //This will be passed to the Seed class when seed in created.
     private final char HOLE_CHAR = 'H';
 
     /**
