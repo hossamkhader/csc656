@@ -515,10 +515,73 @@ public class Table3 {
     private VertexClassification checkType7_2(){
         VertexClassification result = new VertexClassification();
 
-        //Check prefix
+        /**
+         * Check prefix------------------------------------------------------------
+         */
 
+        //Make sure label starts with '01'
+        if((label.charAt(0) != 0) || (label.charAt(1) != 1))
+            return null;
 
-        //Check suffix
+        /**
+         * Check suffix-------------------------------------------------------------
+         */
+        int counter = 0;  //Used to count number of characters
+        int currIndex = label.length() - 1;  //start at end of label
+
+        //Count the number of 0's at the end of the label
+        counter = 0;
+        for(int i = currIndex; i >= 0; i--){
+            if(label.charAt(i) == '0'){
+                counter ++;
+                currIndex = i - 1;
+            }else
+                break;
+        }
+
+        //Check to see if the number of zeros is within range of i in equation
+        int iUpperRange = r - 4;
+        boolean legalRange = false;
+        for(int i = 1; i <= iUpperRange && !legalRange; i++){
+            if(counter == i)
+                legalRange = true;
+        }
+
+        //If not legel number of zeroes, return null
+        if(!legalRange)
+            return null;
+
+        //Count the number of 1's
+        counter = 0;
+        for(int i = currIndex; i >= 0; i--){
+            if(label.charAt(i) == '1'){
+                counter ++;
+                currIndex = i - 1;
+            }else
+                break;
+        }
+
+        //Check to see if there are (n - r)/2 1's
+        if(counter != (n - r)/2)
+            return null;
+
+        //Count the number of 0's before the 1's
+        counter = 0;
+        for(int i = currIndex; i >= 0; i--){
+            if(label.charAt(i) == '0'){
+                counter ++;
+                currIndex = i - 1;
+            }else
+                break;
+        }
+
+        //Check to see if there are (r - 2) 0's
+        if(counter != (r - 2))
+            return null;
+
+        result.addType(7);
+        int [] degree = {0,1};
+        result.setDegree(degree);
 
         return result;
     }
