@@ -1,7 +1,11 @@
 package csc656;
 
 import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Class Authors: Hossam Khader, Michael Branon, Jonathon Tovey, Kenneth Short
+ */
 public class Main
 {
     public static void main(String[] args)
@@ -11,7 +15,9 @@ public class Main
     	// must be true: n > (h + 2)
     	// n is the length of edges
     	// h is number of holes
-    	
+/*
+  block author: Jonathon Tovey
+*/    	
         int n = 0, h = 0;
     	if(args.length != 0){
         	try {
@@ -23,17 +29,23 @@ public class Main
         		h = 1;
         	}
         } else {
-        	n = 4;
-        	h = 1;
+        	n = 7;
+        	h = 4;
         }
     	
     	System.out.println("n: " + n + ", h: " + h);
 
         Graph graph = new Graph();
         graph.buildGraph(n);
+	System.out.println("De Bruijn Graph");
+	System.out.println("\nVertices:");
         System.out.println(graph.vertexKeys());
+	System.out.println("\nEdges:");
         System.out.println(graph.printEdges());   
 
+/*
+  block author: Michael Branon
+*/
 	
 	for(String vStr : graph.vertexKeys()){
 		Vertex v = graph.getVertex(vStr);
@@ -45,24 +57,47 @@ public class Main
                 for(Edge e : v.getOutEdges()){
                     outEdges.add(e.getLabel());
                 }
+/*
 		System.out.println("Vertex " + vStr + " with:\n" 
                         + v.getInEdgesCount() + " in: " + inEdges.toString() 
                         + "\n" + v.getOutEdgesCount() +  " out: " 
                         + outEdges.toString());
+*/
 	}
-	
-	Seed seed = new Seed("001H110", 'H');
-	System.out.println("\nseed: " + seed.toString());       
-        Graph graphCopy = graph.compressGraph(seed.toString(), n);
+
+/*
+  block author: Jonathon Tovey
+*/
+
+	Seed seed;	
+	/*	
+	seed = new Seed("001H110", 'H');
+	System.out.println("\nSeed: " + seed.toString());
+	int n2 = 4;       
+        Graph graphCopy = graph.compressGraph(seed.toString(), n2);
         System.out.println(graphCopy.vertexKeys());
         System.out.println(graphCopy.printEdges());  
+	*/
 
         SeedGenerator seedGen = new SeedGenerator();
         seed = seedGen.generateSeed(n, h);
-	System.out.println("seed: " + seed);       
+	System.out.println("Seed: " + seed);       
         Graph graphCopy2 = graph.compressGraph(seed.toString(), n);
-        System.out.println(graphCopy2.vertexKeys());
+	System.out.println("\nVertices:"); 
+	System.out.println(graphCopy2.vertexKeys());
+	System.out.println("\nEdges:");
         System.out.println(graphCopy2.printEdges());  
-
+        
+        /*
+        block author: Michael Branon
+        */
+        System.out.println("Vertices with Types:");
+        for(String vertex : graphCopy2.vertexKeys()){
+            TypeChecker tCheck=new TypeChecker(vertex, h);
+            List<Integer> typeList = tCheck.getType();
+            if(!typeList.isEmpty()){
+                System.out.println(vertex + ": " + tCheck.getType().toString());
+            }            
+        }        
     }
 }

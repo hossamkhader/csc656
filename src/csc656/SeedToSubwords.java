@@ -5,6 +5,10 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
+/*
+  class author: Jonathon Tovey
+*/
+
 public class SeedToSubwords {
 	
     /**

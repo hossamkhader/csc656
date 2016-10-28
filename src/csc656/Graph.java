@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Class Authors: Hossam Khader, Michael Branon, Jonathon Tovey
+ */
 public class Graph {
 
     /**
@@ -30,6 +33,11 @@ public class Graph {
         this.edges = new HashMap<>(graph.edges);
         this.vertices = new HashMap<>(graph.vertices);
     }
+
+/*
+  original method author: Michael Branon
+  rewrite/refactoring: Jonathon Tovey
+*/
 
     /**
      * Constructs a graph with vertices of length d. First constructs each edge
@@ -188,15 +196,18 @@ public class Graph {
         String tmp = "";
         for (String key : edges.keySet()) {
             tmp += edges.get(key).getLabel();
-            tmp += ":";
+            tmp += " : ";
             tmp += edges.get(key).getStartVertex().getLabel();
-            tmp += "->";
+            tmp += " --> ";
             tmp += edges.get(key).getEndVertex().getLabel();
             tmp += "\n";
         }
         return tmp;
     }
 
+/*
+  method author: Jonathon Tovey
+*/
     public String printVertices() {
 
         String tmp = "";
@@ -207,6 +218,10 @@ public class Graph {
 
     }
 
+/*
+  method author: Jonathon Tovey
+*/
+
     public void removeVertex(Vertex v) {
 
         this.vertices.remove(v.getLabel());
@@ -214,6 +229,10 @@ public class Graph {
         // debug //
         System.out.println("Vertex " + v.getLabel() + " removed");
     }
+
+/*
+  method author: Jonathon Tovey
+*/
 
     /**
      * Method compresses a graph (this)
@@ -237,8 +256,15 @@ public class Graph {
         
         //add seed edge
         Vertex sOrigin = graphCopy.getVertex(seed.substring(0, n-1));
+	// debug // System.out.println(sOrigin.getLabel());
         Vertex sDestination = 
-                this.getVertex(seed.substring(seed.length()-n-1));
+                this.getVertex(seed.substring(seed.length() - n + 1));
+	// debug // System.out.println(sDestination.getLabel());
+
+	// debug //
+	System.out.print("Adding seed edge " + seed);
+	System.out.println(" from " + sOrigin.getLabel() + " to " + sDestination.getLabel());
+
         graphCopy.addEdge(sOrigin, sDestination, seed);
         
         Graph graphCopyIter = new Graph(graphCopy);

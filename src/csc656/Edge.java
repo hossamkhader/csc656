@@ -1,5 +1,8 @@
 package csc656;
 
+/**
+ * Class Authors: Hossam Khader, Michael Branon
+ */
 public class Edge
 {
     /**

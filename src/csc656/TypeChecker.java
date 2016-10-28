@@ -2,17 +2,32 @@ package csc656;
 
 import java.util.ArrayList;
 
+/**
+ * Class authors: Michael Branon, Hossam Khader, Kenneth Short, Jonathon Tovey.
+ */
 public class TypeChecker {
     int n;
     int r; //n - h
     String label;
 
+    /**
+     * Method author:  Kenneth Short
+     *
+     * Constructor that takes a label (vertex string) and an integer number of holes.
+     * Sets variables and calculates an 'r' value to be used in type checking.
+     */
     public TypeChecker(String label, int numHoles){
         this.label = label;
         n = label.length() + 1;
         r = n - numHoles;
     }
 
+    /**
+     * Method author:  Kenneth Short
+     *
+     * Sends the vertex label to each type checker method.
+     * If compatible with a type, the type gets added to a "types" array list.
+     */
     public ArrayList<Integer> getType(){
         ArrayList typesArr = new ArrayList<Integer>();
 
@@ -35,6 +50,9 @@ public class TypeChecker {
         return  typesArr;
     }
 
+    /**
+     * Method author: Michael Branon
+     */
     private boolean checkType1() {
         int i, j;
         i = 0;
@@ -52,6 +70,9 @@ public class TypeChecker {
         return label.charAt(j) == '1' && label.substring(j + 1).length() == n - i - 2;
     }
 
+    /**
+     * Method author: Michael Branon
+     */
     private boolean checkType2() {
         int i, j;
         i = 0;
@@ -70,6 +91,8 @@ public class TypeChecker {
     }
 
     /**
+     * Method author: Michael Branon
+     * 
      * Method checks if vertex is of type 3 as per:
      * 0^(i) 1 @^(n-r) 0^(r-i-2) for some i in [0..r-3]
      * @return 
@@ -88,7 +111,7 @@ public class TypeChecker {
                 break;
             }
         }
-        if (!(i >= 0 && i <= r - 3 && j == 1)) {
+        if (!(i >= 0 && i <= r - 3)) {
             return false;
         }
         
@@ -108,6 +131,8 @@ public class TypeChecker {
     }
     
     /**
+     *  Method author: Michael Branon
+     * 
      * Method checks if vertex is of type 4 as per:
      * @^(n-r) 0^(r-2) 1
      * @return 
@@ -116,16 +141,20 @@ public class TypeChecker {
         int j;
 
         //begins counting 0's after @'s, verifying their number
-        for (j = (n - r); j < (n - r) + (r - 2); j++) {
-            if (label.charAt(j) != '0') {
+        if(this.label.charAt(this.label.length()-1)!='1'){
+            return false;
+        }
+        for(j=this.label.length()-2; j>n-r-1; j--){
+            if(this.label.charAt(j)!='0'){
                 return false;
             }
         }
-        //verfies that the final char is 1
-        return (j == label.length() - 1 && label.charAt(j) == 1);
+        return j==n-r-1;
     }
 
     /**
+     *  Method author: Michael Branon
+     * 
      * Method checks if vertex is of type 5 as per:
      * @^(n-r-i+1) 0^(r-2) 1^i for some i in [2..(n-r-2)/2] 
      * unlike similar methods, this one is checked in reverse to more easily 
@@ -158,6 +187,10 @@ public class TypeChecker {
         return m+1==(n-r-i+1); 
     }
 
+/*
+  method author: Jonathon Tovey
+*/
+
     private boolean checkType6(){
         int lastChar = label.length() - 1;
 
@@ -188,6 +221,13 @@ public class TypeChecker {
         return false;
     }
 
+    /**
+     * Method author:  Kenneth Short
+     *
+     * Check to see if a type 7 node using equation:
+     * 'hole'^[(n - r - 2i + 2)/2] 0^(r - 2) 1^[(n - r)/2] 0^i
+     * for some i in [1...(n - r)/2].
+     */
     private boolean checkType7(){
         int num1 = (n - r)/2;
         int numMid0 = (r - 2);
