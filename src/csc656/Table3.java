@@ -27,6 +27,32 @@ public class Table3 {
         {
             vertex.setClassification(checkType2(type));
         }
+
+        if(checkType3(type) != null)
+        {
+            vertex.setClassification(checkType3(type));
+        }
+
+        if(checkType4(type) != null)
+        {
+            vertex.setClassification(checkType4(type));
+        }
+
+        if(checkType5(type) != null)
+        {
+            vertex.setClassification(checkType5(type));
+        }
+
+        if(checkType6(type) != null)
+        {
+            vertex.setClassification(checkType6(type));
+        }
+
+        if(checkType7(type) != null)
+        {
+            vertex.setClassification(checkType7(type));
+        }
+
         vertex.setClassification(null);
     }
     
@@ -65,6 +91,64 @@ public class Table3 {
             return checkType2_5();
         if(checkType2_6() != null)
             return checkType2_6();
+        return null;
+    }
+
+    private VertexClassification checkType3(int [] type){
+        if(type[0] != 3 || type[1] != 3){
+            return null;
+        }
+
+        if(checkType3() != null)
+            return checkType3();
+        if(checkType37() != null)
+            return checkType37();
+        return null;
+    }
+
+    private VertexClassification checkType4(int [] type){
+        if(type[0] != 4 || type[1] != 4){
+            return null;
+        }
+
+        if(checkType4_1() != null)
+            return checkType4_1();
+        if(checkType4_2() != null)
+            return checkType4_2();
+        return null;
+    }
+
+    private VertexClassification checkType5(int [] type){
+        if(type[0] != 5 || type[1] != 5){
+            return null;
+        }
+
+        if(checkType5() != null)
+            return checkType5();
+
+        return null;
+    }
+
+    private VertexClassification checkType6(int [] type){
+        if(type[0] != 6 || type[1] != 6){
+            return null;
+        }
+
+        if(checkType6() != null)
+            return checkType6();
+
+        return null;
+    }
+
+    private VertexClassification checkType7(int [] type){
+        if(type[0] != 7 || type[1] != 7){
+            return null;
+        }
+
+        if(checkType7_1() != null)
+            return checkType7_1();
+        if(checkType7_2() != null)
+            return checkType7_2();
         return null;
     }
     
@@ -509,6 +593,53 @@ public class Table3 {
     }
 
     /**
+     * 1 x 0(r - 2) not compatible with
+     * 'hole'^((n - r - 2j)/2) 0^(r - 2) 1^((n - r)/2) 0^(j + 1)
+     * for all j in [0...((n - r - 2)/2)]
+     */
+    private VertexClassification checkType3(){
+        int currIndex = label.length() - 1; //start at end of string for suffix
+        Utils utils = new Utils();  //used to check compatibility
+
+        //bounds for j
+        int jLower = 0;
+        int jUpper = (n - r - 2)/2;
+
+        //Confirm string 1 x 0^(r - 2)
+        //check that it starts with a 1
+        if(label.charAt(0) != '1'){
+            return null;
+        }
+
+        //check that it ends with (r - 2) 0's
+        int bound = currIndex - (r - 2);
+        for(int i = currIndex; i > bound; i--){
+            if(label.charAt(i) == '0'){
+                currIndex --;
+            }
+            else
+                return null;
+        }
+
+        //Check that it is not compatible with equation in method comment for all j
+        for(int j = jLower; j <= jUpper; j++){
+            String jStr = buildJString(j);
+            if(utils.isCompatible(label, jStr)){
+                return null;
+            }
+        }
+
+        VertexClassification result = new VertexClassification();
+        result.addType(3);
+        int [] degree = {1,1};
+        result.setDegree(degree);
+        result.setInBit(1);
+        result.setOutBit(0);
+
+        return result;
+    }
+
+    /**
      * 0^i 1 x 0^(r - 2) 1^((n - r)/2) o^j
      * for some i in [1...r - 3]
      * for some j in [r - i - 2...((n - r - 2i)/2)]
@@ -516,6 +647,7 @@ public class Table3 {
     private VertexClassification checkType37(){
         int counter = 0;  //counter used to keep track of number of characters
         int currIndex = 0; //start at beginning of string for prefix
+        int iVal = 0; //Value for i used to calculate bounds for j
 
         //bounds for i and j
         int iLower = 1;
@@ -527,10 +659,79 @@ public class Table3 {
          * Check prefix------------------------------------------------------------
          */
 
+        //Count the number of 0's in front of prefix
+        for(int i = currIndex; i < label.length(); i ++){
+            if(label.charAt(i) == '0'){
+                counter ++;
+                currIndex = i + 1; //move up an index
+            }
+            else
+                break;
+        }
+
+        //Check that there are i number of 0's
+        boolean legalRange = false;
+        for(int i = iLower; i <= iUpper && !legalRange; i++){
+            if(counter == i) {
+                iVal = i; //Set value of i used to get the bounds of j
+                legalRange = true;
+            }
+        }
+
+        //Check to see if there is a 1 after 0's
+        if(label.charAt(currIndex) != '1')
+            return null;
+
+        /**
+         * Check suffix-------------------------------------------------------------
+         */
+        jLower = r - iVal -2;
+        jUpper = (n - r - 2*iVal)/2;
+
+        //change current index to the end of the label
+        currIndex = label.length() - 1;
+
+        //Count the number of 0's at the end of the label
+        for(int i = currIndex; i >= 0; i--){
+            if(label.charAt(i) == '0'){
+                counter ++;
+                currIndex --;
+            }else
+                break;
+        }
+
+        //Check to see if the number of zeros is within range of i in equation
+        legalRange = false;
+        for(int i = jLower; i <= jUpper && !legalRange; i++){
+            if(counter == i)
+                legalRange = true;
+        }
+
+        //check that there are (n - r)/2 1's at end of label
+        int bound = currIndex - ((n - r)/2);
+        for(int i = currIndex; i > bound; i--){
+            if(label.charAt(i) == '1'){
+                currIndex --;
+            }
+            else
+                return null;
+        }
+
+        //check that there are (r - 2) 0's before 1's
+        bound = currIndex - (r - 2);
+        for(int i = currIndex; i > bound; i--){
+            if(label.charAt(i) == '0'){
+                currIndex --;
+            }
+            else
+                return null;
+        }
+
         VertexClassification result = new VertexClassification();
         result.addType(37);
         int [] degree = {0,1};
         result.setDegree(degree);
+        result.setOutBit(1);
 
         return result;
     }
@@ -926,5 +1127,35 @@ public class Table3 {
         result.setOutBit(1);
 
         return result;
+    }
+
+    /**
+     * Create the j-string needed for compatibility check in type 3.
+     * Given the value j, return the string with holes on right side of equation.
+     */
+    private String buildJString(int j){
+        String str = "";
+        int numHoles = (n - r - (2*j))/2;
+        int numFirst0 = (r - 2);
+        int num1 = (n - r)/2;
+        int numSecond0 = j + 1;
+
+        for(int i = 0; i < numHoles; i++){
+            str += "H";
+        }
+
+        for(int i = 0; i < numFirst0; i++){
+            str += "0";
+        }
+
+        for(int i = 0; i < num1; i++){
+            str += "1";
+        }
+
+        for(int i = 0; i < numSecond0; i++){
+            str += "0";
+        }
+
+        return str;
     }
 }
