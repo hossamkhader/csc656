@@ -554,6 +554,7 @@ public class Table3 {
         result.addType(4);
         int [] degree = {1,0};
         result.setDegree(degree);
+        result.setInBit(0);
 
         return result;
     }
@@ -621,6 +622,8 @@ public class Table3 {
         result.addType(4);
         int [] degree = {1,1};
         result.setDegree(degree);
+        result.setInBit(0);
+        result.setOutBit(0);
 
         return result;
     }
@@ -705,6 +708,7 @@ public class Table3 {
         result.addType(5);
         int [] degree = {0,1};
         result.setDegree(degree);
+        result.setOutBit(0);
 
         return result;
     }
@@ -776,6 +780,7 @@ public class Table3 {
         result.addType(6);
         int [] degree = {0,1};
         result.setDegree(degree);
+        result.setOutBit(1);
 
         return result;
     }
@@ -846,6 +851,7 @@ public class Table3 {
         result.addType(7);
         int [] degree = {0,1};
         result.setDegree(degree);
+        result.setOutBit(1);
 
         return result;
     }
@@ -917,6 +923,7 @@ public class Table3 {
         result.addType(7);
         int [] degree = {0,1};
         result.setDegree(degree);
+        result.setOutBit(1);
 
         return result;
     }

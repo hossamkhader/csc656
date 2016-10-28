@@ -49,7 +49,5 @@ public class VertexClassification {
     
     public void setDegree(int[] degree) {
         this.degree = degree;
-        inBit = degree[0];
-        outBit = degree[1];
     }
 }
