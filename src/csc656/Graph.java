@@ -211,9 +211,7 @@ public class Graph {
     public String printVertices() {
 
         String tmp = "";
-        for (String key : vertices.keySet()) {
-            tmp += key + " ";
-        }
+        tmp = vertices.keySet().stream().map((key) -> key + " ").reduce(tmp, String::concat);
         return tmp;
 
     }
@@ -280,6 +278,17 @@ public class Graph {
             // debug // System.out.println(graphCopy.printVertices());
         }
         return graphCopy;
+    }
+    
+    /**
+     * Method returns an array of the vertices contained in the graph
+     *
+     * @return array of vertices
+     */
+    public Vertex [] getVertices() {
+        Vertex [] temp = new Vertex[this.vertices.values().size()];
+        this.vertices.values().toArray(temp);
+        return temp;
     }
 
 }

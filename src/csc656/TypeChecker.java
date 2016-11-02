@@ -1,53 +1,39 @@
 package csc656;
 
-import java.util.ArrayList;
-
 /**
  * Class authors: Michael Branon, Hossam Khader, Kenneth Short, Jonathon Tovey.
  */
 public class TypeChecker {
-    int n;
-    int r; //n - h
-    String label;
+    private final int n;
+    private final int r; //n - h
+    private String label;
 
-    /**
-     * Method author:  Kenneth Short
-     *
-     * Constructor that takes a label (vertex string) and an integer number of holes.
-     * Sets variables and calculates an 'r' value to be used in type checking.
-     */
-    public TypeChecker(String label, int numHoles){
-        this.label = label;
-        n = label.length() + 1;
-        r = n - numHoles;
+    public TypeChecker(int n, int r){
+        this.n = n;
+        this.r = r;
     }
 
-    /**
-     * Method author:  Kenneth Short
-     *
-     * Sends the vertex label to each type checker method.
-     * If compatible with a type, the type gets added to a "types" array list.
-     */
-    public ArrayList<Integer> getType(){
-        ArrayList typesArr = new ArrayList<Integer>();
+    public void setType(Vertex vertex){
+        this.label = vertex.getLabel();
+        VertexClassification classification = new VertexClassification();
 
         if(checkType1()){
-            typesArr.add(1);
+            classification.addType(1);
         }if(checkType2()){
-            typesArr.add(2);
+            classification.addType(2);
         }if(checkType3()){
-            typesArr.add(3);
+            classification.addType(3);
         }if(checkType4()){
-            typesArr.add(4);
+            classification.addType(4);
         }if(checkType5()){
-            typesArr.add(5);
+            classification.addType(5);
         }if(checkType6()){
-            typesArr.add(6);
+            classification.addType(6);
         }if(checkType7()){
-            typesArr.add(7);
+            classification.addType(7);
         }
 
-        return  typesArr;
+        vertex.setClassification(classification);
     }
 
     /**

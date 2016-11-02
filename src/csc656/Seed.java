@@ -20,12 +20,14 @@ public class Seed {
     private int numHoles;
 
     //Character representation of the holes in the seed
-    private char holeChar;
+    private final char holeChar;
 
     /**
      * Constructor.
      * Given the String value of the seed and Char value of the holes,
      * calculate the number of holes and the length of the seed.
+     * @param seed
+     * @param hole
      */
     public Seed(String seed, char hole){
         seedStr = seed;
@@ -46,6 +48,7 @@ public class Seed {
      * re-compute the number of holes and length of the seed.
      *
      * This does allow any value to be saved as a new hole...this will have to be guarded against later.
+     * @param seedStr
      */
     public void setSeedStr(String seedStr) {
         this.seedStr = seedStr;

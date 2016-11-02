@@ -1,13 +1,10 @@
 package gui;
 
-import csc656.Edge;
 import csc656.Graph;
 import csc656.Seed;
 import csc656.SeedGenerator;
 import csc656.TypeChecker;
 import csc656.Vertex;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainWindow extends javax.swing.JFrame {
 
@@ -16,6 +13,10 @@ public class MainWindow extends javax.swing.JFrame {
      */
     public MainWindow() {
         initComponents();
+        initComponents2();
+    }
+    
+    private void initComponents2() {
         getRootPane().setDefaultButton(jButton1);
     }
 
@@ -139,41 +140,35 @@ public class MainWindow extends javax.swing.JFrame {
         result += "\n";
         result += graph.printEdges();
         result += "\n";
-        for (String vStr : graph.vertexKeys()) {
-            Vertex v = graph.getVertex(vStr);
-            ArrayList<String> inEdges = new ArrayList();
-            ArrayList<String> outEdges = new ArrayList();
-            for (Edge e : v.getInEdges()) {
-                inEdges.add(e.getLabel());
-            }
-            for (Edge e : v.getOutEdges()) {
-                outEdges.add(e.getLabel());
-            }
-        }
         Seed seed;
         SeedGenerator seedGen = new SeedGenerator();
         seed = seedGen.generateSeed(n, h);
         result += ("Seed: " + seed);
         result += "\n";
         result += "\n";
-        Graph graphCopy2 = graph.compressGraph(seed.toString(), n);
+        Graph graphCopy = graph.compressGraph(seed.toString(), n);
         result += ("Vertices:");
         result += "\n";
-        result += graphCopy2.vertexKeys();
+        result += graphCopy.vertexKeys();
         result += "\n";
         result += "\n";
         result += "Edges:";
         result += "\n";
-        result += graphCopy2.printEdges();
+        result += graphCopy.printEdges();
         result += "\n";
         result += "\n";
         result += "Vertices with Types:";
         result += "\n";
-        for (String vertex : graphCopy2.vertexKeys()) {
-            TypeChecker tCheck = new TypeChecker(vertex, h);
-            List<Integer> typeList = tCheck.getType();
-            if (!typeList.isEmpty()) {
-                result += (vertex + ": " + tCheck.getType().toString());
+        for (Vertex vertex : graphCopy.getVertices()) {
+            TypeChecker tCheck = new TypeChecker(n, n - h);
+            tCheck.setType(vertex);
+            if(vertex.getVertexClassification().getType().length >= 1) {
+                result += (vertex.getLabel() + ": [" + vertex.getVertexClassification().getType()[0]);
+                if(vertex.getVertexClassification().getType().length > 1) {
+                    result += ",";
+                    result += vertex.getVertexClassification().getType()[1];
+                }
+                result += "]";
                 result += "\n";
             }
         }
@@ -208,10 +203,8 @@ public class MainWindow extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MainWindow().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new MainWindow().setVisible(true);
         });
     }
 

@@ -79,7 +79,7 @@ public class Table3 {
         } else if (checkType2_1()) {
             int[] degree = {0, 1};
             currVertex.getVertexClassification().setDegree(degree);
-            currVertex.getVertexClassification().setOutBit(1);;
+            currVertex.getVertexClassification().setOutBit(1);
         } else if (checkType2_4()) {
             int[] degree = {1, 1};
             currVertex.getVertexClassification().setDegree(degree);
