@@ -135,28 +135,26 @@ public class Table3 {
         }
     }
 
-    private VertexClassification checkType5(int[] type) {
-        if (type[0] != 5 || type[1] != 5) {
-            return null;
+    private void checkType5() throws SubTypeNotFound {
+        if (checkType5_1()) {
+            int[] degree = {0, 1};
+            this.currVertex.getVertexClassification().setDegree(degree);
+            this.currVertex.getVertexClassification().setOutBit(0);
+        } else {
+            throw new SubTypeNotFound("Type 2(6)(7) vertex " + this.currLabel
+                    + " does not match a type 2 subtype");
         }
-
-        if (checkType5() != null) {
-            return checkType5();
-        }
-
-        return null;
     }
 
-    private VertexClassification checkType6(int[] type) {
-        if (type[0] != 6 || type[1] != 6) {
-            return null;
+    private void checkType6() throws SubTypeNotFound {
+        if (checkType6_1()) {
+            int[] degree = {0, 1};
+            this.currVertex.getVertexClassification().setDegree(degree);
+            this.currVertex.getVertexClassification().setOutBit(1);
+        } else {
+            throw new SubTypeNotFound("Type 2(6)(7) vertex " + this.currLabel
+                    + " does not match a type 2 subtype");
         }
-
-        if (checkType6() != null) {
-            return checkType6();
-        }
-
-        return null;
     }
 
     private VertexClassification checkType7(int[] type) {
@@ -755,7 +753,7 @@ public class Table3 {
      * 0^i 1 x 0^(r - 2) 1^j for some i in [0...r - 3] and j in [2...((n - r
      * -2)/2)].
      */
-    private VertexClassification checkType5_1() {
+    private boolean checkType5_1() {
         int counter = 0;  //counter used to keep track of number of characters
         int currIndex = 0; //start at beginning of string for prefix
 
@@ -789,7 +787,7 @@ public class Table3 {
 
         //Check to see if there is a 1 after 0's
         if (currLabel.charAt(currIndex) != '1') {
-            return null;
+            return false;
         }
 
         /**
@@ -820,7 +818,7 @@ public class Table3 {
 
         //If not legel number of zeroes, return null
         if (!legalRange) {
-            return null;
+            return false;
         }
 
         //Check that there are (r - 2) 0's before 1's
@@ -829,23 +827,16 @@ public class Table3 {
             if (currLabel.charAt(i) == '0') {
                 currIndex--;
             } else {
-                return null;
+                return false;
             }
         }
-
-        VertexClassification result = new VertexClassification();
-        result.addType(5);
-        int[] degree = {0, 1};
-        result.setDegree(degree);
-        result.setOutBit(0);
-
-        return result;
+        return true;
     }
 
     /**
      * 0^i 1 x 0^(r - 2) 1^[(n - r)/2] for some i in [0...r-3].
      */
-    private VertexClassification checkType6_1() {
+    private boolean checkType6_1() {
         int counter = 0;  //counter used to keep track of number of characters
         int currIndex = 0; //start at beginning of string for prefix
 
@@ -877,7 +868,7 @@ public class Table3 {
 
         //Check to see if there is a 1 after 0's
         if (currLabel.charAt(currIndex) != '1') {
-            return null;
+            return false;
         }
 
         /**
@@ -893,7 +884,7 @@ public class Table3 {
             if (currLabel.charAt(i) == '1') {
                 currIndex--;
             } else {
-                return null;
+                return false;
             }
         }
 
@@ -903,17 +894,10 @@ public class Table3 {
             if (currLabel.charAt(i) == '0') {
                 currIndex--;
             } else {
-                return null;
+                return false;
             }
         }
-
-        VertexClassification result = new VertexClassification();
-        result.addType(6);
-        int[] degree = {0, 1};
-        result.setDegree(degree);
-        result.setOutBit(1);
-
-        return result;
+        return true;
     }
 
     /**
