@@ -157,18 +157,19 @@ public class Table3 {
         }
     }
 
-    private VertexClassification checkType7(int[] type) {
-        if (type[0] != 7 || type[1] != 7) {
-            return null;
+    private void checkType7() throws SubTypeNotFound {
+        if (checkType7_1()) {
+            int[] degree = {0, 1};
+            this.currVertex.getVertexClassification().setDegree(degree);
+            this.currVertex.getVertexClassification().setOutBit(1);
+        } else if (checkType7_2()) {
+            int[] degree = {0, 1};
+            this.currVertex.getVertexClassification().setDegree(degree);
+            this.currVertex.getVertexClassification().setOutBit(1);
+        } else {
+            throw new SubTypeNotFound("Type 2(6)(7) vertex " + this.currLabel
+                    + " does not match a type 2 subtype");
         }
-
-        if (checkType7_1() != null) {
-            return checkType7_1();
-        }
-        if (checkType7_2() != null) {
-            return checkType7_2();
-        }
-        return null;
     }
 
     private boolean checkType1_1() {
@@ -903,7 +904,7 @@ public class Table3 {
     /**
      * 1 x 0^(r - 2) 1^[(n - r)/2] 0^i for some i in [1...(r - 3)].
      */
-    private VertexClassification checkType7_1() {
+    private boolean checkType7_1() {
         int counter = 0;  //Used to count number of characters
         int currIndex = currLabel.length() - 1;  //start at end of label
 
@@ -917,7 +918,7 @@ public class Table3 {
 
         //Make sure label starts with '1'
         if ((currLabel.charAt(0) != '1')) {
-            return null;
+            return false;
         }
 
         /**
@@ -944,7 +945,7 @@ public class Table3 {
 
         //If not legel number of zeroes, return null
         if (!legalRange) {
-            return null;
+            return false;
         }
 
         //check that there are (n - r)/2 1's at end of label
@@ -953,7 +954,7 @@ public class Table3 {
             if (currLabel.charAt(i) == '1') {
                 currIndex--;
             } else {
-                return null;
+                return false;
             }
         }
 
@@ -963,23 +964,16 @@ public class Table3 {
             if (currLabel.charAt(i) == '0') {
                 currIndex--;
             } else {
-                return null;
+                return false;
             }
         }
-
-        VertexClassification result = new VertexClassification();
-        result.addType(7);
-        int[] degree = {0, 1};
-        result.setDegree(degree);
-        result.setOutBit(1);
-
-        return result;
+        return true;
     }
 
     /**
      * 0 1 x 0^(r - 2) 1^[(n - r)/2] 0^i for some i in [1...(r - 4)].
      */
-    private VertexClassification checkType7_2() {
+    private boolean checkType7_2() {
         int counter = 0;  //Used to count number of characters
         int currIndex = currLabel.length() - 1;  //start at end of label
 
@@ -993,7 +987,7 @@ public class Table3 {
          */
         //Make sure label starts with '01'
         if ((currLabel.charAt(0) != '0') || (currLabel.charAt(1) != '1')) {
-            return null;
+            return false;
         }
 
         /**
@@ -1020,7 +1014,7 @@ public class Table3 {
 
         //If not legel number of zeroes, return null
         if (!legalRange) {
-            return null;
+            return false;
         }
 
         //check that there are (n - r)/2 1's at end of label
@@ -1029,7 +1023,7 @@ public class Table3 {
             if (currLabel.charAt(i) == '1') {
                 currIndex--;
             } else {
-                return null;
+                return false;
             }
         }
 
@@ -1039,17 +1033,10 @@ public class Table3 {
             if (currLabel.charAt(i) == '0') {
                 currIndex--;
             } else {
-                return null;
+                return false;
             }
         }
-
-        VertexClassification result = new VertexClassification();
-        result.addType(7);
-        int[] degree = {0, 1};
-        result.setDegree(degree);
-        result.setOutBit(1);
-
-        return result;
+        return true;
     }
 
     /**
