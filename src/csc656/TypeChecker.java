@@ -111,7 +111,7 @@ public class TypeChecker {
                 break;
             }
         }
-        if (!(i >= 0 && i <= r - 3)) {
+        if (!(i >= 0 && i <= r - 3 && this.label.charAt(j)=='1')) {
             return false;
         }
         

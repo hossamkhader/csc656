@@ -125,7 +125,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         int n = Integer.parseInt(jTextField1.getText());
         int h = Integer.parseInt(jTextField2.getText());
-        
+
         String result;
         Graph graph = new Graph();
         graph.buildGraph(n);
@@ -139,43 +139,43 @@ public class MainWindow extends javax.swing.JFrame {
         result += "\n";
         result += graph.printEdges();
         result += "\n";
-        for(String vStr : graph.vertexKeys()){
+        for (String vStr : graph.vertexKeys()) {
             Vertex v = graph.getVertex(vStr);
             ArrayList<String> inEdges = new ArrayList();
             ArrayList<String> outEdges = new ArrayList();
-            for(Edge e : v.getInEdges()){
+            for (Edge e : v.getInEdges()) {
                 inEdges.add(e.getLabel());
             }
-            for(Edge e : v.getOutEdges()){
+            for (Edge e : v.getOutEdges()) {
                 outEdges.add(e.getLabel());
             }
         }
         Seed seed;
         SeedGenerator seedGen = new SeedGenerator();
         seed = seedGen.generateSeed(n, h);
-	result += ("Seed: " + seed);      
+        result += ("Seed: " + seed);
         result += "\n";
         result += "\n";
         Graph graphCopy2 = graph.compressGraph(seed.toString(), n);
-	result += ("Vertices:");
+        result += ("Vertices:");
         result += "\n";
-	result += graphCopy2.vertexKeys();
+        result += graphCopy2.vertexKeys();
         result += "\n";
         result += "\n";
-	result += "Edges:";
+        result += "Edges:";
         result += "\n";
         result += graphCopy2.printEdges();
         result += "\n";
         result += "\n";
         result += "Vertices with Types:";
         result += "\n";
-        for(String vertex : graphCopy2.vertexKeys()){
-            TypeChecker tCheck=new TypeChecker(vertex, h);
+        for (String vertex : graphCopy2.vertexKeys()) {
+            TypeChecker tCheck = new TypeChecker(vertex, h);
             List<Integer> typeList = tCheck.getType();
-            if(!typeList.isEmpty()){
+            if (!typeList.isEmpty()) {
                 result += (vertex + ": " + tCheck.getType().toString());
                 result += "\n";
-            }            
+            }
         }
         jTextArea1.setText(result);
     }//GEN-LAST:event_jButton1ActionPerformed
