@@ -20,9 +20,9 @@ public class Table3 {
             case 1:
                 checkType1();
             case 2:
-                checkType2(vertexType);
+                checkType2();
             case 3:
-                checkType3(vertexType);
+                checkType3();
             case 4:
                 checkType4(vertexType);
             case 5:
@@ -63,52 +63,60 @@ public class Table3 {
         }
     }
 
-    private void checkType2(int[] type) throws SubTypeNotFound {
-        if (checkType2_1()) {
+    private void checkType2() throws SubTypeNotFound {
+        if (currVertex.getVertexClassification().getType().length == 2
+                && currVertex.getVertexClassification().getType()[1] == 6
+                && checkType26()) {
             int[] degree = {0, 1};
             this.currVertex.getVertexClassification().setDegree(degree);
-            this.currVertex.getVertexClassification().setOutBit(1);;
+            this.currVertex.getVertexClassification().setOutBit(1);
+        } else if (currVertex.getVertexClassification().getType().length == 2
+                && currVertex.getVertexClassification().getType()[1] == 7
+                && checkType27()) {
+            int[] degree = {0, 1};
+            this.currVertex.getVertexClassification().setDegree(degree);
+            this.currVertex.getVertexClassification().setOutBit(1);
+        }else if (checkType2_1()) {
+            int[] degree = {0, 1};
+            currVertex.getVertexClassification().setDegree(degree);
+            currVertex.getVertexClassification().setOutBit(1);;
         } else if (checkType2_4()) {
             int[] degree = {1, 1};
-            this.currVertex.getVertexClassification().setDegree(degree);
-            this.currVertex.getVertexClassification().setInBit(1);
-            this.currVertex.getVertexClassification().setOutBit(1);
+            currVertex.getVertexClassification().setDegree(degree);
+            currVertex.getVertexClassification().setInBit(1);
+            currVertex.getVertexClassification().setOutBit(1);
         } else if (checkType2_5()) {
             int[] degree = {1, 1};
-            this.currVertex.getVertexClassification().setDegree(degree);
-            this.currVertex.getVertexClassification().setInBit(1);
-            this.currVertex.getVertexClassification().setOutBit(1);
+            currVertex.getVertexClassification().setDegree(degree);
+            currVertex.getVertexClassification().setInBit(1);
+            currVertex.getVertexClassification().setOutBit(1);
         } else if (checkType2_6()) {
             int[] degree = {1, 1};
-            this.currVertex.getVertexClassification().setDegree(degree);
-            this.currVertex.getVertexClassification().setInBit(1);
-            this.currVertex.getVertexClassification().setOutBit(1);
-        } else if (checkType26()) {
-            int[] degree = {0, 1};
-            this.currVertex.getVertexClassification().setDegree(degree);
-            this.currVertex.getVertexClassification().setOutBit(1);
-        } else if (checkType27()) {
-            int[] degree = {0, 1};
-            this.currVertex.getVertexClassification().setDegree(degree);
-            this.currVertex.getVertexClassification().setOutBit(1);
+            currVertex.getVertexClassification().setDegree(degree);
+            currVertex.getVertexClassification().setInBit(1);
+            currVertex.getVertexClassification().setOutBit(1);
         } else {
             throw new SubTypeNotFound("Type 2(6)(7) vertex " + this.currLabel
                     + " does not match a type 2 subtype");
         }
     }
 
-    private VertexClassification checkType3(int[] type) {
-        if (type[0] != 3 || type[1] != 3) {
-            return null;
+    private void checkType3() throws SubTypeNotFound {
+        if (currVertex.getVertexClassification().getType().length == 2
+                && currVertex.getVertexClassification().getType()[1] == 7
+                && checkType37()) {
+            int[] degree = {0, 1};
+            this.currVertex.getVertexClassification().setDegree(degree);
+            this.currVertex.getVertexClassification().setOutBit(1);
+        }else if (checkType3_1()) {
+            int[] degree = {1, 1};
+            this.currVertex.getVertexClassification().setDegree(degree);
+            this.currVertex.getVertexClassification().setInBit(1);
+            this.currVertex.getVertexClassification().setOutBit(0);
+        } else {
+            throw new SubTypeNotFound("Type 2(6)(7) vertex " + this.currLabel
+                    + " does not match a type 2 subtype");
         }
-
-        if (checkType3() != null) {
-            return checkType3();
-        }
-        if (checkType37() != null) {
-            return checkType37();
-        }
-        return null;
     }
 
     private VertexClassification checkType4(int[] type) {
@@ -531,7 +539,7 @@ public class Table3 {
      * 1 x 0(r - 2) not compatible with 'hole'^((n - r - 2j)/2) 0^(r - 2) 1^((n
      * - r)/2) 0^(j + 1) for all j in [0...((n - r - 2)/2)]
      */
-    private VertexClassification checkType3() {
+    private boolean checkType3_1() {
         int currIndex = currLabel.length() - 1; //start at end of string for suffix
         Utils utils = new Utils();  //used to check compatibility
 
@@ -542,7 +550,7 @@ public class Table3 {
         //Confirm string 1 x 0^(r - 2)
         //check that it starts with a 1
         if (currLabel.charAt(0) != '1') {
-            return null;
+            return false;
         }
 
         //check that it ends with (r - 2) 0's
@@ -551,7 +559,7 @@ public class Table3 {
             if (currLabel.charAt(i) == '0') {
                 currIndex--;
             } else {
-                return null;
+                return false;
             }
         }
 
@@ -559,25 +567,17 @@ public class Table3 {
         for (int j = jLower; j <= jUpper; j++) {
             String jStr = buildJString(j);
             if (utils.isCompatible(currLabel, jStr)) {
-                return null;
+                return false;
             }
         }
-
-        VertexClassification result = new VertexClassification();
-        result.addType(3);
-        int[] degree = {1, 1};
-        result.setDegree(degree);
-        result.setInBit(1);
-        result.setOutBit(0);
-
-        return result;
+        return true;
     }
 
     /**
      * 0^i 1 x 0^(r - 2) 1^((n - r)/2) o^j for some i in [1...r - 3] for some j
      * in [r - i - 2...((n - r - 2i)/2)]
      */
-    private VertexClassification checkType37() {
+    private boolean checkType37() {
         int counter = 0;  //counter used to keep track of number of characters
         int currIndex = 0; //start at beginning of string for prefix
         int iVal = 0; //Value for i used to calculate bounds for j
@@ -613,7 +613,7 @@ public class Table3 {
 
         //Check to see if there is a 1 after 0's
         if (currLabel.charAt(currIndex) != '1') {
-            return null;
+            return false;
         }
 
         /**
@@ -650,7 +650,7 @@ public class Table3 {
             if (currLabel.charAt(i) == '1') {
                 currIndex--;
             } else {
-                return null;
+                return false;
             }
         }
 
@@ -660,17 +660,10 @@ public class Table3 {
             if (currLabel.charAt(i) == '0') {
                 currIndex--;
             } else {
-                return null;
+                return false;
             }
         }
-
-        VertexClassification result = new VertexClassification();
-        result.addType(37);
-        int[] degree = {0, 1};
-        result.setDegree(degree);
-        result.setOutBit(1);
-
-        return result;
+        return true;
     }
 
     /**
