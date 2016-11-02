@@ -24,13 +24,13 @@ public class Table3 {
             case 3:
                 checkType3();
             case 4:
-                checkType4(vertexType);
+                checkType4();
             case 5:
-                checkType5(vertexType);
+                checkType5();
             case 6:
-                checkType6(vertexType);
+                checkType6();
             case 7:
-                checkType7(vertexType);
+                checkType7();
             default:
                 if (!(vertex.getInEdgesCount() == 2
                         || vertex.getOutEdgesCount() == 2)) {
@@ -76,7 +76,7 @@ public class Table3 {
             int[] degree = {0, 1};
             this.currVertex.getVertexClassification().setDegree(degree);
             this.currVertex.getVertexClassification().setOutBit(1);
-        }else if (checkType2_1()) {
+        } else if (checkType2_1()) {
             int[] degree = {0, 1};
             currVertex.getVertexClassification().setDegree(degree);
             currVertex.getVertexClassification().setOutBit(1);;
@@ -108,7 +108,7 @@ public class Table3 {
             int[] degree = {0, 1};
             this.currVertex.getVertexClassification().setDegree(degree);
             this.currVertex.getVertexClassification().setOutBit(1);
-        }else if (checkType3_1()) {
+        } else if (checkType3_1()) {
             int[] degree = {1, 1};
             this.currVertex.getVertexClassification().setDegree(degree);
             this.currVertex.getVertexClassification().setInBit(1);
@@ -119,18 +119,20 @@ public class Table3 {
         }
     }
 
-    private VertexClassification checkType4(int[] type) {
-        if (type[0] != 4 || type[1] != 4) {
-            return null;
+    private void checkType4() throws SubTypeNotFound {
+        if (checkType4_1()) {
+            int[] degree = {1, 0};
+            this.currVertex.getVertexClassification().setDegree(degree);
+            this.currVertex.getVertexClassification().setInBit(0);
+        } else if (checkType4_2()) {
+            int[] degree = {1, 1};
+            this.currVertex.getVertexClassification().setDegree(degree);
+            this.currVertex.getVertexClassification().setInBit(0);
+            this.currVertex.getVertexClassification().setOutBit(0);
+        } else {
+            throw new SubTypeNotFound("Type 2(6)(7) vertex " + this.currLabel
+                    + " does not match a type 2 subtype");
         }
-
-        if (checkType4_1() != null) {
-            return checkType4_1();
-        }
-        if (checkType4_2() != null) {
-            return checkType4_2();
-        }
-        return null;
     }
 
     private VertexClassification checkType5(int[] type) {
@@ -669,33 +671,26 @@ public class Table3 {
     /**
      * 0^(n - 2) 1
      */
-    private VertexClassification checkType4_1() {
+    private boolean checkType4_1() {
         //Check that the label ends with a 1
         if (currLabel.charAt(currLabel.length() - 1) != '1') {
-            return null;
+            return false;
         }
 
         //Check that there are (n - 2) 0's at start of label
         int bound = r - 2;
         for (int i = 0; i < bound; i++) {
             if (currLabel.charAt(i) != '0') {
-                return null;
+                return false;
             }
         }
-
-        VertexClassification result = new VertexClassification();
-        result.addType(4);
-        int[] degree = {1, 0};
-        result.setDegree(degree);
-        result.setInBit(0);
-
-        return result;
+        return true;
     }
 
     /**
      * 0^i 1 x 0^(r - 2) 1 for some i in [0...r - 3]
      */
-    private VertexClassification checkType4_2() {
+    private boolean checkType4_2() {
         int counter = 0;  //counter used to keep track of number of characters
         int currIndex = 0; //start at beginning of string for prefix
 
@@ -727,7 +722,7 @@ public class Table3 {
 
         //Check to see if there is a 1 after 0's
         if (currLabel.charAt(currIndex) != '1') {
-            return null;
+            return false;
         }
 
         /**
@@ -739,7 +734,7 @@ public class Table3 {
 
         //check to see if there is a 1 at end of label
         if (currLabel.charAt(currIndex) != '1') {
-            return null;
+            return false;
         }
 
         currIndex--;  //move down one to compensate for checking the 1 at end of label
@@ -750,25 +745,17 @@ public class Table3 {
             if (currLabel.charAt(i) == '0') {
                 currIndex--;
             } else {
-                return null;
+                return false;
             }
         }
-
-        VertexClassification result = new VertexClassification();
-        result.addType(4);
-        int[] degree = {1, 1};
-        result.setDegree(degree);
-        result.setInBit(0);
-        result.setOutBit(0);
-
-        return result;
+        return true;
     }
 
     /**
      * 0^i 1 x 0^(r - 2) 1^j for some i in [0...r - 3] and j in [2...((n - r
      * -2)/2)].
      */
-    private VertexClassification checkType5() {
+    private VertexClassification checkType5_1() {
         int counter = 0;  //counter used to keep track of number of characters
         int currIndex = 0; //start at beginning of string for prefix
 
@@ -858,7 +845,7 @@ public class Table3 {
     /**
      * 0^i 1 x 0^(r - 2) 1^[(n - r)/2] for some i in [0...r-3].
      */
-    private VertexClassification checkType6() {
+    private VertexClassification checkType6_1() {
         int counter = 0;  //counter used to keep track of number of characters
         int currIndex = 0; //start at beginning of string for prefix
 
