@@ -80,7 +80,7 @@ public class Vertex
      */
     public boolean containsOutEdge(Edge edge)
     {
-        return this.inEdges.contains(edge);
+        return this.outEdges.contains(edge);
     }
 
     /**
