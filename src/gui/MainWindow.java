@@ -5,6 +5,7 @@ import csc656.Seed;
 import csc656.SeedGenerator;
 import csc656.TypeChecker;
 import csc656.Vertex;
+import javax.swing.JOptionPane;
 
 public class MainWindow extends javax.swing.JFrame {
 
@@ -124,9 +125,24 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        int n = Integer.parseInt(jTextField1.getText());
-        int h = Integer.parseInt(jTextField2.getText());
-
+        try {
+            int n = Integer.parseInt(jTextField1.getText());
+            int h = Integer.parseInt(jTextField2.getText());
+            int r = n - h;
+            if((n - r) % 2 == 0 && (n - r) >= (2*r - 2) ) {
+                execute(n, h);
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "n-r >= 2r-2 even", "Error" ,JOptionPane.ERROR_MESSAGE);
+            }
+            
+        }
+        catch (NumberFormatException e) {
+            System.err.println(e.getMessage());
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+    
+    private void execute(int n, int h) {
         String result;
         Graph graph = new Graph();
         graph.buildGraph(n);
@@ -173,8 +189,8 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }
         jTextArea1.setText(result);
-    }//GEN-LAST:event_jButton1ActionPerformed
-
+    }
+    
     /**
      * @param args the command line arguments
      */
