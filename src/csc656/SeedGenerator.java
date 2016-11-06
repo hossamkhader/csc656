@@ -14,12 +14,11 @@ public class SeedGenerator {
     /**
      * Generate a seed, first calculating if n - r is odd or even.
      * @param n length of subwords, integer >= 2.
-     * @param h number of holes in the seed
+     * @param r n - h
      * @return the seed as a String.
      *         'H' characters in returned String represent holes in the seed.
      */
-    public Seed generateSeed(int n, int h){
-        int r = n - h;
+    public Seed generateSeed(int n, int r){
 
         //String value of the seed
         String str;

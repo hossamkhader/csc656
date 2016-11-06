@@ -5,6 +5,7 @@ import csc656.Seed;
 import csc656.SeedGenerator;
 import csc656.TypeChecker;
 import csc656.Vertex;
+import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 
 public class MainWindow extends javax.swing.JFrame {
@@ -45,17 +46,27 @@ public class MainWindow extends javax.swing.JFrame {
 
         jLabel1.setText("n=");
 
-        jLabel2.setText("h=");
+        jLabel2.setText("r=");
 
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
             }
         });
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField1KeyPressed(evt);
+            }
+        });
 
         jTextField2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField2ActionPerformed(evt);
+            }
+        });
+        jTextField2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField2KeyPressed(evt);
             }
         });
 
@@ -124,25 +135,38 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        validateInput();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            validateInput();
+        }
+    }//GEN-LAST:event_jTextField1KeyPressed
+
+    private void jTextField2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyPressed
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            validateInput();
+        }
+    }//GEN-LAST:event_jTextField2KeyPressed
+    
+    private void validateInput() {
         try {
             int n = Integer.parseInt(jTextField1.getText());
-            int h = Integer.parseInt(jTextField2.getText());
-            int r = n - h;
+            int r = Integer.parseInt(jTextField2.getText());
             if((n - r) % 2 == 0 && (n - r) >= (2*r - 2) ) {
-                execute(n, h);
+                execute(n, r);
             }
             else {
                 JOptionPane.showMessageDialog(this, "n-r >= 2r-2 even", "Error" ,JOptionPane.ERROR_MESSAGE);
             }
-            
         }
         catch (NumberFormatException e) {
             System.err.println(e.getMessage());
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }
     
-    private void execute(int n, int h) {
+    private void execute(int n, int r) {
         String result;
         Graph graph = new Graph();
         graph.buildGraph(n);
@@ -158,7 +182,7 @@ public class MainWindow extends javax.swing.JFrame {
         result += "\n";
         Seed seed;
         SeedGenerator seedGen = new SeedGenerator();
-        seed = seedGen.generateSeed(n, h);
+        seed = seedGen.generateSeed(n, r);
         result += ("Seed: " + seed);
         result += "\n";
         result += "\n";
@@ -176,7 +200,7 @@ public class MainWindow extends javax.swing.JFrame {
         result += "Vertices with Types:";
         result += "\n";
         for (Vertex vertex : graphCopy.getVertices()) {
-            TypeChecker tCheck = new TypeChecker(n, n - h);
+            TypeChecker tCheck = new TypeChecker(n, r);
             tCheck.setType(vertex);
             if(vertex.getVertexClassification().getType().length >= 1) {
                 result += (vertex.getLabel() + ": [" + vertex.getVertexClassification().getType()[0]);
