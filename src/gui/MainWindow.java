@@ -1,11 +1,15 @@
 package gui;
 
+import csc656.DegreeMismatch;
 import csc656.Graph;
 import csc656.Seed;
 import csc656.SeedGenerator;
+import csc656.SubTypeNotFound;
+import csc656.Table3;
 import csc656.TypeChecker;
 import csc656.Vertex;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 import javax.swing.JOptionPane;
 
 public class MainWindow extends javax.swing.JFrame {
@@ -206,16 +210,28 @@ public class MainWindow extends javax.swing.JFrame {
         result += "\n";
         result += "Vertices with Types:";
         result += "\n";
+        TypeChecker tCheck = new TypeChecker(n, r);
+        Table3 table3 = new Table3(n, r);
         for (Vertex vertex : graphCopy.getVertices()) {
-            TypeChecker tCheck = new TypeChecker(n, r);
             tCheck.setType(vertex);
             if(vertex.getVertexClassification().getType().length >= 1) {
-                result += (vertex.getLabel() + ": [" + vertex.getVertexClassification().getType()[0]);
+                result += (vertex.getLabel() + ": Type=[" + 
+                        vertex.getVertexClassification().getType()[0]);
                 if(vertex.getVertexClassification().getType().length > 1) {
                     result += ",";
                     result += vertex.getVertexClassification().getType()[1];
                 }
-                result += "]";
+                result += "] ";
+                
+                try{
+                    table3.checkType(vertex);
+                    result+= ", degree: " + Arrays.toString(
+                            vertex.getVertexClassification().getDegree()
+                    );
+                }catch(SubTypeNotFound | DegreeMismatch e){
+                    result += e.getMessage();
+                }
+                
                 result += "\n";
             }
         }

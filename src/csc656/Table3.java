@@ -1,5 +1,7 @@
 package csc656;
 
+import java.util.Arrays;
+
 public class Table3 {
 
     private final int n;
@@ -12,31 +14,50 @@ public class Table3 {
         this.r = r;
     }
 
-    public void checkType(Vertex vertex) throws SubTypeNotFound {
+    public void checkType(Vertex vertex) throws SubTypeNotFound, 
+            DegreeMismatch {
         this.currVertex = vertex;
         this.currLabel = this.currVertex.getLabel();
         int[] vertexType = this.currVertex.getVertexClassification().getType();
         switch (vertexType[0]) {
             case 1:
                 checkType1();
+                break;
             case 2:
                 checkType2();
+                break;
             case 3:
                 checkType3();
+                break;
             case 4:
                 checkType4();
+                break;
             case 5:
                 checkType5();
+                break;
             case 6:
                 checkType6();
+                break;
             case 7:
                 checkType7();
+                break;
             default:
                 if (!(vertex.getInEdgesCount() == 2
                         || vertex.getOutEdgesCount() == 2)) {
                     throw new SubTypeNotFound("Vertex " + this.currLabel
                             + " does not have a matching subtype");
                 }
+        }
+        if(currVertex.getVertexClassification().getDegree()[0]!=
+                currVertex.getInEdgesCount() ||
+                currVertex.getVertexClassification().getDegree()[1]!=
+                currVertex.getOutEdgesCount()){
+            throw new DegreeMismatch("Vertex " + currLabel + 
+                    " has Graph degree: (" + currVertex.getInEdgesCount()+ 
+                    ", " + currVertex.getOutEdgesCount() + 
+                    ") but table 3 degree: " + 
+                    Arrays.toString(currVertex.getVertexClassification().getDegree())
+            );
         }
     }
 
@@ -114,8 +135,8 @@ public class Table3 {
             this.currVertex.getVertexClassification().setInBit(1);
             this.currVertex.getVertexClassification().setOutBit(0);
         } else {
-            throw new SubTypeNotFound("Type 2(6)(7) vertex " + this.currLabel
-                    + " does not match a type 2 subtype");
+            throw new SubTypeNotFound("Type 3 vertex " + this.currLabel
+                    + " does not match a type 3 subtype");
         }
     }
 
@@ -130,8 +151,8 @@ public class Table3 {
             this.currVertex.getVertexClassification().setInBit(0);
             this.currVertex.getVertexClassification().setOutBit(0);
         } else {
-            throw new SubTypeNotFound("Type 2(6)(7) vertex " + this.currLabel
-                    + " does not match a type 2 subtype");
+            throw new SubTypeNotFound("Type 4 vertex " + this.currLabel
+                    + " does not match a type 4 subtype");
         }
     }
 
@@ -141,8 +162,8 @@ public class Table3 {
             this.currVertex.getVertexClassification().setDegree(degree);
             this.currVertex.getVertexClassification().setOutBit(0);
         } else {
-            throw new SubTypeNotFound("Type 2(6)(7) vertex " + this.currLabel
-                    + " does not match a type 2 subtype");
+            throw new SubTypeNotFound("Type 5 vertex " + this.currLabel
+                    + " does not match a type 5 subtype");
         }
     }
 
@@ -152,8 +173,8 @@ public class Table3 {
             this.currVertex.getVertexClassification().setDegree(degree);
             this.currVertex.getVertexClassification().setOutBit(1);
         } else {
-            throw new SubTypeNotFound("Type 2(6)(7) vertex " + this.currLabel
-                    + " does not match a type 2 subtype");
+            throw new SubTypeNotFound("Type 6 vertex " + this.currLabel
+                    + " does not match a type 6 subtype");
         }
     }
 
@@ -167,8 +188,8 @@ public class Table3 {
             this.currVertex.getVertexClassification().setDegree(degree);
             this.currVertex.getVertexClassification().setOutBit(1);
         } else {
-            throw new SubTypeNotFound("Type 2(6)(7) vertex " + this.currLabel
-                    + " does not match a type 2 subtype");
+            throw new SubTypeNotFound("Type 7 vertex " + this.currLabel
+                    + " does not match a type 7 subtype");
         }
     }
 
