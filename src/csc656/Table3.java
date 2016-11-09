@@ -207,7 +207,7 @@ public class Table3 {
         if (!(i >= (n + r - 2) / 2 && i <= n - 3)) {
             return false;
         }
-        if (currLabel.charAt(i + 1) == '1'
+        if (currLabel.charAt(i) == '1'
                 && currLabel.charAt(currLabel.length() - 1) == '0') {
             return true;
         }
@@ -228,9 +228,9 @@ public class Table3 {
         if (!(i >= (n + r - 2) / 2 && i <= n - 3)) {
             return false;
         }
-        if (currLabel.charAt(i + 1) == '1'
+        if (currLabel.charAt(i) == '1'
                 && currLabel.charAt(currLabel.length() - 1) == '1'
-                && currLabel.substring(i + 2, currLabel.length() - 2)
+                && currLabel.substring(i + 1, currLabel.length() - 2)
                 != Utils.power("1", n - i - 3)) {
             for (int k = 0; k <= n - r - i - 1; k++) {
                 if (Utils.suffex(currLabel.
@@ -258,7 +258,7 @@ public class Table3 {
         if (!(i >= r - 1 && i <= (n + r - 4) / 2)) {
             return false;
         }
-        if (currLabel.charAt(i + 1) == '1'
+        if (currLabel.charAt(i) == '1'
                 && currLabel.charAt(currLabel.length() - 1) == '1') {
             for (int k = 0; k <= Math.min(n - r - i - 1, (n - r - 2) / 2); k++) {
                 if (Utils.suffex(currLabel.
@@ -286,9 +286,9 @@ public class Table3 {
         if (!(i >= r - 1 && i <= (n + r - 4) / 2)) {
             return false;
         }
-        if (currLabel.charAt(i + 1) == '1'
+        if (currLabel.charAt(i) == '1'
                 && currLabel.charAt(currLabel.length() - 1) == '1'
-                && currLabel.substring(i + 2, currLabel.length() - 2)
+                && currLabel.substring(i + 1, currLabel.length() - 2)
                 != Utils.power("1", (n - r - 2) / 2) + Utils.power("0", (n + r - 2 * i - 4) / 2)) {
             for (int k = 0; k <= n - r - 2 * i - 2; k++) {
                 if (Utils.suffex(currLabel.
