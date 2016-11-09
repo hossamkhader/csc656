@@ -141,17 +141,18 @@ public class Table3 {
     }
 
     private void checkType4() throws SubTypeNotFound {
-        if (checkType4_2()) {
+        if (checkType4_1()) {
+            int[] degree = {1, 0};
+            this.currVertex.getVertexClassification().setDegree(degree);
+            this.currVertex.getVertexClassification().setInBit(0);
+        }
+        else if (checkType4_2()) {
             int[] degree = {1, 1};
             this.currVertex.getVertexClassification().setDegree(degree);
             this.currVertex.getVertexClassification().setInBit(0);
             this.currVertex.getVertexClassification().setOutBit(0);
         }
-        else if (checkType4_1()) {
-            int[] degree = {1, 0};
-            this.currVertex.getVertexClassification().setDegree(degree);
-            this.currVertex.getVertexClassification().setInBit(0);
-        } else {
+        else {
             throw new SubTypeNotFound("Type 4 vertex " + this.currLabel
                     + " does not match a type 4 subtype");
         }
