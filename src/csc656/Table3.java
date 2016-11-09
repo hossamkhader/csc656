@@ -360,7 +360,7 @@ public class Table3 {
             return false;
         }
 
-        if (currLabel.charAt(i) != '1') {
+        if (currLabel.charAt(j) != '1') {
             return false;
         }
 
@@ -372,12 +372,12 @@ public class Table3 {
                 break;
             }
         }
-        if (i != (n - r) / 2) {
+        if (i != ((n - r) / 2)) {
             return false;
         }
 
         i = 0;
-        for (j = j; j < currLabel.length() - 1 - ((n - r) / 2) - (r - 2); j--) {
+        for (; j > currLabel.length() - 1 - ((n - r) / 2) - (r - 2); j--) {
             if (currLabel.charAt(j) == '0') {
                 i++;
             } else {
@@ -392,7 +392,42 @@ public class Table3 {
 
     private boolean checkType27() {
         int i, j;
-
+        i=0;
+        for(j=currLabel.length()-1; j>=0;j--){
+            if(currLabel.charAt(j)=='0'){
+                i++;
+            }else{
+                break;
+            }
+        }
+        if(!(i>=1 && i<=((n-(3*r)+4)/2))){
+            return false;
+        }
+        
+        i=0;
+        for(;j>=currLabel.length()-1-((n-r)/2); j--){
+            if(currLabel.charAt(j)=='1'){
+                i++;
+            }else{
+                break;
+            }
+        }
+        if(i!=((n-r)/2)){
+            return false;
+        }
+        
+        i=0;
+        for(;j>=currLabel.length()-1-((n-r)/2)-(r-2); j--){
+            if(currLabel.charAt(j)=='0'){
+                i++;
+            }else{
+                break;
+            }
+        }
+        if(i!=(r-2)){
+            return false;
+        }
+        
         i = 0;
         for (j = 0; j < r - 2; j++) {
             if (currLabel.charAt(j) == '0') {
@@ -401,50 +436,10 @@ public class Table3 {
                 break;
             }
         }
-        if (i != r - 2) {
+        if (i != r-2 || currLabel.charAt(j)!='1') {
             return false;
         }
-
-        if (currLabel.charAt(i) != '1') {
-            return false;
-        }
-
-        i = 0;
-        for (j = currLabel.length() - 1; j > currLabel.length() - 1 - ((n - 3 * r + 4) / 2); j--) {
-            if (currLabel.charAt(j) == '0') {
-                i++;
-            } else {
-                break;
-            }
-        }
-        if (!(i >= 1 && i <= (n - 3 * r + 4) / 2)) {
-            return false;
-        }
-
-        int ii = i;
-        i = 0;
-        for (j = j; j > currLabel.length() - 1 - ((n - r) / 2) - ii; j--) {
-            if (currLabel.charAt(j) == '1') {
-                i++;
-            } else {
-                break;
-            }
-        }
-        if (i != (n - r) / 2) {
-            return false;
-        }
-
-        i = 0;
-        for (j = j; j < currLabel.length() - 1 - ((n - r) / 2) - (r - 2) - ii; j--) {
-            if (currLabel.charAt(j) == '0') {
-                i++;
-            } else {
-                break;
-            }
-        }
-        if (i != r - 2) {
-            return false;
-        }
+        
         return true;
     }
 
