@@ -134,7 +134,12 @@ public class Table3 {
             this.currVertex.getVertexClassification().setDegree(degree);
             this.currVertex.getVertexClassification().setInBit(1);
             this.currVertex.getVertexClassification().setOutBit(0);
-        } else {
+        } else if (checkType3_2()) {
+            int[] degree = {1, 1};
+            this.currVertex.getVertexClassification().setDegree(degree);
+            this.currVertex.getVertexClassification().setInBit(1);
+            this.currVertex.getVertexClassification().setOutBit(1);
+        }else {
             throw new SubTypeNotFound("Type 3 vertex " + this.currLabel
                     + " does not match a type 3 subtype");
         }
@@ -574,6 +579,78 @@ public class Table3 {
 
         //check that it ends with (r - 2) 0's
         int bound = currIndex - (r - 2);
+        for (int i = currIndex; i > bound; i--) {
+            if (currLabel.charAt(i) == '0') {
+                currIndex--;
+            } else {
+                return false;
+            }
+        }
+
+        //Check that it is not compatible with equation in method comment for all j
+        for (int j = jLower; j <= jUpper; j++) {
+            String jStr = buildJString(j);
+            if (utils.isCompatible(currLabel, jStr)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 1 x 0(r - i - 2) not compatible with 'hole'^((n - r - 2j)/2) 0^(r - 2) 1^((n
+     * - r)/2) 0^(j + 1) for all j in [0...((n - r - 2)/2)]
+     */
+    private boolean checkType3_2() {
+        int currIndex = 0; //start at end of string for suffix
+        Utils utils = new Utils();  //used to check compatibility
+        int counter = 0;
+        int iVal = 0;
+        //bounds for i
+        int iLower = 1;
+        int iUpper = r - 3;
+
+        //bounds for j
+        int jLower = 0;
+        int jUpper = (n - r - 2) / 2;
+
+        /**
+         * Check
+         * prefix------------------------------------------------------------
+         */
+        //Count the number of 0's in front of prefix
+        for (int i = currIndex; i < currLabel.length(); i++) {
+            if (currLabel.charAt(i) == '0') {
+                counter++;
+                currIndex = i + 1; //move up an index
+            } else {
+                break;
+            }
+        }
+
+        //Check that there are i number of 0's
+        boolean legalRange = false;
+        for (int i = iLower; i <= iUpper && !legalRange; i++) {
+            if (counter == i) {
+                iVal = i; //Set value of i used to get the bounds of j
+                legalRange = true;
+            }
+        }
+
+        //Check to see if there is a 1 after 0's
+        if (currLabel.charAt(currIndex) != '1') {
+            return false;
+        }
+
+        /**
+         * Check
+         * suffix------------------------------------------------------------
+         */
+        //change current index to the end of the label
+        currIndex = currLabel.length() - 1;
+
+        //check that it ends with (r - i - 2) 0's
+        int bound = currIndex - (r - iVal - 2);
         for (int i = currIndex; i > bound; i--) {
             if (currLabel.charAt(i) == '0') {
                 currIndex--;
