@@ -182,7 +182,7 @@ public class MainWindow extends javax.swing.JFrame {
         Graph graph = new Graph();
         graph.buildGraph(n);
         result = "";
-        result += "Vertices:";
+        /*result += "Vertices:";
         result += "\n";
         result += graph.vertexKeys();
         result += "\n";
@@ -190,15 +190,15 @@ public class MainWindow extends javax.swing.JFrame {
         result += "Edges:";
         result += "\n";
         result += graph.printEdges();
-        result += "\n";
+        result += "\n";*/
         Seed seed;
         SeedGenerator seedGen = new SeedGenerator();
         seed = seedGen.generateSeed(n, r);
-        result += ("Seed: " + seed);
+        /*result += ("Seed: " + seed);
         result += "\n";
-        result += "\n";
+        result += "\n";*/
         Graph graphCopy = graph.compressGraph(seed.toString(), n);
-        result += ("Vertices:");
+        /*result += ("Vertices:");
         result += "\n";
         result += graphCopy.vertexKeys();
         result += "\n";
@@ -207,7 +207,7 @@ public class MainWindow extends javax.swing.JFrame {
         result += "\n";
         result += graphCopy.printEdges();
         result += "\n";
-        result += "\n";
+        result += "\n";*/
         result += "Vertices with Types:";
         result += "\n";
         TypeChecker tCheck = new TypeChecker(n, r);
