@@ -287,7 +287,7 @@ public class Table3 {
             return false;
         }
         if (currLabel.charAt(i) == '1'
-                && currLabel.charAt(currLabel.length() - 1) == '1'
+                && currLabel.charAt(currLabel.length() - 1) == '0'
                 && currLabel.substring(i + 1, currLabel.length() - 2)
                 != Utils.power("1", (n - r - 2) / 2) + Utils.power("0", (n + r - 2 * i - 4) / 2)) {
             for (int k = 0; k <= n - r - 2 * i - 2; k++) {
