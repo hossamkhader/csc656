@@ -17,16 +17,18 @@ public class Graph {
      * List of all edges in the graph
      */
     private final HashMap<String, Edge> edges;
-    
+
     /* 
      * Creates an empty graph that requires construction
      */
-    public Graph(){
+    public Graph() {
         this.vertices = new HashMap<>();
         this.edges = new HashMap<>();
     }
+
     /**
      * Copy Constructor
+     *
      * @param graph
      */
     public Graph(Graph graph) {
@@ -34,15 +36,15 @@ public class Graph {
         this.vertices = new HashMap<>(graph.vertices);
     }
 
-/*
+    /*
   original method author: Michael Branon
   rewrite/refactoring: Jonathon Tovey
-*/
-
+     */
     /**
      * Constructs a graph with vertices of length d. First constructs each edge
      * and then attaches it to the appropriate vertices, constructing them if
      * necessary
+     *
      * @param n length of edges/subwords
      */
     public void buildGraph(int n) {
@@ -54,7 +56,7 @@ public class Graph {
             edgeStrs[i] = String.format(frmt, Integer.toBinaryString(i))
                     .replace(' ', '0');
             // debug // System.out.println("creating edge " + edgeStrs[i]);
-            
+
             Vertex origin;
             String originLabel = edgeStrs[i].substring(0, (edgeStrs[i].length() - 1));
             if (this.vertices.containsKey(originLabel)) {
@@ -205,9 +207,9 @@ public class Graph {
         return tmp;
     }
 
-/*
+    /*
   method author: Jonathon Tovey
-*/
+     */
     public String printVertices() {
 
         String tmp = "";
@@ -216,10 +218,9 @@ public class Graph {
 
     }
 
-/*
+    /*
   method author: Jonathon Tovey
-*/
-
+     */
     public void removeVertex(Vertex v) {
 
         this.vertices.remove(v.getLabel());
@@ -228,12 +229,12 @@ public class Graph {
         System.out.println("Vertex " + v.getLabel() + " removed");
     }
 
-/*
+    /*
   method author: Jonathon Tovey
-*/
-
+     */
     /**
      * Method compresses a graph (this)
+     *
      * @param seed
      * @param n
      * @return a compressed copy of the graph
@@ -251,20 +252,20 @@ public class Graph {
             // debug //
             System.out.println("Edge " + sw + " removed");
         }
-        
-        //add seed edge
-        Vertex sOrigin = graphCopy.getVertex(seed.substring(0, n-1));
-	// debug // System.out.println(sOrigin.getLabel());
-        Vertex sDestination = 
-                this.getVertex(seed.substring(seed.length() - n + 1));
-	// debug // System.out.println(sDestination.getLabel());
 
-	// debug //
-	System.out.print("Adding seed edge " + seed);
-	System.out.println(" from " + sOrigin.getLabel() + " to " + sDestination.getLabel());
+        //add seed edge
+        Vertex sOrigin = graphCopy.getVertex(seed.substring(0, n - 1));
+        // debug // System.out.println(sOrigin.getLabel());
+        Vertex sDestination
+                = this.getVertex(seed.substring(seed.length() - n + 1));
+        // debug // System.out.println(sDestination.getLabel());
+
+        // debug //
+        System.out.print("Adding seed edge " + seed);
+        System.out.println(" from " + sOrigin.getLabel() + " to " + sDestination.getLabel());
 
         graphCopy.addEdge(sOrigin, sDestination, seed);
-        
+
         Graph graphCopyIter = new Graph(graphCopy);
         for (String vStr : graphCopyIter.vertexKeys()) {
 
@@ -279,16 +280,122 @@ public class Graph {
         }
         return graphCopy;
     }
-    
+
     /**
      * Method returns an array of the vertices contained in the graph
      *
      * @return array of vertices
      */
-    public Vertex [] getVertices() {
-        Vertex [] temp = new Vertex[this.vertices.values().size()];
+    public Vertex[] getVertices() {
+        Vertex[] temp = new Vertex[this.vertices.values().size()];
         this.vertices.values().toArray(temp);
         return temp;
+    }
+
+    /**
+     * Stitches together the disjointed graph;
+     */
+    public void stitch() {
+        //inizialize a hashmap with all type 1 vertices
+        HashMap<String, Vertex> tOneVerts = new HashMap<>();
+        for (Vertex vertex : this.getVertices()) {
+            if (vertex.getVertexClassification().getType().length > 0
+                    && vertex.getVertexClassification().getType()[0] == 1) {
+                tOneVerts.put(vertex.getLabel(), vertex);
+            }
+        }
+        // intialize a hasmap with all degree (0,1) vertices
+        HashMap<String, Vertex> destinationVerts = new HashMap<>();
+        for (Vertex vertex : this.getVertices()) {
+            if (vertex.getVertexClassification().getDegree().length > 0
+                    && vertex.getVertexClassification().getDegree()[0] == 0
+                    && vertex.getVertexClassification().getDegree()[1] == 1) {
+                destinationVerts.put(vertex.getLabel(), vertex);
+            }
+        }
+
+        // get a "random" source vertex of degree (0,1) and remove it from 
+        // destination map
+        Vertex currVertex = destinationVerts.
+                get(destinationVerts.keySet().iterator().next());
+        destinationVerts.remove(currVertex.getLabel());
+
+        // Keeps track of visited (2,2) vertices
+        HashMap<String, Vertex> visitedTwoTwos = new HashMap<>();
+        // traverses the graph until all destination vertices are linked
+        while (!destinationVerts.isEmpty()) {
+            switch (currVertex.getOutEdgesCount()) {
+                case 1:
+                    /**
+                     * after the initial source vertex,  necessarily a degree 
+                     * (1,1) vertex
+                     */
+                    currVertex = currVertex.getOutEdges().get(0).getEndVertex();
+                    break;
+                case 2:
+                    /**
+                     * necessarily a degree (2,2) vertex. When first 
+                     * encountered the vertex is stored in the above 
+                     * visitedTwoTwos map. The first edge is then traversed. 
+                     * When encountered again, the second edge is taken.
+                     */
+                    if (!visitedTwoTwos.containsValue(currVertex)) {
+                        visitedTwoTwos.put(currVertex.getLabel(), currVertex);
+                        currVertex = currVertex.getOutEdges().get(0).
+                                getEndVertex();
+                    } else {
+                        currVertex = currVertex.getOutEdges().get(1).
+                                getEndVertex();
+                    }
+                    break;
+                default:
+                    /**
+                     * Necessarily a type 1 vertex of degree (1,0).
+                     */
+                    Vertex bestOverlapVertex = null;
+                    int bestOverlap = 0;
+                    int tempOverlap = 0;
+                    // all destination vertices are compared to maximize overlap
+                    for (String label : destinationVerts.keySet()) {
+                        if (bestOverlapVertex == null) {
+                            bestOverlapVertex = destinationVerts.get(label);
+                            bestOverlap
+                                    = computeOverlap(currVertex.getLabel(),
+                                            label);
+                        } else {
+                            tempOverlap = computeOverlap(currVertex.getLabel(),
+                                    label);
+                            if (tempOverlap < bestOverlap) {
+                                bestOverlap = tempOverlap;
+                                bestOverlapVertex = destinationVerts.get(label);
+                            }
+                        }
+                    }
+                    // new edge is added between the vertices
+                    String newEdgeLabel=currVertex.getLabel() +
+                            bestOverlapVertex.getLabel().substring(bestOverlap);
+                    addEdge(currVertex, bestOverlapVertex, newEdgeLabel);
+                    // chosen destination edge is removed from the map of 
+                    // available destination vertices
+                    destinationVerts.remove(bestOverlapVertex.getLabel());
+            }
+        }
+    }
+    
+    /**
+     * Computes the overlap between 2 strings
+     * @param uLabel
+     * @param vLabel
+     * @return 
+     */
+    private int computeOverlap(String uLabel, String vLabel){
+        int overlap;
+        while(!uLabel.equalsIgnoreCase(vLabel)){
+            uLabel=uLabel.substring(1);
+            vLabel=vLabel.substring(0, vLabel.length()-1);
+        }
+        overlap=uLabel.length();
+        return overlap;
     }
 
 }
