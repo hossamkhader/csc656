@@ -411,27 +411,27 @@ public class Table3 {
             return false;
         }
         
-        i=0;
-        for(;j>=currLabel.length()-1-((n-r)/2); j--){
+        int oneCount=0;
+        for(;j>=currLabel.length()-i-((n-r)/2); j--){
             if(currLabel.charAt(j)=='1'){
-                i++;
+                oneCount++;
             }else{
                 break;
             }
         }
-        if(i!=((n-r)/2)){
+        if(oneCount!=((n-r)/2)){
             return false;
         }
         
-        i=0;
-        for(;j>=currLabel.length()-1-((n-r)/2)-(r-2); j--){
+        int preXZeroCount=0;
+        for(;j>=currLabel.length()-i-((n-r)/2)-(r-2); j--){
             if(currLabel.charAt(j)=='0'){
-                i++;
+                preXZeroCount++;
             }else{
                 break;
             }
         }
-        if(i!=(r-2)){
+        if(preXZeroCount!=(r-2)){
             return false;
         }
         
