@@ -296,6 +296,7 @@ public class Graph {
      * Stitches together the disjointed graph;
      */
     public void stitch() {
+        StringBuilder mainBuilder = new StringBuilder();
         //inizialize a hashmap with all type 1 vertices
         HashMap<String, Vertex> tOneVerts = new HashMap<>();
         for (Vertex vertex : this.getVertices()) {
@@ -378,6 +379,8 @@ public class Graph {
                     // chosen destination edge is removed from the map of 
                     // available destination vertices
                     destinationVerts.remove(bestOverlapVertex.getLabel());
+                    currVertex = currVertex.getOutEdges().get(0).
+                                getEndVertex();
             }
         }
     }
