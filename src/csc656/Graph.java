@@ -296,7 +296,6 @@ public class Graph {
      * Stitches together the disjointed graph;
      */
     public void stitch() {
-        StringBuilder mainBuilder = new StringBuilder();
         //inizialize a hashmap with all type 1 vertices
         HashMap<String, Vertex> tOneVerts = new HashMap<>();
         for (Vertex vertex : this.getVertices()) {
@@ -314,90 +313,130 @@ public class Graph {
                 destinationVerts.put(vertex.getLabel(), vertex);
             }
         }
-
+        /*
         // get a "random" source vertex of degree (0,1) and remove it from 
         // destination map
         Vertex currVertex = destinationVerts.
                 get(destinationVerts.keySet().iterator().next());
         destinationVerts.remove(currVertex.getLabel());
+         */
+        String bestRun = null;
+        for (String label : destinationVerts.keySet()) {
+            StringBuilder builder = new StringBuilder();
+            // create a copy of destination vertices from master
+            HashMap<String, Vertex> currentRunDestinationVerts
+                    = new HashMap<>(destinationVerts);
 
-        // Keeps track of visited (2,2) vertices
-        HashMap<String, Vertex> visitedTwoTwos = new HashMap<>();
-        // traverses the graph until all destination vertices are linked
-        while (!destinationVerts.isEmpty()) {
-            switch (currVertex.getOutEdgesCount()) {
-                case 1:
-                    /**
-                     * after the initial source vertex,  necessarily a degree 
-                     * (1,1) vertex
-                     */
-                    currVertex = currVertex.getOutEdges().get(0).getEndVertex();
-                    break;
-                case 2:
-                    /**
-                     * necessarily a degree (2,2) vertex. When first 
-                     * encountered the vertex is stored in the above 
-                     * visitedTwoTwos map. The first edge is then traversed. 
-                     * When encountered again, the second edge is taken.
-                     */
-                    if (!visitedTwoTwos.containsValue(currVertex)) {
-                        visitedTwoTwos.put(currVertex.getLabel(), currVertex);
-                        currVertex = currVertex.getOutEdges().get(0).
-                                getEndVertex();
-                    } else {
-                        currVertex = currVertex.getOutEdges().get(1).
-                                getEndVertex();
-                    }
-                    break;
-                default:
-                    /**
-                     * Necessarily a type 1 vertex of degree (1,0).
-                     */
-                    Vertex bestOverlapVertex = null;
-                    int bestOverlap = 0;
-                    int tempOverlap = 0;
-                    // all destination vertices are compared to maximize overlap
-                    for (String label : destinationVerts.keySet()) {
-                        if (bestOverlapVertex == null) {
-                            bestOverlapVertex = destinationVerts.get(label);
-                            bestOverlap
-                                    = computeOverlap(currVertex.getLabel(),
-                                            label);
+            // set source vertex and remove it from the cloned destination map
+            Vertex currVertex = currentRunDestinationVerts.get(label);
+            currentRunDestinationVerts.remove(currVertex.getLabel());
+
+            // add source to string builder
+            builder.append(currVertex.getLabel());
+
+            // Keeps track of visited (2,2) vertices
+            HashMap<String, Vertex> visitedTwoTwos = new HashMap<>();
+            System.out.println(builder.toString());
+            // traverses the graph until all destination vertices are linked
+            while (!currentRunDestinationVerts.isEmpty()||currVertex.getOutEdgesCount()!=0) {
+                switch (currVertex.getOutEdgesCount()) {
+                    case 1:
+                        /**
+                         * after the initial source vertex, necessarily a degree
+                         * (1,1) vertex
+                         */
+                        builder.append(currVertex.getOutEdges().get(0).getLabel().
+                                substring(currVertex.getLabel().length(),
+                                        currVertex.getOutEdges().get(0).getLabel().length()));
+                        currVertex = currVertex.getOutEdges().get(0).getEndVertex();
+                        System.out.println(builder.toString());
+                        break;
+                    case 2:
+                        /**
+                         * necessarily a degree (2,2) vertex. When first
+                         * encountered the vertex is stored in the above
+                         * visitedTwoTwos map. The first edge is then traversed.
+                         * When encountered again, the second edge is taken.
+                         */
+                        if (!visitedTwoTwos.containsValue(currVertex)) {
+                            visitedTwoTwos.put(currVertex.getLabel(), currVertex);
+                            builder.append(currVertex.getOutEdges().get(0).getLabel().
+                                substring(currVertex.getLabel().length(),
+                                        currVertex.getOutEdges().get(0).getLabel().length()));
+                            currVertex = currVertex.getOutEdges().get(0).
+                                    getEndVertex();
+                            System.out.println(builder.toString());
                         } else {
-                            tempOverlap = computeOverlap(currVertex.getLabel(),
-                                    label);
-                            if (tempOverlap < bestOverlap) {
-                                bestOverlap = tempOverlap;
-                                bestOverlapVertex = destinationVerts.get(label);
+                            builder.append(currVertex.getOutEdges().get(1).getLabel().
+                                substring(currVertex.getLabel().length(),
+                                        currVertex.getOutEdges().get(1).getLabel().length()));
+                            currVertex = currVertex.getOutEdges().get(1).
+                                    getEndVertex();
+                            System.out.println(builder.toString());
+                        }
+                        break;
+                    default:
+                        /**
+                         * Necessarily a type 1 vertex of degree (1,0).
+                         */
+                        Vertex bestOverlapVertex = null;
+                        int bestOverlap = 0;
+                        int tempOverlap = 0;
+                        // all destination vertices are compared to maximize overlap
+                        for (String availableLabel : currentRunDestinationVerts.keySet()) {
+                            if (bestOverlapVertex == null) {
+                                bestOverlapVertex = currentRunDestinationVerts.get(availableLabel);
+                                bestOverlap
+                                        = computeOverlap(currVertex.getLabel(),
+                                                availableLabel);
+                            } else {
+                                tempOverlap = computeOverlap(currVertex.getLabel(),
+                                        availableLabel);
+                                if (tempOverlap > bestOverlap) {
+                                    bestOverlap = tempOverlap;
+                                    bestOverlapVertex = currentRunDestinationVerts.get(availableLabel);
+                                }
                             }
                         }
-                    }
-                    // new edge is added between the vertices
-                    String newEdgeLabel=currVertex.getLabel() +
-                            bestOverlapVertex.getLabel().substring(bestOverlap);
-                    addEdge(currVertex, bestOverlapVertex, newEdgeLabel);
-                    // chosen destination edge is removed from the map of 
-                    // available destination vertices
-                    destinationVerts.remove(bestOverlapVertex.getLabel());
-                    currVertex = currVertex.getOutEdges().get(0).
-                                getEndVertex();
+                        // new edge is added between the vertices
+                        String newEdgeLabel = currVertex.getLabel()
+                                + bestOverlapVertex.getLabel().substring(bestOverlap);
+                        //addEdge(currVertex, bestOverlapVertex, newEdgeLabel);
+                        // chosen destination edge is removed from the map of 
+                        // available destination vertices
+                        currentRunDestinationVerts.remove(bestOverlapVertex.getLabel());
+                        builder.append(bestOverlapVertex.getLabel().
+                                substring(bestOverlap));
+                        System.out.println(builder.toString());
+                        currVertex = bestOverlapVertex;
+                }
+            }
+            System.out.println(builder.length());
+            System.out.println(builder.toString());
+            if(bestRun==null){
+                bestRun=builder.toString();
+            }else if(builder.toString().length()<bestRun.length()){
+                bestRun=builder.toString();
             }
         }
+        System.out.println(bestRun);
+        System.out.println(bestRun.length());
     }
-    
+
     /**
      * Computes the overlap between 2 strings
+     *
      * @param uLabel
      * @param vLabel
-     * @return 
+     * @return
      */
-    private int computeOverlap(String uLabel, String vLabel){
+    private int computeOverlap(String uLabel, String vLabel) {
         int overlap;
-        while(!uLabel.equalsIgnoreCase(vLabel)){
-            uLabel=uLabel.substring(1);
-            vLabel=vLabel.substring(0, vLabel.length()-1);
+        while (!uLabel.equalsIgnoreCase(vLabel)) {
+            uLabel = uLabel.substring(1);
+            vLabel = vLabel.substring(0, vLabel.length() - 1);
         }
-        overlap=uLabel.length();
+        overlap = uLabel.length();
         return overlap;
     }
 

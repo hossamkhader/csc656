@@ -235,6 +235,7 @@ public class MainWindow extends javax.swing.JFrame {
                 result += "\n";
             }
         }
+        graphCopy.stitch();
         long endTime = System.currentTimeMillis();
         jTextArea1.setText(result);
         this.jLabel3.setText("Execution Time: " + (endTime - startTime) + " milliseconds");
