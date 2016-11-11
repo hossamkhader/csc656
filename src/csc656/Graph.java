@@ -1,7 +1,10 @@
 package csc656;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 
 /**
@@ -17,6 +20,8 @@ public class Graph {
      * List of all edges in the graph
      */
     private final HashMap<String, Edge> edges;
+
+    private Set<Vertex> workingSet;
 
     /* 
      * Creates an empty graph that requires construction
@@ -225,8 +230,7 @@ public class Graph {
 
         this.vertices.remove(v.getLabel());
 
-        // debug //
-        System.out.println("Vertex " + v.getLabel() + " removed");
+        // debug //        System.out.println("Vertex " + v.getLabel() + " removed");
     }
 
     /*
@@ -249,8 +253,7 @@ public class Graph {
 
             graphCopy.removeEdge(edges.get(sw));
 
-            // debug //
-            System.out.println("Edge " + sw + " removed");
+            // debug //            System.out.println("Edge " + sw + " removed");
         }
 
         //add seed edge
@@ -261,8 +264,7 @@ public class Graph {
         // debug // System.out.println(sDestination.getLabel());
 
         // debug //
-        System.out.print("Adding seed edge " + seed);
-        System.out.println(" from " + sOrigin.getLabel() + " to " + sDestination.getLabel());
+        System.out.println("Adding seed edge " + seed + " from " + sOrigin.getLabel() + " to " + sDestination.getLabel());
 
         graphCopy.addEdge(sOrigin, sDestination, seed);
 
@@ -338,7 +340,7 @@ public class Graph {
             HashMap<String, Vertex> visitedTwoTwos = new HashMap<>();
             System.out.println(builder.toString());
             // traverses the graph until all destination vertices are linked
-            while (!currentRunDestinationVerts.isEmpty()||currVertex.getOutEdgesCount()!=0) {
+            while (!currentRunDestinationVerts.isEmpty() || currVertex.getOutEdgesCount() != 0) {
                 switch (currVertex.getOutEdgesCount()) {
                     case 1:
                         /**
@@ -361,15 +363,15 @@ public class Graph {
                         if (!visitedTwoTwos.containsValue(currVertex)) {
                             visitedTwoTwos.put(currVertex.getLabel(), currVertex);
                             builder.append(currVertex.getOutEdges().get(0).getLabel().
-                                substring(currVertex.getLabel().length(),
-                                        currVertex.getOutEdges().get(0).getLabel().length()));
+                                    substring(currVertex.getLabel().length(),
+                                            currVertex.getOutEdges().get(0).getLabel().length()));
                             currVertex = currVertex.getOutEdges().get(0).
                                     getEndVertex();
                             System.out.println(builder.toString());
                         } else {
                             builder.append(currVertex.getOutEdges().get(1).getLabel().
-                                substring(currVertex.getLabel().length(),
-                                        currVertex.getOutEdges().get(1).getLabel().length()));
+                                    substring(currVertex.getLabel().length(),
+                                            currVertex.getOutEdges().get(1).getLabel().length()));
                             currVertex = currVertex.getOutEdges().get(1).
                                     getEndVertex();
                             System.out.println(builder.toString());
@@ -413,10 +415,10 @@ public class Graph {
             }
             System.out.println(builder.length());
             System.out.println(builder.toString());
-            if(bestRun==null){
-                bestRun=builder.toString();
-            }else if(builder.toString().length()<bestRun.length()){
-                bestRun=builder.toString();
+            if (bestRun == null) {
+                bestRun = builder.toString();
+            } else if (builder.toString().length() < bestRun.length()) {
+                bestRun = builder.toString();
             }
         }
         System.out.println(bestRun);
@@ -439,5 +441,188 @@ public class Graph {
         overlap = uLabel.length();
         return overlap;
     }
+
+    private String getOverlap(String originLabel, String destinationLabel) {
+
+        int labelSize = originLabel.length();
+
+        // starting at 2 since the labels should not be completely overlapped
+        // (or else they're the same)
+        // and to avoid endIndex issues with j
+        int i = 1;
+        int j = destinationLabel.length() - 1;
+        String oStr = originLabel.substring(i);
+        String dStr = destinationLabel.substring(0, j);
+
+        if (oStr.equals(dStr)) {
+            return oStr;
+        }
+
+        boolean matchFound = false;
+        i++;
+        j--;
+
+        // begins large and works down in order to pick biggest possible
+        while (!matchFound) {
+
+            oStr = originLabel.substring(i);
+            dStr = destinationLabel.substring(0, j);
+
+            
+            if (oStr.equals(dStr)) {
+                // debug //            
+                System.out.println("overlap " + oStr + " with " + originLabel + " and " + destinationLabel);
+            
+                return oStr;
+            }
+            i++;
+            j--;
+            if (i == labelSize) {
+
+                // debug //
+                System.out.println("no overlap with " + originLabel + " and " + destinationLabel);
+
+                return "";
+            }
+        }
+
+        // debug //
+        System.out.println("overlap " + originLabel.substring(i) + " with " + originLabel + " and " + destinationLabel);
+
+        return originLabel.substring(i);
+
+    }
+
+    private int getOverlapSize(String originLabel, String destinationLabel) {
+
+        return getOverlap(originLabel, destinationLabel).length();
+    }
+
+    /**
+     * Method reconnects a compressed, typed graph (this)
+     *
+     * @return a connected copy of the graph
+     */
+    public Graph reconnectGraph() {
+
+        Graph graphIn = this;
+        Graph graphOut = new Graph(graphIn);
+
+        Set<Vertex> origins = new HashSet<>();
+        Set<Vertex> destinations = new HashSet<>();
+
+        // get (1, 0) and (0, 1) vertices
+        for (Vertex v : graphOut.getVertices()) {
+            if (v.getInEdgesCount() == 1 && v.getOutEdgesCount() == 0) {
+                origins.add(v);
+            } else if (v.getInEdgesCount() == 0 && v.getOutEdgesCount() == 1) {
+                destinations.add(v);
+            }
+        }
+
+        // debug //
+        System.out.println("Origins: " + origins.size() + "; Desinations: " + destinations.size());
+
+        Queue<Connector> pq = new PriorityQueue<>(this.getNumVertices(), connectorComparator);
+
+        // check each origin for overlap with each destination
+        for (Vertex o : origins) {
+            for (Vertex d : destinations) {
+                String overlap = getOverlap(o.getLabel(), d.getLabel());
+                if (!overlap.equals("")) {
+                    pq.add(new Connector(overlap.length(), overlap, o, d));
+
+                    // debug //                    System.out.println("Adding to pq: " + overlap + " (" + overlap.length() + ")"                            + ", from " + o.getLabel() + " to " + d.getLabel());
+                } 
+            }
+        }
+
+        // debug //
+        System.out.println("Queue Size: " + pq.size());
+        
+        // reconnect
+        int numReconnected = 0;
+        int numToReconnect = origins.size() - 1;
+
+        while (numReconnected < numToReconnect && pq.size() > 0) {
+            Connector c = pq.poll();
+            Vertex origin = c.getOrigin();
+            Vertex destination = c.getDestination();
+
+            if (areConnected(origin, destination)) {
+                
+                // debug //
+                System.out.println("skip due to connection");
+                
+                continue;
+            }
+
+            if (origin.getOutEdgesCount() == 0 && destination.getInEdgesCount() == 0) {
+                Edge e = c.toEdge();
+                addEdge(e.getStartVertex(), e.getEndVertex(), e.getLabel());
+
+                // debug //
+                System.out.println("Reconnected " + origin.getLabel() + " to "
+                        + destination.getLabel() + " with overlap "
+                        + c.getOverlap() + " (" + c.getOverlapSize() + ")");
+
+                numReconnected++;
+            }
+            
+            // debug /
+            System.out.println("total reconnected so far: " + numReconnected 
+                    + " and pq size " + pq.size());
+
+        }
+
+        return graphOut;
+
+    }
+
+    public boolean areConnected(Vertex v1, Vertex v2) {
+
+        // if v1 can be reached from v2
+        workingSet = new HashSet<>();
+        addChildrenToSet(v1);
+        if (workingSet.contains(v2)) {
+            return true;
+        }
+
+        // if v2 can be reached from v1
+        workingSet = new HashSet<>();
+        addChildrenToSet(v2);
+        if (workingSet.contains(v1)) {
+            return true;
+        }
+
+        // if all reachable descendents of v1 have been added to the set 
+        // and v2 is not contained (and likewise with v2, v1)
+        // then the nodes must not have a path between them
+        return false;
+
+    }
+
+    public void addChildrenToSet(Vertex v) {
+
+        workingSet.add(v);
+
+        // recursive
+        for (Vertex child : v.getChildren()) {
+            if (!workingSet.contains(child)) {
+                addChildrenToSet(child);
+            }
+        }
+    }
+
+    public static Comparator<Connector> connectorComparator = new Comparator<Connector>() {
+
+        @Override
+        public int compare(Connector c1, Connector c2) {
+
+            // intentionally reversed so that the queue pulls the largest rather than smallest (default)
+            return (c2.getOverlapSize() - c1.getOverlapSize());
+        }
+
+    };
 
 }

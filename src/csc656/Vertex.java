@@ -164,4 +164,21 @@ public class Vertex
     public void setClassification(VertexClassification classification ) {
         this.classification = classification;
     }
+    
+    /**
+     * Method returns direct children of this vertex
+     * 
+     * @return 
+     */
+    public ArrayList<Vertex> getChildren(){
+        
+        ArrayList<Vertex> children = new ArrayList<>();
+        
+        for(Edge e : this.outEdges){
+            children.add(e.getEndVertex());
+        }
+        
+        return children;
+        
+    }
 }
