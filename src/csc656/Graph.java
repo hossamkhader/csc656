@@ -22,6 +22,7 @@ public class Graph {
     private final HashMap<String, Edge> edges;
 
     private Set<Vertex> workingSet;
+    private int children10;
 
     /* 
      * Creates an empty graph that requires construction
@@ -468,11 +469,10 @@ public class Graph {
             oStr = originLabel.substring(i);
             dStr = destinationLabel.substring(0, j);
 
-            
             if (oStr.equals(dStr)) {
                 // debug //            
-                System.out.println("overlap " + oStr + " with " + originLabel + " and " + destinationLabel);
-            
+                //System.out.println("overlap " + oStr + " with " + originLabel + " and " + destinationLabel);
+
                 return oStr;
             }
             i++;
@@ -480,15 +480,13 @@ public class Graph {
             if (i == labelSize) {
 
                 // debug //
-                System.out.println("no overlap with " + originLabel + " and " + destinationLabel);
-
+                //System.out.println("no overlap with " + originLabel + " and " + destinationLabel);
                 return "";
             }
         }
 
         // debug //
-        System.out.println("overlap " + originLabel.substring(i) + " with " + originLabel + " and " + destinationLabel);
-
+        //System.out.println("overlap " + originLabel.substring(i) + " with " + originLabel + " and " + destinationLabel);
         return originLabel.substring(i);
 
     }
@@ -523,23 +521,30 @@ public class Graph {
         // debug //
         System.out.println("Origins: " + origins.size() + "; Desinations: " + destinations.size());
 
-        Queue<Connector> pq = new PriorityQueue<>(this.getNumVertices(), connectorComparator);
+        Queue<Connector> pq = new PriorityQueue<>(graphOut.getNumVertices() * graphOut.getNumVertices(), connectorComparator);
 
         // check each origin for overlap with each destination
         for (Vertex o : origins) {
             for (Vertex d : destinations) {
                 String overlap = getOverlap(o.getLabel(), d.getLabel());
-                if (!overlap.equals("")) {
-                    pq.add(new Connector(overlap.length(), overlap, o, d));
 
-                    // debug //                    System.out.println("Adding to pq: " + overlap + " (" + overlap.length() + ")"                            + ", from " + o.getLabel() + " to " + d.getLabel());
-                } 
+                pq.add(new Connector(overlap.length(), overlap, o, d));
+
+//                if (!overlap.equals("")) {
+//                    pq.add(new Connector(overlap.length(), overlap, o, d));
+//
+//                    // debug //                    
+//                    System.out.println("Adding to pq: " + overlap + " (" + overlap.length() + ")" + ", from " + o.getLabel() + " to " + d.getLabel());
+//                } else {
+//                    // debug //
+//                    System.out.println("Not added to pq: " + o.getLabel() + " to " + d.getLabel());
+//                }
             }
         }
 
         // debug //
-        System.out.println("Queue Size: " + pq.size());
-        
+        System.out.println("queue Size: " + pq.size());
+
         // reconnect
         int numReconnected = 0;
         int numToReconnect = origins.size() - 1;
@@ -550,10 +555,9 @@ public class Graph {
             Vertex destination = c.getDestination();
 
             if (areConnected(origin, destination)) {
-                
+
                 // debug //
-                System.out.println("skip due to connection");
-                
+//                System.out.println("skip due to connection");
                 continue;
             }
 
@@ -561,18 +565,25 @@ public class Graph {
                 Edge e = c.toEdge();
                 addEdge(e.getStartVertex(), e.getEndVertex(), e.getLabel());
 
-                // debug //
-                System.out.println("Reconnected " + origin.getLabel() + " to "
-                        + destination.getLabel() + " with overlap "
-                        + c.getOverlap() + " (" + c.getOverlapSize() + ")");
-
                 numReconnected++;
-            }
-            
-            // debug /
-            System.out.println("total reconnected so far: " + numReconnected 
-                    + " and pq size " + pq.size());
 
+                // debug //
+                System.out.print("reconnected " + origin.getLabel() + " to "
+                        + destination.getLabel() + " with overlap "
+                        + c.getOverlap() + " (" + c.getOverlapSize() + ") ;;;;; ");
+                System.out.println("total reconnected so far: " + numReconnected
+                        + " and pq size " + pq.size());
+
+            } else {
+
+                // debug //
+//                System.out.print("no reconnection: (" + origin.getInEdgesCount() + "," + origin.getOutEdgesCount()
+//                        + "), (" + destination.getInEdgesCount() + "," + destination.getOutEdgesCount()
+//                        + ") with overlap [" + c.getOverlap() + "] ;;;;; ");
+            }
+
+//            System.out.println("total reconnected so far: " + numReconnected
+//                    + " and pq size " + pq.size());
         }
 
         return graphOut;
@@ -581,30 +592,49 @@ public class Graph {
 
     public boolean areConnected(Vertex v1, Vertex v2) {
 
-        // if v1 can be reached from v2
-        workingSet = new HashSet<>();
-        addChildrenToSet(v1);
-        if (workingSet.contains(v2)) {
-            return true;
-        }
-
+//        // if v1 can be reached from v2
+//        workingSet = new HashSet<>();
+//        children10 = 0;
+//        
+//        addChildrenToSet(v1);
+////        if (workingSet.contains(v2)) {
+////            return true;
+////        }
+//
+//        if(children10 > 1){
+//            return false;
+//        } else {
+//            return true;
+//        }
         // if v2 can be reached from v1
         workingSet = new HashSet<>();
+        children10 = 0;
+
         addChildrenToSet(v2);
-        if (workingSet.contains(v1)) {
+//        if (workingSet.contains(v1)) {
+//            return true;
+//        }
+
+        if (children10 > 1) {
+            return false;
+        } else {
             return true;
         }
 
         // if all reachable descendents of v1 have been added to the set 
         // and v2 is not contained (and likewise with v2, v1)
         // then the nodes must not have a path between them
-        return false;
-
+        // return false;
     }
 
     public void addChildrenToSet(Vertex v) {
 
         workingSet.add(v);
+
+        if (v.getInEdgesCount() == 1 && v.getOutEdgesCount() == 0) {
+            children10++;
+            // debug // System.out.println(children10);
+        }
 
         // recursive
         for (Vertex child : v.getChildren()) {

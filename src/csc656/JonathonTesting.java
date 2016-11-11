@@ -15,10 +15,10 @@ public class JonathonTesting {
 
     public static void main(String args[]) {
 
-        int n = 12;
-        int r = 6;
+        int n = 10;
+        int r = 4;
 
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
 
         String result;
 
@@ -26,43 +26,19 @@ public class JonathonTesting {
         graph.buildGraph(n);
 
         // debug //
-        System.out.println("base graph built");
+        System.out.println("base graph built with n = " + n);
 
-//        result = "";
-//        result += "Vertices:";
-//        result += "\n";
-//        result += graph.vertexKeys();
-//        result += "\n";
-//        result += "\n";
-//        result += "Edges:";
-//        result += "\n";
-//        result += graph.printEdges();
-//        result += "\n";
-//        Seed seed;
         SeedGenerator seedGen = new SeedGenerator();
         Seed seed = seedGen.generateSeed(n, r);
 
         // debug //
-        System.out.println(seed.toString());
+        System.out.println("seed: " + seed.toString());
 
-//        result += ("Seed: " + seed);
-//        result += "\n";
-//        result += "\n";
         Graph graphCopy = graph.compressGraph(seed.toString(), n);
 
         // debug //
         System.out.println("graph compressed to copy");
 
-//        result += ("Vertices:");
-//        result += "\n";
-//        result += graphCopy.vertexKeys();
-//        result += "\n";
-//        result += "\n";
-//        result += "Edges:";
-//        result += "\n";
-//        result += graphCopy.printEdges();
-//        result += "\n";
-//        result += "\n";
         Graph graphCopy2 = graphCopy.reconnectGraph();
 
         for (Vertex v : graphCopy2.getVertices()) {
@@ -76,36 +52,11 @@ public class JonathonTesting {
         // debug //
         System.out.println("graph reconnected to copy");
 
-//        result += "Vertices with Types:";
-//        result += "\n";        
-//        TypeChecker tCheck = new TypeChecker(n, r);
-//        Table3 table3 = new Table3(n, r);
-//        for (Vertex vertex : graphCopy.getVertices()) {
-//            tCheck.setType(vertex);
-//            if (vertex.getVertexClassification().getType().length >= 1) {
-//                result += (vertex.getLabel() + ": Type=["
-//                        + vertex.getVertexClassification().getType()[0]);
-//                if (vertex.getVertexClassification().getType().length > 1) {
-//                    result += ",";
-//                    result += vertex.getVertexClassification().getType()[1];
-//                }
-//                result += "] ";
-//
-//                try {
-//                    table3.checkType(vertex);
-//                    result += ", degree: " + Arrays.toString(
-//                            vertex.getVertexClassification().getDegree()
-//                    );
-//                } catch (SubTypeNotFound | DegreeMismatch e) {
-//                    result += e.getMessage();
-//                }
-//
-//                result += "\n";
-//            }
-//        }
-        long endTime = System.currentTimeMillis();
-//        System.out.println(result);
-        System.out.println("Execution Time: " + (endTime - startTime) + " milliseconds");
+        
+        long endTime = System.nanoTime();
+
+        System.out.println("elapsed time: " + (endTime - startTime) + " ns or " 
+                + (double)((endTime - startTime)/1000000000.0) + " s");
 
     }
 }
