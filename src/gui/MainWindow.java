@@ -236,6 +236,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
         }
         long endTime = System.currentTimeMillis();
+        result += graphCopy.getVertexTypeCount();
         jTextArea1.setText(result);
         this.jLabel3.setText("Execution Time: " + (endTime - startTime) + " milliseconds");
     }
