@@ -336,7 +336,6 @@ public class Graph {
 
             // Keeps track of visited (2,2) vertices
             HashMap<String, Vertex> visitedTwoTwos = new HashMap<>();
-            System.out.println(builder.toString());
             // traverses the graph until all destination vertices are linked
             while (!currentRunDestinationVerts.isEmpty()||currVertex.getOutEdgesCount()!=0) {
                 switch (currVertex.getOutEdgesCount()) {
@@ -349,7 +348,6 @@ public class Graph {
                                 substring(currVertex.getLabel().length(),
                                         currVertex.getOutEdges().get(0).getLabel().length()));
                         currVertex = currVertex.getOutEdges().get(0).getEndVertex();
-                        System.out.println(builder.toString());
                         break;
                     case 2:
                         /**
@@ -358,21 +356,19 @@ public class Graph {
                          * visitedTwoTwos map. The first edge is then traversed.
                          * When encountered again, the second edge is taken.
                          */
-                        if (!visitedTwoTwos.containsValue(currVertex)) {
+                        if (!visitedTwoTwos.containsKey(currVertex.getLabel())) {                     
                             visitedTwoTwos.put(currVertex.getLabel(), currVertex);
                             builder.append(currVertex.getOutEdges().get(0).getLabel().
                                 substring(currVertex.getLabel().length(),
                                         currVertex.getOutEdges().get(0).getLabel().length()));
                             currVertex = currVertex.getOutEdges().get(0).
                                     getEndVertex();
-                            System.out.println(builder.toString());
                         } else {
                             builder.append(currVertex.getOutEdges().get(1).getLabel().
                                 substring(currVertex.getLabel().length(),
                                         currVertex.getOutEdges().get(1).getLabel().length()));
                             currVertex = currVertex.getOutEdges().get(1).
                                     getEndVertex();
-                            System.out.println(builder.toString());
                         }
                         break;
                     default:
@@ -407,12 +403,9 @@ public class Graph {
                         currentRunDestinationVerts.remove(bestOverlapVertex.getLabel());
                         builder.append(bestOverlapVertex.getLabel().
                                 substring(bestOverlap));
-                        System.out.println(builder.toString());
                         currVertex = bestOverlapVertex;
                 }
             }
-            System.out.println(builder.length());
-            System.out.println(builder.toString());
             if(bestRun==null){
                 bestRun=builder.toString();
             }else if(builder.toString().length()<bestRun.length()){
