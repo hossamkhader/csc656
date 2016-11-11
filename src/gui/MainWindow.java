@@ -164,7 +164,7 @@ public class MainWindow extends javax.swing.JFrame {
         try {
             int n = Integer.parseInt(jTextField1.getText());
             int r = Integer.parseInt(jTextField2.getText());
-            if((n - r) % 2 == 0 && (n - r) >= (2*r - 2) ) {
+            if((n - r) % 2 == 0 && (n - r) >= (2*r - 2)) {
                 execute(n, r);
             }
             else {
