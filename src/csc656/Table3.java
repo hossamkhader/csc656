@@ -53,9 +53,9 @@ public class Table3 {
                 currVertex.getVertexClassification().getDegree()[1]!=
                 currVertex.getOutEdgesCount()){
             throw new DegreeMismatch("Vertex " + currLabel + 
-                    " has Graph degree: (" + currVertex.getInEdgesCount()+ 
+                    " has Graph degree: [" + currVertex.getInEdgesCount()+ 
                     ", " + currVertex.getOutEdgesCount() + 
-                    ") but table 3 degree: " + 
+                    "] but table 3 degree: " + 
                     Arrays.toString(currVertex.getVertexClassification().getDegree())
             );
         }
