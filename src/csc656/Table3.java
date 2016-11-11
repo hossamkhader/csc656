@@ -355,6 +355,7 @@ public class Table3 {
     private boolean checkType26() {
         int i, j;
 
+        // check number of 0's at the start of the label
         i = 0;
         for (j = 0; j < r - 2; j++) {
             if (currLabel.charAt(j) == '0') {
@@ -367,10 +368,12 @@ public class Table3 {
             return false;
         }
 
+        // make sure 0's are followed by a '1'
         if (currLabel.charAt(j) != '1') {
             return false;
         }
 
+        // check number of 1's at the end of the label
         i = 0;
         for (j = currLabel.length() - 1; j > currLabel.length() - 1 - ((n - r) / 2); j--) {
             if (currLabel.charAt(j) == '1') {
@@ -383,6 +386,7 @@ public class Table3 {
             return false;
         }
 
+        // check the number of 0's preceding the one's above
         i = 0;
         for (; j > currLabel.length() - 1 - ((n - r) / 2) - (r - 2); j--) {
             if (currLabel.charAt(j) == '0') {
@@ -399,6 +403,8 @@ public class Table3 {
 
     private boolean checkType27() {
         int i, j;
+        
+        // check number of zero's at the end of the label and assign i
         i=0;
         for(j=currLabel.length()-1; j>=0;j--){
             if(currLabel.charAt(j)=='0'){
@@ -411,6 +417,7 @@ public class Table3 {
             return false;
         }
         
+        // check ones preceding 0's above
         int oneCount=0;
         for(;j>=currLabel.length()-i-((n-r)/2); j--){
             if(currLabel.charAt(j)=='1'){
@@ -423,6 +430,7 @@ public class Table3 {
             return false;
         }
         
+        // check 0's preceding ones above
         int preXZeroCount=0;
         for(;j>=currLabel.length()-i-((n-r)/2)-(r-2); j--){
             if(currLabel.charAt(j)=='0'){
@@ -435,6 +443,7 @@ public class Table3 {
             return false;
         }
         
+        // check number of starting 0's and that they are followed by a one
         i = 0;
         for (j = 0; j < r - 2; j++) {
             if (currLabel.charAt(j) == '0') {
