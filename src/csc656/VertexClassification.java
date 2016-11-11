@@ -5,8 +5,8 @@ import java.util.ArrayList;
 public class VertexClassification {
     
     private final ArrayList<Integer> type;
-    private int inBit;
-    private int outBit;
+    private int inBit = -1; //no bit set
+    private int outBit = -1;
     private int [] degree;
     
     public VertexClassification()

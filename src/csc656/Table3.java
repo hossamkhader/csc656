@@ -14,8 +14,8 @@ public class Table3 {
         this.r = r;
     }
 
-    public void checkType(Vertex vertex) throws SubTypeNotFound, 
-            DegreeMismatch {
+    public void checkType(Vertex vertex) throws SubTypeNotFound,
+            DegreeMismatch, InOutBitMismatch {
         this.currVertex = vertex;
         this.currLabel = this.currVertex.getLabel();
         int[] vertexType = this.currVertex.getVertexClassification().getType();
@@ -58,6 +58,30 @@ public class Table3 {
                     ") but table 3 degree: " + 
                     Arrays.toString(currVertex.getVertexClassification().getDegree())
             );
+        }
+
+        //Check in-bit
+        if(currVertex.getInEdges().size() == 1) {
+            int t3InBit = currVertex.getVertexClassification().getInBit();
+            String inEdgeStr = currVertex.getInEdges().get(0).getLabel();
+            int vInBit = Character.getNumericValue(inEdgeStr.charAt(0));
+
+            if (t3InBit != vInBit) {
+                throw new InOutBitMismatch("Vertex " + currLabel + " has an in bit of " +
+                        vInBit + " but table 3 in bit of " + t3InBit);
+            }
+        }
+
+        //Check out-bit
+        if(currVertex.getOutEdges().size() == 1) {
+            int t3OutBit = currVertex.getVertexClassification().getOutBit();
+            String outEdgeStr = currVertex.getOutEdges().get(0).getLabel();
+            int vOutBit = Character.getNumericValue(outEdgeStr.charAt(outEdgeStr.length() - 1));
+
+            if(t3OutBit != vOutBit){
+                throw new InOutBitMismatch("Vertex " + currLabel + " has an out bit of " +
+                        vOutBit + " but table 3 out bit of " + t3OutBit);
+            }
         }
     }
 
