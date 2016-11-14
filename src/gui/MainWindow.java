@@ -1,13 +1,7 @@
 package gui;
 
-import csc656.DegreeMismatch;
-import csc656.Graph;
-import csc656.Seed;
-import csc656.SeedGenerator;
-import csc656.SubTypeNotFound;
-import csc656.Table3;
-import csc656.TypeChecker;
-import csc656.Vertex;
+import csc656.*;
+
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
@@ -228,7 +222,7 @@ public class MainWindow extends javax.swing.JFrame {
                     result+= ", degree: " + Arrays.toString(
                             vertex.getVertexClassification().getDegree()
                     );
-                }catch(SubTypeNotFound | DegreeMismatch e){
+                }catch(SubTypeNotFound | DegreeMismatch | InOutBitMismatch e){
                     result += e.getMessage();
                 }
                 
