@@ -6,6 +6,8 @@
 package csc656;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -15,8 +17,8 @@ public class JonathonTesting {
 
     public static void main(String args[]) {
 
-        int n = 10;
-        int r = 4;
+        int n = 9;
+        int r = 3;
 
         long startTime = System.nanoTime();
 
@@ -41,16 +43,29 @@ public class JonathonTesting {
 
         Graph graphCopy2 = graphCopy.reconnectGraph();
 
+        Vertex startVertex = null;
+        
         for (Vertex v : graphCopy2.getVertices()) {
             if (v.getInEdgesCount() == 1 && v.getOutEdgesCount() == 0) {
                 System.out.println("(1,0): " + v.getLabel());
             } else if (v.getInEdgesCount() == 0 && v.getOutEdgesCount() == 1) {
                 System.out.println("(0,1): " + v.getLabel());
+                startVertex = v;
             }
         }
 
         // debug //
         System.out.println("graph reconnected to copy");
+        
+//        Set<Edge> edgeSet = new HashSet();
+//        String traversalStr = startVertex.getLabel();
+//        Edge startEdge = startVertex.getOutEdges().get(0);
+//        
+//        graphCopy2.traverseReconnected(edgeSet, traversalStr, startEdge);
+
+        String minTraversal = graphCopy2.startTraversal(startVertex);
+        
+        System.out.println("traversal: " + minTraversal + " (" + minTraversal.length() + ")");
 
         
         long endTime = System.nanoTime();

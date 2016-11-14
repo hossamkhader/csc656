@@ -24,6 +24,8 @@ public class Graph {
     private Set<Vertex> workingSet;
     private int children10;
 
+    private Set<String> traversals;
+
     /* 
      * Creates an empty graph that requires construction
      */
@@ -640,6 +642,97 @@ public class Graph {
         for (Vertex child : v.getChildren()) {
             if (!workingSet.contains(child)) {
                 addChildrenToSet(child);
+            }
+        }
+    }
+
+    public String startTraversal(Vertex v) {
+
+        // debug //
+        System.out.println("looking at traversals from: " + v.getLabel());
+
+        traversals = new HashSet();
+
+        Set<Edge> edgeSet = new HashSet();
+        String traversalStr = v.getLabel();
+        Edge startEdge = v.getOutEdges().get(0);
+
+        this.traverseReconnected(edgeSet, traversalStr, startEdge);
+
+        int minLength = 99999;
+        String minStr = "";
+
+        // debug //
+        System.out.println("traversals: " + traversals.size());
+
+        for (String str : traversals) {
+            if (str.length() < minLength) {
+                minLength = str.length();
+                minStr = str;
+            }
+        }
+
+        return minStr;
+    }
+
+    public void traverseReconnected(Set<Edge> edgeSet, String currString, Edge e) {
+
+        // debug //        System.out.println("traverseReconnected called with set size: " + edgeSet.size()                 + " (total edges: " + this.edges.size() + ")");
+        // recursion control :: cancel if edge already in working set
+        if (edgeSet.contains(e)) {
+            return;
+        } else {
+            edgeSet.add(e);
+        }
+
+        Vertex destination = e.getEndVertex();
+        String toAdd = "";
+
+        if (e.getLabel().contains("H")) {
+//            for (char c : e.getLabel().toCharArray()) {
+//                if (c == 'H') {
+//                    toAdd += c;
+//                }
+//            }
+            int start = e.getLabel().indexOf("H");
+            toAdd = e.getLabel().substring(start);
+
+            //toAdd = e.getLabel();
+            // debug //
+            System.out.println("adding seed edge: " + toAdd + " for " + e.getLabel() + " (seed) from "
+                    + e.getStartVertex().getLabel() + " to " + destination.getLabel());
+        } else {
+
+            if (e.getStartVertex().getLabel().contains("H")) {
+                //int start = e.getLabel().lastIndexOf("") + 1;
+                //toAdd = destination.getLabel().substring(start);
+                toAdd = destination.getLabel();
+            } else {
+                // add non-overlap of destination to string
+                int overlapSize = getOverlapSize(e.getStartVertex().getLabel(), destination.getLabel());
+                //int overlapSize = getOverlapSize(e.getLabel(), destination.getLabel());
+                toAdd = destination.getLabel().substring(overlapSize);
+            }
+        }
+
+        String newString = currString + toAdd;
+
+        if (edgeSet.size() == this.getNumEdges()) {
+
+            // debug //            
+            System.out.println("graph traversed: " + currString + "(" + currString.length() + ")");
+            traversals.add(newString);
+
+        } else {
+
+            // recursion control :: should die at a dead end (no new edges and incomplete set)
+            for (Edge ed : destination.getOutEdges()) {
+
+                // recursion control :: shouldn't try to call again if edge has already been examined in this sequence
+                if (!edgeSet.contains(ed)) {
+                    Set<Edge> setCopy = new HashSet(edgeSet);
+                    traverseReconnected(setCopy, newString, ed);
+                }
             }
         }
     }
