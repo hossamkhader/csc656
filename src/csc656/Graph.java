@@ -420,17 +420,24 @@ public class Graph {
     }
 
     private boolean getComplete(String run) {
+        boolean exists=false;
         for (String edgeLabel : this.edges.keySet()) {
             int offset = 0;
+            exists=false;
             while (offset <= run.length() - edgeLabel.length()) {
                 if (run.startsWith(edgeLabel, offset)) {
-                    return true;
+                    exists=true;
+                    offset=run.length();
                 } else {
                     offset++;
                 }
             }
+            if(!exists){
+                System.out.println(edgeLabel);
+                return false;
+            }
         }
-        return false;
+        return true;
     }
     /**
      * Computes the overlap between 2 strings
