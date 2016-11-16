@@ -17,16 +17,18 @@ public class Graph {
      * List of all edges in the graph
      */
     private final HashMap<String, Edge> edges;
-    
+
     /* 
      * Creates an empty graph that requires construction
      */
-    public Graph(){
+    public Graph() {
         this.vertices = new HashMap<>();
         this.edges = new HashMap<>();
     }
+
     /**
      * Copy Constructor
+     *
      * @param graph
      */
     public Graph(Graph graph) {
@@ -34,15 +36,15 @@ public class Graph {
         this.vertices = new HashMap<>(graph.vertices);
     }
 
-/*
+    /*
   original method author: Michael Branon
   rewrite/refactoring: Jonathon Tovey
-*/
-
+     */
     /**
      * Constructs a graph with vertices of length d. First constructs each edge
      * and then attaches it to the appropriate vertices, constructing them if
      * necessary
+     *
      * @param n length of edges/subwords
      */
     public void buildGraph(int n) {
@@ -54,7 +56,7 @@ public class Graph {
             edgeStrs[i] = String.format(frmt, Integer.toBinaryString(i))
                     .replace(' ', '0');
             // debug // System.out.println("creating edge " + edgeStrs[i]);
-            
+
             Vertex origin;
             String originLabel = edgeStrs[i].substring(0, (edgeStrs[i].length() - 1));
             if (this.vertices.containsKey(originLabel)) {
@@ -205,22 +207,21 @@ public class Graph {
         return tmp;
     }
 
-/*
+    /*
   method author: Jonathon Tovey
-*/
+     */
     public String printVertices() {
 
         String tmp = "";
-        for(String key : vertices.keySet()) {
+        for (String key : vertices.keySet()) {
             tmp += vertices.get(key).getLabel();
         }
         return tmp;
     }
 
-/*
+    /*
   method author: Jonathon Tovey
-*/
-
+     */
     public void removeVertex(Vertex v) {
 
         this.vertices.remove(v.getLabel());
@@ -229,12 +230,12 @@ public class Graph {
         System.out.println("Vertex " + v.getLabel() + " removed");
     }
 
-/*
+    /*
   method author: Jonathon Tovey
-*/
-
+     */
     /**
      * Method compresses a graph (this)
+     *
      * @param seed
      * @param n
      * @return a compressed copy of the graph
@@ -252,24 +253,8 @@ public class Graph {
             // debug //
             System.out.println("Edge " + sw + " removed");
         }
-        
-        
-// skip adding seed edge until later        
-//        //add seed edge
-//        Vertex sOrigin = graphCopy.getVertex(seed.substring(0, n-1));
-//	// debug // System.out.println(sOrigin.getLabel());
-//        Vertex sDestination = 
-//                this.getVertex(seed.substring(seed.length() - n + 1));
-//	// debug // System.out.println(sDestination.getLabel());
-//
-//	// debug //
-//	System.out.print("Adding seed edge " + seed);
-//	System.out.println(" from " + sOrigin.getLabel() + " to " + sDestination.getLabel());
-//
-//        graphCopy.addEdge(sOrigin, sDestination, seed);
-        
+
         // remove any (0, 0) vertices
-        
         Graph graphCopyIter = new Graph(graphCopy);
         for (String vStr : graphCopyIter.vertexKeys()) {
 
@@ -284,18 +269,35 @@ public class Graph {
         }
         return graphCopy;
     }
-    
+
+    /**
+     * Method adds seed edge to graph (this)
+     * @param seed
+     * @param n
+     */
+    public void addSeedEdge(String seed, int n) {
+        Vertex sOrigin = this.getVertex(seed.substring(0, n - 1));
+        // debug // System.out.println(sOrigin.getLabel());
+        Vertex sDestination = this.getVertex(seed.substring(seed.length() - n + 1));
+        // debug // System.out.println(sDestination.getLabel());
+
+        this.addEdge(sOrigin, sDestination, seed);
+
+        // debug //
+        System.out.println("Added seed edge " + seed + " from " + sOrigin.getLabel() + " to " + sDestination.getLabel());
+    }
+
     /**
      * Method returns an array of the vertices contained in the graph
      *
      * @return array of vertices
      */
-    public Vertex [] getVertices() {
-        Vertex [] temp = new Vertex[this.vertices.values().size()];
+    public Vertex[] getVertices() {
+        Vertex[] temp = new Vertex[this.vertices.values().size()];
         this.vertices.values().toArray(temp);
         return temp;
     }
-    
+
     public String getVertexTypeCount() {
         int type1 = 0;
         int type2 = 0;
@@ -307,12 +309,12 @@ public class Graph {
         int type26 = 0;
         int type27 = 0;
         int type37 = 0;
-        String result="";
-        
-        for(String label : vertices.keySet()) {
+        String result = "";
+
+        for (String label : vertices.keySet()) {
             Vertex vertex = vertices.get(label);
-            if(vertex.getVertexClassification().getType().length == 1) {
-                switch(vertex.getVertexClassification().getType()[0]) {
+            if (vertex.getVertexClassification().getType().length == 1) {
+                switch (vertex.getVertexClassification().getType()[0]) {
                     case 1:
                         type1++;
                         break;
@@ -336,17 +338,17 @@ public class Graph {
                         break;
                 }
             }
-            if(vertex.getVertexClassification().getType().length == 2) {
-                if(vertex.getVertexClassification().getType()[0] == 2 &&
-                   vertex.getVertexClassification().getType()[1] == 6) {
+            if (vertex.getVertexClassification().getType().length == 2) {
+                if (vertex.getVertexClassification().getType()[0] == 2
+                        && vertex.getVertexClassification().getType()[1] == 6) {
                     type26++;
                 }
-                if(vertex.getVertexClassification().getType()[0] == 2 &&
-                   vertex.getVertexClassification().getType()[1] == 7) {
+                if (vertex.getVertexClassification().getType()[0] == 2
+                        && vertex.getVertexClassification().getType()[1] == 7) {
                     type27++;
                 }
-                if(vertex.getVertexClassification().getType()[0] == 3 &&
-                   vertex.getVertexClassification().getType()[1] == 7) {
+                if (vertex.getVertexClassification().getType()[0] == 3
+                        && vertex.getVertexClassification().getType()[1] == 7) {
                     type37++;
                 }
             }
@@ -375,7 +377,7 @@ public class Graph {
         result += "\n";
         result += "********************";
         result += "\n";
-        
+
         return result;
     }
 }
