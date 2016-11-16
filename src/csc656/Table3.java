@@ -335,7 +335,7 @@ public class Table3 {
         int i, j;
 
         i = 0;
-        for (j = 0; j < r - 2; j++) {
+        for (j = 0; j < currLabel.length(); j++) {
             if (currLabel.charAt(j) == '0') {
                 i++;
             } else {
@@ -347,7 +347,7 @@ public class Table3 {
         }
 
         i = 0;
-        for (j = r - 2; j < r - 2 + ((n - r) / 2); j++) {
+        for (; j < currLabel.length(); j++) {
             if (currLabel.charAt(j) == '1') {
                 i++;
             } else {
@@ -359,7 +359,7 @@ public class Table3 {
         }
 
         i = 0;
-        for (j = r - 2 + ((n - r) / 2); j < (n - r + 2) / 2; j++) {
+        for (; j < currLabel.length(); j++) {
             if (currLabel.charAt(j) == '0') {
                 i++;
             } else {
