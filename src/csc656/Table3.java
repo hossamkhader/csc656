@@ -14,8 +14,8 @@ public class Table3 {
         this.r = r;
     }
 
-    public void checkType(Vertex vertex) throws SubTypeNotFound, 
-            DegreeMismatch {
+    public void checkType(Vertex vertex) throws SubTypeNotFound,
+            DegreeMismatch, InOutBitMismatch {
         this.currVertex = vertex;
         this.currLabel = this.currVertex.getLabel();
         int[] vertexType = this.currVertex.getVertexClassification().getType();
@@ -53,11 +53,35 @@ public class Table3 {
                 currVertex.getVertexClassification().getDegree()[1]!=
                 currVertex.getOutEdgesCount()){
             throw new DegreeMismatch("Vertex " + currLabel + 
-                    " has Graph degree: (" + currVertex.getInEdgesCount()+ 
+                    " has Graph degree: [" + currVertex.getInEdgesCount()+ 
                     ", " + currVertex.getOutEdgesCount() + 
-                    ") but table 3 degree: " + 
+                    "] but table 3 degree: " + 
                     Arrays.toString(currVertex.getVertexClassification().getDegree())
             );
+        }
+
+        //Check in-bit
+        if(currVertex.getInEdges().size() == 1) {
+            int t3InBit = currVertex.getVertexClassification().getInBit();
+            String inEdgeStr = currVertex.getInEdges().get(0).getLabel();
+            int vInBit = Character.getNumericValue(inEdgeStr.charAt(0));
+
+            if (t3InBit != vInBit) {
+                throw new InOutBitMismatch("Vertex " + currLabel + " has an in bit of " +
+                        vInBit + " but table 3 in bit of " + t3InBit);
+            }
+        }
+
+        //Check out-bit
+        if(currVertex.getOutEdges().size() == 1) {
+            int t3OutBit = currVertex.getVertexClassification().getOutBit();
+            String outEdgeStr = currVertex.getOutEdges().get(0).getLabel();
+            int vOutBit = Character.getNumericValue(outEdgeStr.charAt(outEdgeStr.length() - 1));
+
+            if(t3OutBit != vOutBit){
+                throw new InOutBitMismatch("Vertex " + currLabel + " has an out bit of " +
+                        vOutBit + " but table 3 out bit of " + t3OutBit);
+            }
         }
     }
 
@@ -190,10 +214,6 @@ public class Table3 {
             int[] degree = {0, 1};
             this.currVertex.getVertexClassification().setDegree(degree);
             this.currVertex.getVertexClassification().setOutBit(1);
-        } else if (checkType7_2()) {
-            int[] degree = {0, 1};
-            this.currVertex.getVertexClassification().setDegree(degree);
-            this.currVertex.getVertexClassification().setOutBit(1);
         } else {
             throw new SubTypeNotFound("Type 7 vertex " + this.currLabel
                     + " does not match a type 7 subtype");
@@ -315,7 +335,7 @@ public class Table3 {
         int i, j;
 
         i = 0;
-        for (j = 0; j < r - 2; j++) {
+        for (j = 0; j < currLabel.length(); j++) {
             if (currLabel.charAt(j) == '0') {
                 i++;
             } else {
@@ -327,7 +347,7 @@ public class Table3 {
         }
 
         i = 0;
-        for (j = r - 2; j < r - 2 + ((n - r) / 2); j++) {
+        for (; j < currLabel.length(); j++) {
             if (currLabel.charAt(j) == '1') {
                 i++;
             } else {
@@ -339,7 +359,7 @@ public class Table3 {
         }
 
         i = 0;
-        for (j = r - 2 + ((n - r) / 2); j < (n - r + 2) / 2; j++) {
+        for (; j < currLabel.length(); j++) {
             if (currLabel.charAt(j) == '0') {
                 i++;
             } else {
@@ -1006,22 +1026,44 @@ public class Table3 {
     }
 
     /**
-     * 1 x 0^(r - 2) 1^[(n - r)/2] 0^i for some i in [1...(r - 3)].
+     *  0^i 1 x 0^{r-2} 1^{(n-r)/2} 0^j for some i \in [0..r-4] with j \in [1..r-i-3]
      */
-    private boolean checkType7_1() {
-        int counter = 0;  //Used to count number of characters
-        int currIndex = currLabel.length() - 1;  //start at end of label
+    private boolean checkType7_1(){
+        int counter = 0;  //counter used to keep track of number of characters
+        int currIndex = 0; //start at beginning of string for prefix
+        int iVal = 0; //Value for i used to calculate bounds for j
 
-        //bounds for i
-        int iLower = 1;
-        int iUpper = r - 3;
+        //bounds for i and j
+        int iLower = 0;
+        int iUpper = r - 4;
+        int jLower; //we need the value of i to calculate these
+        int jUpper;
+
         /**
          * Check
          * prefix------------------------------------------------------------
          */
+        //Count the number of 0's in front of prefix
+        for (int i = currIndex; i < currLabel.length(); i++) {
+            if (currLabel.charAt(i) == '0') {
+                counter++;
+                currIndex = i + 1; //move up an index
+            } else {
+                break;
+            }
+        }
 
-        //Make sure label starts with '1'
-        if ((currLabel.charAt(0) != '1')) {
+        //Check that there are i number of 0's
+        boolean legalRange = false;
+        for (int i = iLower; i <= iUpper && !legalRange; i++) {
+            if (counter == i) {
+                iVal = i; //Set value of i used to get the bounds of j
+                legalRange = true;
+            }
+        }
+
+        //Check to see if there is a 1 after 0's
+        if (currLabel.charAt(currIndex) != '1') {
             return false;
         }
 
@@ -1029,6 +1071,12 @@ public class Table3 {
          * Check
          * suffix-------------------------------------------------------------
          */
+        jLower = 1;
+        jUpper = r - iVal - 3;
+
+        //change current index to the end of the label
+        currIndex = currLabel.length() - 1;
+
         //Count the number of 0's at the end of the label
         for (int i = currIndex; i >= 0; i--) {
             if (currLabel.charAt(i) == '0') {
@@ -1040,85 +1088,11 @@ public class Table3 {
         }
 
         //Check to see if the number of zeros is within range of i in equation
-        boolean legalRange = false;
-        for (int i = iLower; i <= iUpper && !legalRange; i++) {
+        legalRange = false;
+        for (int i = jLower; i <= jUpper && !legalRange; i++) {
             if (counter == i) {
                 legalRange = true;
             }
-        }
-
-        //If not legel number of zeroes, return null
-        if (!legalRange) {
-            return false;
-        }
-
-        //check that there are (n - r)/2 1's at end of label
-        int bound = currIndex - ((n - r) / 2);
-        for (int i = currIndex; i > bound; i--) {
-            if (currLabel.charAt(i) == '1') {
-                currIndex--;
-            } else {
-                return false;
-            }
-        }
-
-        //check that there are (r - 2) 0's before 1's
-        bound = currIndex - (r - 2);
-        for (int i = currIndex; i > bound; i--) {
-            if (currLabel.charAt(i) == '0') {
-                currIndex--;
-            } else {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * 0 1 x 0^(r - 2) 1^[(n - r)/2] 0^i for some i in [1...(r - 4)].
-     */
-    private boolean checkType7_2() {
-        int counter = 0;  //Used to count number of characters
-        int currIndex = currLabel.length() - 1;  //start at end of label
-
-        //Bounds for i
-        int iLower = 1;
-        int iUpper = 4;
-
-        /**
-         * Check
-         * prefix------------------------------------------------------------
-         */
-        //Make sure label starts with '01'
-        if ((currLabel.charAt(0) != '0') || (currLabel.charAt(1) != '1')) {
-            return false;
-        }
-
-        /**
-         * Check
-         * suffix-------------------------------------------------------------
-         */
-        //Count the number of 0's at the end of the label
-        for (int i = currIndex; i >= 0; i--) {
-            if (currLabel.charAt(i) == '0') {
-                counter++;
-                currIndex--;
-            } else {
-                break;
-            }
-        }
-
-        //Check to see if the number of zeros is within range of i in equation
-        boolean legalRange = false;
-        for (int i = iLower; i <= iUpper && !legalRange; i++) {
-            if (counter == i) {
-                legalRange = true;
-            }
-        }
-
-        //If not legel number of zeroes, return null
-        if (!legalRange) {
-            return false;
         }
 
         //check that there are (n - r)/2 1's at end of label

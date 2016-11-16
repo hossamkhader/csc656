@@ -1,13 +1,7 @@
 package gui;
 
-import csc656.DegreeMismatch;
-import csc656.Graph;
-import csc656.Seed;
-import csc656.SeedGenerator;
-import csc656.SubTypeNotFound;
-import csc656.Table3;
-import csc656.TypeChecker;
-import csc656.Vertex;
+import csc656.*;
+
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
@@ -166,16 +160,14 @@ public class MainWindow extends javax.swing.JFrame {
             int r = Integer.parseInt(jTextField2.getText());
             if((n - r) % 2 == 0 && (n - r) >= (2*r - 2) ) {
                 execute(n, r);
+            } else {
+                JOptionPane.showMessageDialog(this, "n-r >= 2r-2 even", "Error", JOptionPane.ERROR_MESSAGE);
             }
-            else {
-                JOptionPane.showMessageDialog(this, "n-r >= 2r-2 even", "Error" ,JOptionPane.ERROR_MESSAGE);
-            }
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             System.err.println(e.getMessage());
         }
     }
-    
+
     private void execute(int n, int r) {
         long startTime = System.currentTimeMillis();
         String result;
@@ -228,19 +220,23 @@ public class MainWindow extends javax.swing.JFrame {
                     result+= ", degree: " + Arrays.toString(
                             vertex.getVertexClassification().getDegree()
                     );
-                }catch(SubTypeNotFound | DegreeMismatch e){
+                } catch (SubTypeNotFound | DegreeMismatch | InOutBitMismatch e) {
                     result += e.getMessage();
                 }
-                
+
                 result += "\n";
             }
         }
-        graphCopy.stitch();
+
+        // add seed edge
+        graphCopy.addSeedEdge(seed.toString(), n);
+	graphCopy.stitch();
         long endTime = System.currentTimeMillis();
+        result += graphCopy.getVertexTypeCount();
         jTextArea1.setText(result);
         this.jLabel3.setText("Execution Time: " + (endTime - startTime) + " milliseconds");
     }
-    
+
     /**
      * @param args the command line arguments
      */
