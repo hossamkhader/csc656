@@ -314,8 +314,8 @@ public class Graph {
         HashMap<String, Vertex> destinationVerts = new HashMap<>();
         for (Vertex vertex : this.getVertices()) {
             if (vertex.getVertexClassification().getDegree().length > 0
-                    && vertex.getVertexClassification().getDegree()[0] == 0
-                    && vertex.getVertexClassification().getDegree()[1] == 1) {
+                    && vertex.getInEdgesCount() == 0
+                    && vertex.getOutEdgesCount() == 1) {
                 destinationVerts.put(vertex.getLabel(), vertex);
             }
         }
