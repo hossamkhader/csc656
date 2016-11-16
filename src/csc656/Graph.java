@@ -394,10 +394,6 @@ public class Graph {
                                 }
                             }
                         }
-                        // new edge is added between the vertices
-                        String newEdgeLabel = currVertex.getLabel()
-                                + bestOverlapVertex.getLabel().substring(bestOverlap);
-                        //addEdge(currVertex, bestOverlapVertex, newEdgeLabel);
                         // chosen destination edge is removed from the map of 
                         // available destination vertices
                         currentRunDestinationVerts.remove(bestOverlapVertex.getLabel());
@@ -414,8 +410,22 @@ public class Graph {
         }
         System.out.println(bestRun);
         System.out.println(bestRun.length());
+        System.out.println(getComplete(bestRun));
     }
 
+    private boolean getComplete(String run) {
+        for (String edgeLabel : this.edges.keySet()) {
+            int offset = 0;
+            while (offset <= run.length() - edgeLabel.length()) {
+                if (run.startsWith(edgeLabel, offset)) {
+                    return true;
+                } else {
+                    offset++;
+                }
+            }
+        }
+        return false;
+    }
     /**
      * Computes the overlap between 2 strings
      *
