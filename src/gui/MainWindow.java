@@ -158,10 +158,16 @@ public class MainWindow extends javax.swing.JFrame {
         try {
             int n = Integer.parseInt(jTextField1.getText());
             int r = Integer.parseInt(jTextField2.getText());
-            if ((n - r) % 2 == 0 && (n - r) >= (2 * r - 2)) {
+            int h = n - r;
+            if((n - r) % 2 != 0 || h < 3 || r < 3) {
+                JOptionPane.showMessageDialog(this, "h should be even\nh >= 3\nr >= 3", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            else if (!((n - r) >= (2 * r - 2))) {
+                JOptionPane.showMessageDialog(this, "n-r >= 2r-2 even", "Warning", JOptionPane.WARNING_MESSAGE);
                 execute(n, r);
-            } else {
-                JOptionPane.showMessageDialog(this, "n-r >= 2r-2 even", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            else {
+                execute(n, r);
             }
         } catch (NumberFormatException e) {
             System.err.println(e.getMessage());
