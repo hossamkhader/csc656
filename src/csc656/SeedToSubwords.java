@@ -7,73 +7,55 @@ import java.util.Set;
 /*
   class author: Jonathon Tovey
 */
-
 public class SeedToSubwords {
-	
     /**
      * Method generates all subwords of the given length of the given seed
      * @param seed
      * @param swLength
      * @return the array of subwords
      */
-	public static String[] swOfLength(String seed, int swLength){
+    public static String[] swOfLength(String seed, int swLength){
+        Set<String> swSet = new HashSet<>();
+        int seedLen = seed.length();
+        int swLen = swLength;
+        if(swLen > seed.length()){
+            swLen = seed.length();
+        }		
+        int startIndex = 0;
+        int endIndex = swLen;
+        boolean hitEnd = false;
 
-		// debug // System.out.println(seed + " " + swLength);
+        while(!hitEnd){
+            swSet.add(seed.substring(startIndex, endIndex));
+            if(endIndex == seedLen){
+                hitEnd = true;
+            } else {
+                startIndex++;
+                endIndex++;
+            }
+        }
+        boolean containsH = true;		
+        while(containsH) {
 
-		Set<String> swSet = new HashSet<>();
-		int seedLen = seed.length();
-
-		int swLen = swLength;
-		if(swLen > seed.length()){
-			swLen = seed.length();
-		}		
-		
-		int startIndex = 0;
-		int endIndex = swLen;
-		boolean hitEnd = false;
-
-		while(!hitEnd){
-
-			swSet.add(seed.substring(startIndex, endIndex));
-
-			if(endIndex == seedLen){
-				hitEnd = true;
-			} else {
-				startIndex++;
-				endIndex++;
-			}
-		}
-
-		boolean containsH = true;
-			
-		while(containsH) {
-
-			containsH = false;
-
-			Set<String> swSetCopy = new HashSet<>(swSet);
-
-			for ( String sw : swSetCopy ){
-				int idx = sw.indexOf('H');				
-				if(idx > -1){
-				
-					containsH = true;
-
-					char[] charArr = sw.toCharArray();
-					charArr[idx] = '0';
-					swSet.add(String.valueOf(charArr));
-					charArr[idx] = '1';
-					swSet.add(String.valueOf(charArr));
-					
-					swSet.remove(sw);
-				}
-			}
-		}
-		String[] swArr = swSet.toArray(new String[swSet.size()]);
-
-		Arrays.sort(swArr);
-
-		return swArr;
-	}
+            containsH = false;
+            Set<String> swSetCopy = new HashSet<>(swSet);
+            for ( String sw : swSetCopy ){
+                int idx = sw.indexOf('H');				
+                if(idx > -1){
+                    containsH = true;
+                    char[] charArr = sw.toCharArray();
+                    charArr[idx] = '0';
+                    swSet.add(String.valueOf(charArr));
+                    charArr[idx] = '1';
+                    swSet.add(String.valueOf(charArr));			
+                    swSet.remove(sw);
+                }
+            }
+        }
+        String[] swArr = swSet.toArray(new String[swSet.size()]);
+        Arrays.sort(swArr);
+        return swArr;
+    }
 	
     /**
      * Method generates all subwords from length 1 up to the given length of the given seed
@@ -81,22 +63,15 @@ public class SeedToSubwords {
      * @param maxSWLength
      * @return the array of subwords
      */
-	public static String[] swUpToMax(String seed, int maxSWLength){
-
-		Set<String> swSet = new HashSet<>();
-		int seedLen = seed.length();
-
-		for( int swLen = 1; swLen <= seedLen && swLen <= maxSWLength; swLen++ ){
-	
-			String[] sws = swOfLength(seed, swLen);
-
-                        swSet.addAll(Arrays.asList(sws));	
-		}
-
-		String[] swArr = swSet.toArray(new String[swSet.size()]);
-
-		Arrays.sort(swArr);
-
-		return swArr;
-	}
+    public static String[] swUpToMax(String seed, int maxSWLength){
+        Set<String> swSet = new HashSet<>();
+        int seedLen = seed.length();
+        for( int swLen = 1; swLen <= seedLen && swLen <= maxSWLength; swLen++ ){
+            String[] sws = swOfLength(seed, swLen);
+            swSet.addAll(Arrays.asList(sws));	
+        }
+        String[] swArr = swSet.toArray(new String[swSet.size()]);
+        Arrays.sort(swArr);
+        return swArr;
+    }
 }
