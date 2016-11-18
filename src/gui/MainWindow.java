@@ -230,9 +230,19 @@ public class MainWindow extends javax.swing.JFrame {
 
         // add seed edge
         graphCopy.addSeedEdge(seed.toString(), n);
-	graphCopy.stitch();
+	String compressedString = graphCopy.stitch();
         long endTime = System.currentTimeMillis();
         result += graphCopy.getVertexTypeCount();
+        result += "\nCompressed sequence: \n" + compressedString;
+        result += "\nSequenceLength: " + compressedString.length();        
+        double percentCompression = 
+                ((Math.pow(2, n)-compressedString.length())/(Math.pow(2, n)))*100;
+        result += "\nCompression Achieved: " + percentCompression + "%";
+        if(graphCopy.getComplete(compressedString)){
+            result += "\nSequence is Verified Complete";
+        }else{
+            result += "\nIncomplete Answer";
+        }
         jTextArea1.setText(result);
         this.jLabel3.setText("Execution Time: " + (endTime - startTime) + " milliseconds");
     }

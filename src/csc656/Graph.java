@@ -308,8 +308,9 @@ public class Graph {
 
     /**
      * Stitches together the disjointed graph;
+     * @return compressed deBruij String
      */
-    public void stitch() {
+    public String stitch() {
         //inizialize a hashmap with all type 1 vertices
         HashMap<String, Vertex> tOneVerts = new HashMap<>();
         for (Vertex vertex : this.getVertices()) {
@@ -347,9 +348,7 @@ public class Graph {
                     substring(vertexLength));
         }
 
-        System.out.println(sBuilder.toString());
-        System.out.println(sBuilder.toString().length());
-        System.out.println(getComplete(sBuilder.toString()));
+        return sBuilder.toString();
     }
 
     private Vertex chooseSource(HashMap<String, Vertex> sourcePool,
@@ -450,7 +449,7 @@ public class Graph {
         return newEdge;
     }
 
-    private boolean getComplete(String run) {
+    public boolean getComplete(String run) {
         boolean exists = false;
         for (String edgeLabel : this.edges.keySet()) {
             int offset = 0;
