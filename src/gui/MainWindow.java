@@ -15,7 +15,7 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
         initComponents2();
     }
-    
+
     private void initComponents2() {
         getRootPane().setDefaultButton(jButton1);
     }
@@ -153,15 +153,21 @@ public class MainWindow extends javax.swing.JFrame {
             validateInput();
         }
     }//GEN-LAST:event_jTextField2KeyPressed
-    
+
     private void validateInput() {
         try {
             int n = Integer.parseInt(jTextField1.getText());
             int r = Integer.parseInt(jTextField2.getText());
-            if((n - r) % 2 == 0 && (n - r) >= (2*r - 2) ) {
+            int h = n - r;
+            if((n - r) % 2 != 0 || h < 3 || r < 3) {
+                JOptionPane.showMessageDialog(this, "h should be even\nh >= 3\nr >= 3", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            else if (!((n - r) >= (2 * r - 2))) {
+                JOptionPane.showMessageDialog(this, "n-r >= 2r-2 even", "Warning", JOptionPane.WARNING_MESSAGE);
                 execute(n, r);
-            } else {
-                JOptionPane.showMessageDialog(this, "n-r >= 2r-2 even", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            else {
+                execute(n, r);
             }
         } catch (NumberFormatException e) {
             System.err.println(e.getMessage());
@@ -206,18 +212,18 @@ public class MainWindow extends javax.swing.JFrame {
         Table3 table3 = new Table3(n, r);
         for (Vertex vertex : graphCopy.getVertices()) {
             tCheck.setType(vertex);
-            if(vertex.getVertexClassification().getType().length >= 1) {
-                result += (vertex.getLabel() + ": Type=[" + 
-                        vertex.getVertexClassification().getType()[0]);
-                if(vertex.getVertexClassification().getType().length > 1) {
+            if (vertex.getVertexClassification().getType().length >= 1) {
+                result += (vertex.getLabel() + ": Type=["
+                        + vertex.getVertexClassification().getType()[0]);
+                if (vertex.getVertexClassification().getType().length > 1) {
                     result += ",";
                     result += vertex.getVertexClassification().getType()[1];
                 }
                 result += "] ";
-                
-                try{
+
+                try {
                     table3.checkType(vertex);
-                    result+= ", degree: " + Arrays.toString(
+                    result += ", degree: " + Arrays.toString(
                             vertex.getVertexClassification().getDegree()
                     );
                 } catch (SubTypeNotFound | DegreeMismatch | InOutBitMismatch e) {
