@@ -523,7 +523,7 @@ public class Graph {
         // debug //
         System.out.println("Origins: " + origins.size() + "; Desinations: " + destinations.size());
 
-        Queue<Connector> pq = new PriorityQueue<>(graphOut.getNumVertices() * graphOut.getNumVertices(), connectorComparator);
+        Queue<Connector> pq = new PriorityQueue<>(graphOut.getNumVertices(), connectorComparator);
 
         // check each origin for overlap with each destination
         for (Vertex o : origins) {
@@ -594,39 +594,25 @@ public class Graph {
 
     public boolean areConnected(Vertex v1, Vertex v2) {
 
-//        // if v1 can be reached from v2
-//        workingSet = new HashSet<>();
-//        children10 = 0;
-//        
-//        addChildrenToSet(v1);
-////        if (workingSet.contains(v2)) {
-////            return true;
-////        }
-//
-//        if(children10 > 1){
-//            return false;
-//        } else {
-//            return true;
-//        }
-        // if v2 can be reached from v1
+        workingSet = new HashSet<>();
+        children10 = 0;
+
+        addChildrenToSet(v1);
+
+        if (children10 > 1) {
+            return false;
+        }
+
         workingSet = new HashSet<>();
         children10 = 0;
 
         addChildrenToSet(v2);
-//        if (workingSet.contains(v1)) {
-//            return true;
-//        }
 
         if (children10 > 1) {
             return false;
         } else {
             return true;
         }
-
-        // if all reachable descendents of v1 have been added to the set 
-        // and v2 is not contained (and likewise with v2, v1)
-        // then the nodes must not have a path between them
-        // return false;
     }
 
     public void addChildrenToSet(Vertex v) {
@@ -635,7 +621,8 @@ public class Graph {
 
         if (v.getInEdgesCount() == 1 && v.getOutEdgesCount() == 0) {
             children10++;
-            // debug // System.out.println(children10);
+            // debug // 
+            System.out.println(children10);
         }
 
         // recursive
@@ -659,7 +646,7 @@ public class Graph {
 
         this.traverseReconnected(edgeSet, traversalStr, startEdge);
 
-        int minLength = 99999;
+        int minLength = Integer.MAX_VALUE;
         String minStr = "";
 
         // debug //
@@ -703,7 +690,8 @@ public class Graph {
                     + e.getStartVertex().getLabel() + " to " + destination.getLabel());
         } else {
 
-            if (e.getStartVertex().getLabel().contains("H")) {
+            //if (e.getStartVertex().getOutEdges()[0].getLabel().contains("H")) {
+            if(e.getStartVertex().getInEdgesCount() != 0 && e.getStartVertex().getInEdges().get(0).getLabel().contains("H")) {
                 //int start = e.getLabel().lastIndexOf("") + 1;
                 //toAdd = destination.getLabel().substring(start);
                 toAdd = destination.getLabel();

@@ -17,7 +17,7 @@ public class JonathonTesting {
 
     public static void main(String args[]) {
 
-        int n = 9;
+        int n = 7;
         int r = 3;
 
         long startTime = System.nanoTime();
