@@ -228,9 +228,6 @@ public class Graph {
     public void removeVertex(Vertex v) {
 
         this.vertices.remove(v.getLabel());
-
-        // debug //
-        System.out.println("Vertex " + v.getLabel() + " removed");
     }
 
     /*
@@ -252,9 +249,6 @@ public class Graph {
         for (String sw : subwords) {
 
             graphCopy.removeEdge(edges.get(sw));
-
-            // debug //
-            System.out.println("Edge " + sw + " removed");
         }
 
         // remove any (0, 0) vertices
@@ -262,13 +256,10 @@ public class Graph {
         for (String vStr : graphCopyIter.vertexKeys()) {
 
             Vertex v = graphCopy.getVertex(vStr);
-
-            // debug // System.out.println("Vertex " + vStr + " with " + v.getInEdgesCount() + " in, " + v.getOutEdgesCount() + " out");
             // if vertex has zero edges, remove
             if (v.getInEdgesCount() == 0 && v.getOutEdgesCount() == 0) {
                 graphCopy.removeVertex(v);
             }
-            // debug // System.out.println(graphCopy.printVertices());
         }
         return graphCopy;
     }
@@ -281,14 +272,8 @@ public class Graph {
      */
     public void addSeedEdge(String seed, int n) {
         Vertex sOrigin = this.getVertex(seed.substring(0, n - 1));
-        // debug // System.out.println(sOrigin.getLabel());
         Vertex sDestination = this.getVertex(seed.substring(seed.length() - n + 1));
-        // debug // System.out.println(sDestination.getLabel());
-
         this.addEdge(sOrigin, sDestination, seed);
-
-        // debug //
-        System.out.println("Added seed edge " + seed + " from " + sOrigin.getLabel() + " to " + sDestination.getLabel());
     }
 
     /**
@@ -315,7 +300,6 @@ public class Graph {
                 tOneVerts.put(vertex.getLabel(), vertex);
             }
         }
-        System.out.println(tOneVerts.size());
         // intialize a hasmap with all degree (0,1) vertices
         HashMap<String, Vertex> destinationVerts = new HashMap<>();
         for (Vertex vertex : this.getVertices()) {
@@ -325,8 +309,6 @@ public class Graph {
                 destinationVerts.put(vertex.getLabel(), vertex);
             }
         }
-        System.out.println(destinationVerts.size());
-
         //choose starting and ending positions
         Vertex source = chooseSource(destinationVerts, tOneVerts);
         destinationVerts.remove(source.getLabel()).getLabel();
@@ -459,7 +441,6 @@ public class Graph {
                 }
             }
             if (!exists) {
-                System.out.println(edgeLabel);
                 return false;
             }
         }
