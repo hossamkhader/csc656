@@ -1,7 +1,6 @@
 package csc656;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -55,13 +54,10 @@ public class Graph {
      */
     public void buildGraph(int n) {
         String[] edgeStrs = new String[(int) Math.pow((double) 2, (double) n)];
-        // debug // System.out.println((int)Math.pow((double)2,(double)n));
         String frmt = "%" + n + "s";
-        // debug // System.out.println(frmt);
         for (int i = 0; i < edgeStrs.length; i++) {
             edgeStrs[i] = String.format(frmt, Integer.toBinaryString(i))
                     .replace(' ', '0');
-            // debug // System.out.println("creating edge " + edgeStrs[i]);
 
             Vertex origin;
             String originLabel = edgeStrs[i].substring(0, (edgeStrs[i].length() - 1));
@@ -82,7 +78,6 @@ public class Graph {
             }
 
             addEdge(origin, destination, edgeStrs[i]);
-            /// debug // System.out.println("adding edge " + edgeStrs[i]);	
         }
     }
 
@@ -118,6 +113,7 @@ public class Graph {
      * @param start vertex of origin
      * @param end destination vertex
      * @param label name of the edge
+     * @return 
      */
     public Edge addEdge(Vertex start, Vertex end, String label) {
         Edge e = new Edge(start, end, label);
@@ -585,10 +581,6 @@ public class Graph {
 
     private void addChildren(Vertex root, Vertex currVertex,
             List<Vertex> children, HashMap<String, Integer> visitedTwoTwos) {
-        /*System.out.println("");
-        for (Vertex child : children) {
-            System.out.print(child.getLabel() + ", ");
-        }*/
         children.add(currVertex);
         if (currVertex != root && currVertex.getOutEdgesCount() != 0
                 && !children.contains(currVertex)) {
