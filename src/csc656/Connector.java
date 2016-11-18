@@ -29,7 +29,7 @@ public class Connector {
     
     public Edge toEdge(){
         
-        return new Edge(origin, destination, overlapString);
+        return new Edge(origin, destination, (origin.getLabel().substring(0, overlapSize) + destination.getLabel()));
         
     }
     

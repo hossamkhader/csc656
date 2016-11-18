@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * Class Authors: Hossam Khader, Michael Branon, Jonathon Tovey
@@ -21,9 +22,10 @@ public class Graph {
      */
     private final HashMap<String, Edge> edges;
 
-
     private Set<Vertex> workingSet;
-    private int children10;
+    private int children22;
+
+    private int numEdges;
 
     private Set<String> traversals;
 
@@ -273,9 +275,7 @@ public class Graph {
 //        System.out.println("Adding seed edge " + seed + " from " + sOrigin.getLabel() + " to " + sDestination.getLabel());
 //
 //        graphCopy.addEdge(sOrigin, sDestination, seed);
-
         // remove any (0, 0) vertices
-
         Graph graphCopyIter = new Graph(graphCopy);
         for (String vStr : graphCopyIter.vertexKeys()) {
 
@@ -291,9 +291,9 @@ public class Graph {
         return graphCopy;
     }
 
-
     /**
      * Method adds seed edge to graph (this)
+     *
      * @param seed
      * @param n
      */
@@ -309,7 +309,6 @@ public class Graph {
         System.out.println("Added seed edge " + seed + " from " + sOrigin.getLabel() + " to " + sDestination.getLabel());
     }
 
-
     /**
      * Method returns an array of the vertices contained in the graph
      *
@@ -320,7 +319,6 @@ public class Graph {
         this.vertices.values().toArray(temp);
         return temp;
     }
-
 
     /**
      * Stitches together the disjointed graph;
@@ -474,7 +472,7 @@ public class Graph {
 
         int labelSize = originLabel.length();
 
-        // starting at 2 since the labels should not be completely overlapped
+        // starting at 2nd char since the labels should not be completely overlapped
         // (or else they're the same)
         // and to avoid endIndex issues with j
         int i = 1;
@@ -581,7 +579,8 @@ public class Graph {
             Vertex origin = c.getOrigin();
             Vertex destination = c.getDestination();
 
-            if (areConnected(origin, destination)) {
+            //if (canBeConnected(origin, destination)) {
+            if (canBeConnected(destination, origin)) {
 
                 // debug //
 //                System.out.println("skip due to connection");
@@ -595,11 +594,11 @@ public class Graph {
                 numReconnected++;
 
                 // debug //
-                System.out.print("reconnected " + origin.getLabel() + " to "
-                        + destination.getLabel() + " with overlap "
-                        + c.getOverlap() + " (" + c.getOverlapSize() + ") ;;;;; ");
-                System.out.println("total reconnected so far: " + numReconnected
-                        + " and pq size " + pq.size());
+//                System.out.println("reconnected " + origin.getLabel() + " to "
+//                        + destination.getLabel() + " with overlap "
+//                        + c.getOverlap() + " (" + c.getOverlapSize() + ") and edge " + e.getLabel());
+//                System.out.println("total reconnected so far: " + numReconnected
+//                        + " and pq size " + pq.size());
 
             } else {
 
@@ -617,37 +616,41 @@ public class Graph {
 
     }
 
-    public boolean areConnected(Vertex v1, Vertex v2) {
+    /**
+     * Can v1 be connected to v2?
+     *
+     * @param v1 vertex to search from
+     * @param v2 vertex to find (to)
+     * @return true or false
+     */
+    public boolean canBeConnected(Vertex v1, Vertex v2) {
 
         workingSet = new HashSet<>();
-        children10 = 0;
-
-        addChildrenToSet(v1);
-
-        if (children10 > 1) {
-            return false;
-        }
-
-        workingSet = new HashSet<>();
-        children10 = 0;
+        children22 = 0;
 
         addChildrenToSet(v2);
 
-        if (children10 > 1) {
-            return false;
-        } else {
-            return true;
-        }
+//        if(workingSet.contains(v2)){
+//            return false;
+//        } else {
+//            return true;
+//        }
+        // debug //        System.out.println("(2,2) children: " + children22);
+        return (children22 > 1);
     }
 
+    /**
+     * (Recursive) Add v and v's children to the class set
+     *
+     * @param v
+     */
     public void addChildrenToSet(Vertex v) {
 
         workingSet.add(v);
 
-        if (v.getInEdgesCount() == 1 && v.getOutEdgesCount() == 0) {
-            children10++;
-            // debug // 
-            System.out.println(children10);
+        if (v.getInEdgesCount() == 2 && v.getOutEdgesCount() == 2) {
+            children22++;
+            // debug //            System.out.println(children22);
         }
 
         // recursive
@@ -658,18 +661,29 @@ public class Graph {
         }
     }
 
-    public String startTraversal(Vertex v) {
+    public String startTraversal(Vertex v, Vertex end) {
 
         // debug //
         System.out.println("looking at traversals from: " + v.getLabel());
 
         traversals = new HashSet();
 
+        Set<Edge> actualEdges = new HashSet();
+        for (Vertex ver : this.getVertices()) {
+            for (Edge e : ver.getInEdges()) {
+                actualEdges.add(e);
+            }
+            for (Edge e : ver.getOutEdges()) {
+                actualEdges.add(e);
+            }
+        }
+        numEdges = actualEdges.size();
+
         Set<Edge> edgeSet = new HashSet();
         String traversalStr = v.getLabel();
         Edge startEdge = v.getOutEdges().get(0);
 
-        this.traverseReconnected(edgeSet, traversalStr, startEdge);
+        traverseReconnected(edgeSet, traversalStr, startEdge, startEdge.getStartVertex().getLabel(), end);
 
         int minLength = Integer.MAX_VALUE;
         String minStr = "";
@@ -687,19 +701,25 @@ public class Graph {
         return minStr;
     }
 
-    public void traverseReconnected(Set<Edge> edgeSet, String currString, Edge e) {
+    public void traverseReconnected(Set<Edge> edgeSet, String currString, Edge e, String pathTaken, Vertex end) {
+
+        pathTaken += " --> " + e.getEndVertex().getLabel();
+
+        Set<Edge> newSet = new HashSet(edgeSet);
 
         // debug //        System.out.println("traverseReconnected called with set size: " + edgeSet.size()                 + " (total edges: " + this.edges.size() + ")");
         // recursion control :: cancel if edge already in working set
-        if (edgeSet.contains(e)) {
+        if (newSet.contains(e)) {
             return;
         } else {
-            edgeSet.add(e);
+            newSet.add(e);
         }
 
+        Vertex origin = e.getStartVertex();
         Vertex destination = e.getEndVertex();
         String toAdd = "";
 
+        // case for seed edge
         if (e.getLabel().contains("H")) {
 //            for (char c : e.getLabel().toCharArray()) {
 //                if (c == 'H') {
@@ -710,30 +730,38 @@ public class Graph {
             toAdd = e.getLabel().substring(start);
 
             //toAdd = e.getLabel();
-            // debug //
-            System.out.println("adding seed edge: " + toAdd + " for " + e.getLabel() + " (seed) from "
-                    + e.getStartVertex().getLabel() + " to " + destination.getLabel());
+            // debug //                      System.out.println("adding seed edge: " + toAdd + " for " + e.getLabel() + " (seed) from "                    + e.getStartVertex().getLabel() + " to " + destination.getLabel());
         } else {
 
+            // case for edge following seed edge
             //if (e.getStartVertex().getOutEdges()[0].getLabel().contains("H")) {
-            if(e.getStartVertex().getInEdgesCount() != 0 && e.getStartVertex().getInEdges().get(0).getLabel().contains("H")) {
-                //int start = e.getLabel().lastIndexOf("") + 1;
-                //toAdd = destination.getLabel().substring(start);
-                toAdd = destination.getLabel();
-            } else {
-                // add non-overlap of destination to string
-                int overlapSize = getOverlapSize(e.getStartVertex().getLabel(), destination.getLabel());
-                //int overlapSize = getOverlapSize(e.getLabel(), destination.getLabel());
-                toAdd = destination.getLabel().substring(overlapSize);
-            }
+//            if (e.getStartVertex().getInEdgesCount() != 0 && e.getStartVertex().getInEdges().get(0).getLabel().contains("H")) {
+//                //int start = e.getLabel().lastIndexOf("") + 1;
+//                //toAdd = destination.getLabel().substring(start);
+//                toAdd = destination.getLabel();
+//            } else {
+//                // add non-overlap of destination to string
+//                int overlapSize = getOverlapSize(e.getStartVertex().getLabel(), destination.getLabel());
+//                //int overlapSize = getOverlapSize(e.getLabel(), destination.getLabel());
+//                toAdd = destination.getLabel().substring(overlapSize);
+//            }
+            int overlapSize = getOverlapSize(origin.getLabel(), destination.getLabel());
+            toAdd = destination.getLabel().substring(overlapSize);
+
         }
 
         String newString = currString + toAdd;
 
-        if (edgeSet.size() == this.getNumEdges()) {
+        //if (newSet.size() == this.getNumEdges()) {
+        if (newSet.size() == this.numEdges) {
+            //if (newSet.size() == this.getNumEdges() && destination == end) {
 
             // debug //            
-            System.out.println("graph traversed: " + currString + "(" + currString.length() + ")");
+            System.out.println("----- ----- -----");
+            System.out.println("graph traversed: " + newString + " (" + newString.length() + ")");
+            System.out.println("last vertex: " + destination.getLabel() + " (" + destination.getInEdgesCount() + "," + destination.getOutEdgesCount() + ")");
+            System.out.println(pathTaken);
+            System.out.println("----- ----- -----");
             traversals.add(newString);
 
         } else {
@@ -742,12 +770,19 @@ public class Graph {
             for (Edge ed : destination.getOutEdges()) {
 
                 // recursion control :: shouldn't try to call again if edge has already been examined in this sequence
-                if (!edgeSet.contains(ed)) {
-                    Set<Edge> setCopy = new HashSet(edgeSet);
-                    traverseReconnected(setCopy, newString, ed);
+                if (!newSet.contains(ed)) {
+                    traverseReconnected(newSet, newString, ed, pathTaken, end);
                 }
             }
         }
+    }
+
+    public void traverseHierholzer(Vertex start, Vertex end) {
+        Stack<Vertex> tempPath = new Stack();
+        Stack<Vertex> finalPath = new Stack();
+
+        tempPath.push(start);
+
     }
 
     public static Comparator<Connector> connectorComparator = new Comparator<Connector>() {
@@ -760,7 +795,6 @@ public class Graph {
         }
 
     };
-
 
     public String getVertexTypeCount() {
         int type1 = 0;
