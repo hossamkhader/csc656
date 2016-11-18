@@ -1,8 +1,14 @@
 package csc656;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * Class Authors: Hossam Khader, Michael Branon, Jonathon Tovey
@@ -113,11 +119,12 @@ public class Graph {
      * @param end destination vertex
      * @param label name of the edge
      */
-    public void addEdge(Vertex start, Vertex end, String label) {
+    public Edge addEdge(Vertex start, Vertex end, String label) {
         Edge e = new Edge(start, end, label);
         edges.put(label, e);
         start.addOutEdge(e);
         end.addInEdge(e);
+        return e;
     }
 
     /**
@@ -272,6 +279,7 @@ public class Graph {
 
     /**
      * Method adds seed edge to graph (this)
+     *
      * @param seed
      * @param n
      */
@@ -297,8 +305,8 @@ public class Graph {
         this.vertices.values().toArray(temp);
         return temp;
     }
-	
-/**
+
+    /**
      * Stitches together the disjointed graph;
      */
     public void stitch() {
@@ -310,6 +318,7 @@ public class Graph {
                 tOneVerts.put(vertex.getLabel(), vertex);
             }
         }
+        System.out.println(tOneVerts.size());
         // intialize a hasmap with all degree (0,1) vertices
         HashMap<String, Vertex> destinationVerts = new HashMap<>();
         for (Vertex vertex : this.getVertices()) {
@@ -319,126 +328,149 @@ public class Graph {
                 destinationVerts.put(vertex.getLabel(), vertex);
             }
         }
-        /*
-        // get a "random" source vertex of degree (0,1) and remove it from 
-        // destination map
-        Vertex currVertex = destinationVerts.
-                get(destinationVerts.keySet().iterator().next());
-        destinationVerts.remove(currVertex.getLabel());
-         */
-        String bestRun = null;
-        for (String label : destinationVerts.keySet()) {
-            StringBuilder builder = new StringBuilder();
-            // create a copy of destination vertices from master
-            HashMap<String, Vertex> currentRunDestinationVerts
-                    = new HashMap<>(destinationVerts);
+        System.out.println(destinationVerts.size());
 
-            // set source vertex and remove it from the cloned destination map
-            Vertex currVertex = currentRunDestinationVerts.get(label);
-            currentRunDestinationVerts.remove(currVertex.getLabel());
+        //choose starting and ending positions
+        Vertex source = chooseSource(destinationVerts, tOneVerts);
+        destinationVerts.remove(source.getLabel()).getLabel();
 
-            // add source to string builder
-            builder.append(currVertex.getLabel());
+        // traverse graph using Hierholzer's algorithm
+        List<Edge> path = findHierholzerPath(source, destinationVerts);
 
-            // Keeps track of visited (2,2) vertices
-            HashMap<String, Vertex> visitedTwoTwos = new HashMap<>();
-            // traverses the graph until all destination vertices are linked
-            while (!currentRunDestinationVerts.isEmpty()||currVertex.getOutEdgesCount()!=0) {
-                switch (currVertex.getOutEdgesCount()) {
-                    case 1:
-                        /**
-                         * after the initial source vertex, necessarily a degree
-                         * (1,1) vertex
-                         */
-                        builder.append(currVertex.getOutEdges().get(0).getLabel().
-                                substring(currVertex.getLabel().length(),
-                                        currVertex.getOutEdges().get(0).getLabel().length()));
-                        currVertex = currVertex.getOutEdges().get(0).getEndVertex();
-                        break;
-                    case 2:
-                        /**
-                         * necessarily a degree (2,2) vertex. When first
-                         * encountered the vertex is stored in the above
-                         * visitedTwoTwos map. The first edge is then traversed.
-                         * When encountered again, the second edge is taken.
-                         */
-                        if (!visitedTwoTwos.containsKey(currVertex.getLabel())) {                     
-                            visitedTwoTwos.put(currVertex.getLabel(), currVertex);
-                            builder.append(currVertex.getOutEdges().get(0).getLabel().
-                                substring(currVertex.getLabel().length(),
-                                        currVertex.getOutEdges().get(0).getLabel().length()));
-                            currVertex = currVertex.getOutEdges().get(0).
-                                    getEndVertex();
-                        } else {
-                            builder.append(currVertex.getOutEdges().get(1).getLabel().
-                                substring(currVertex.getLabel().length(),
-                                        currVertex.getOutEdges().get(1).getLabel().length()));
-                            currVertex = currVertex.getOutEdges().get(1).
-                                    getEndVertex();
-                        }
-                        break;
-                    default:
-                        /**
-                         * Necessarily a type 1 vertex of degree (1,0).
-                         */
-                        Vertex bestOverlapVertex = null;
-                        int bestOverlap = 0;
-                        int tempOverlap = 0;
-                        // all destination vertices are compared to maximize overlap
-                        for (String availableLabel : currentRunDestinationVerts.keySet()) {
-                            if (bestOverlapVertex == null) {
-                                bestOverlapVertex = currentRunDestinationVerts.get(availableLabel);
-                                bestOverlap
-                                        = computeOverlap(currVertex.getLabel(),
-                                                availableLabel);
-                            } else {
-                                tempOverlap = computeOverlap(currVertex.getLabel(),
-                                        availableLabel);
-                                if (tempOverlap > bestOverlap) {
-                                    bestOverlap = tempOverlap;
-                                    bestOverlapVertex = currentRunDestinationVerts.get(availableLabel);
-                                }
-                            }
-                        }
-                        // chosen destination edge is removed from the map of 
-                        // available destination vertices
-                        currentRunDestinationVerts.remove(bestOverlapVertex.getLabel());
-                        builder.append(bestOverlapVertex.getLabel().
-                                substring(bestOverlap));
-                        currVertex = bestOverlapVertex;
+        // build output string
+        int vertexLength = source.getLabel().length();
+        Iterator traveler = path.iterator();
+        StringBuilder sBuilder = new StringBuilder();
+        sBuilder.append(((Edge) traveler.next()).getLabel());
+        while (traveler.hasNext()) {
+            sBuilder.append(((Edge) traveler.next()).getLabel().
+                    substring(vertexLength));
+        }
+
+        System.out.println(sBuilder.toString());
+        System.out.println(sBuilder.toString().length());
+        System.out.println(getComplete(sBuilder.toString()));
+    }
+
+    private Vertex chooseSource(HashMap<String, Vertex> sourcePool,
+            HashMap<String, Vertex> destinationPool) {
+        Vertex worstBestOverlapVertex = null;
+        int worstBestOverlap = Integer.MAX_VALUE;
+        for (String sourceLabel : sourcePool.keySet()) {
+            int bestOverlap = Integer.MIN_VALUE;
+            Vertex bestOverlapVertex = null;
+            for (String destinationLabel : destinationPool.keySet()) {
+                int currOverlap = computeOverlap(sourceLabel, destinationLabel);
+                if (bestOverlapVertex == null || currOverlap > bestOverlap) {
+                    bestOverlapVertex = sourcePool.get(sourceLabel);
+                    bestOverlap = currOverlap;
                 }
             }
-            if(bestRun==null){
-                bestRun=builder.toString();
-            }else if(builder.toString().length()<bestRun.length()){
-                bestRun=builder.toString();
+            if (worstBestOverlapVertex == null || bestOverlap < worstBestOverlap) {
+                worstBestOverlapVertex = bestOverlapVertex;
+                worstBestOverlap = bestOverlap;
             }
         }
-        System.out.println(bestRun);
-        System.out.println(bestRun.length());
-        System.out.println(getComplete(bestRun));
+        return worstBestOverlapVertex;
+    }
+
+    private List<Edge> findHierholzerPath(Vertex source,
+            HashMap<String, Vertex> destinationVerts) {
+        Stack<Edge> forwardStack = new Stack<>();
+        Stack<Edge> backStack = new Stack<>();
+        for (String edge : this.edges.keySet()) {
+            this.edges.get(edge).setUnVisited();
+        }
+        Edge currEdge = getUnvisitedEdge(source, destinationVerts);
+
+        while (currEdge != null) {
+            currEdge.setVisited();
+            forwardStack.push(currEdge);
+            currEdge
+                    = getUnvisitedEdge(currEdge.getEndVertex(), destinationVerts);
+        }
+
+        while (!forwardStack.isEmpty()) {
+            currEdge = forwardStack.pop();
+            backStack.push(currEdge);
+            currEdge
+                    = getUnvisitedEdge(currEdge.getStartVertex(),
+                            destinationVerts);
+            while (currEdge != null) {
+                currEdge.setVisited();
+                forwardStack.push(currEdge);
+                currEdge
+                        = getUnvisitedEdge(currEdge.getEndVertex(),
+                                destinationVerts);
+            }
+        }
+
+        List<Edge> path = new LinkedList<>();
+        while (!backStack.isEmpty()) {
+            path.add(backStack.pop());
+        }
+        return path;
+    }
+
+    private Edge getUnvisitedEdge(Vertex root,
+            HashMap<String, Vertex> destinationVerts) {
+        if (root.getVertexClassification().getType().length>0 && 
+                root.getVertexClassification().getType()[0] == 1) {
+            return connect(root, destinationVerts);
+        }
+        for (Edge edge : root.getOutEdges()) {
+            if (!edge.isVisited()) {
+                edge.setVisited();
+                return edge;
+            }
+        }
+        return null;
+    }
+    
+    private Edge connect(Vertex source,
+            HashMap<String, Vertex> destinationVerts) {
+        int bestOverlap = Integer.MIN_VALUE;
+        Vertex bestVertex = null;
+        if(destinationVerts.isEmpty()){
+            return null;
+        }
+        for (String destLabel : destinationVerts.keySet()) {
+            int currOverlap = computeOverlap(source.getLabel(), destLabel);
+            if (bestVertex == null || bestOverlap < currOverlap) {
+                bestOverlap = currOverlap;
+                bestVertex = destinationVerts.get(destLabel);
+            }
+        }
+        // new edge is added between the vertices
+        String newEdgeLabel = source.getLabel()
+                + bestVertex.getLabel().substring(bestOverlap);
+        Edge newEdge = addEdge(source, bestVertex, newEdgeLabel);
+        newEdge.setVisited();
+        destinationVerts.remove(bestVertex.getLabel());
+        return newEdge;
     }
 
     private boolean getComplete(String run) {
-        boolean exists=false;
+        boolean exists = false;
         for (String edgeLabel : this.edges.keySet()) {
             int offset = 0;
-            exists=false;
+            exists = false;
             while (offset <= run.length() - edgeLabel.length()) {
                 if (run.startsWith(edgeLabel, offset)) {
-                    exists=true;
-                    offset=run.length();
+                    exists = true;
+                    offset = run.length();
                 } else {
                     offset++;
                 }
             }
-            if(!exists){
+            if (!exists) {
                 System.out.println(edgeLabel);
                 return false;
             }
         }
         return true;
     }
+
     /**
      * Computes the overlap between 2 strings
      *
@@ -456,7 +488,7 @@ public class Graph {
         return overlap;
     }
 
-public String getVertexTypeCount() {
+    public String getVertexTypeCount() {
         int type1 = 0;
         int type2 = 0;
         int type3 = 0;
@@ -537,5 +569,47 @@ public String getVertexTypeCount() {
         result += "\n";
 
         return result;
+    }
+
+    private int checkCycle(Vertex rootVertex) {
+        List<Vertex> children = new ArrayList<>();
+        HashMap<String, Integer> visitedTwoTwos = new HashMap<>();
+        addChildren(rootVertex, rootVertex.getOutEdges().get(0).getEndVertex(),
+                children, visitedTwoTwos);
+
+        if (children.contains(rootVertex)) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    private void addChildren(Vertex root, Vertex currVertex,
+            List<Vertex> children, HashMap<String, Integer> visitedTwoTwos) {
+        /*System.out.println("");
+        for (Vertex child : children) {
+            System.out.print(child.getLabel() + ", ");
+        }*/
+        children.add(currVertex);
+        if (currVertex != root && currVertex.getOutEdgesCount() != 0
+                && !children.contains(currVertex)) {
+            if (currVertex.getOutEdgesCount() > 1) {
+                if (!visitedTwoTwos.containsKey(currVertex.getLabel())) {
+                    visitedTwoTwos.put(currVertex.getLabel(), 0);
+                    addChildren(root,
+                            currVertex.getOutEdges().get(0).getEndVertex(),
+                            children, visitedTwoTwos);
+                } else {
+                    addChildren(root,
+                            currVertex.getOutEdges().get(1).getEndVertex(),
+                            children, visitedTwoTwos);
+                }
+
+            } else {
+                addChildren(root,
+                        currVertex.getOutEdges().get(0).getEndVertex(),
+                        children, visitedTwoTwos);
+            }
+        }
     }
 }
