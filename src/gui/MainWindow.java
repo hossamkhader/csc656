@@ -1,13 +1,7 @@
 package gui;
 
-import csc656.DegreeMismatch;
-import csc656.Graph;
-import csc656.Seed;
-import csc656.SeedGenerator;
-import csc656.SubTypeNotFound;
-import csc656.Table3;
-import csc656.TypeChecker;
-import csc656.Vertex;
+import csc656.*;
+
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
@@ -21,7 +15,7 @@ public class MainWindow extends javax.swing.JFrame {
         initComponents();
         initComponents2();
     }
-    
+
     private void initComponents2() {
         getRootPane().setDefaultButton(jButton1);
     }
@@ -155,27 +149,29 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1KeyPressed
 
     private void jTextField2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyPressed
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             validateInput();
         }
     }//GEN-LAST:event_jTextField2KeyPressed
-    
+
     private void validateInput() {
         try {
             int n = Integer.parseInt(jTextField1.getText());
             int r = Integer.parseInt(jTextField2.getText());
-            if((n - r) % 2 == 0 && (n - r) >= (2*r - 2) ) {
+            int h = n - r;
+            if ((n - r) % 2 != 0 || h < 3 || r < 3) {
+                JOptionPane.showMessageDialog(this, "h should be even\nh >= 3\nr >= 3", "Error", JOptionPane.ERROR_MESSAGE);
+            } else if (!((n - r) >= (2 * r - 2))) {
+                JOptionPane.showMessageDialog(this, "n-r >= 2r-2 even", "Warning", JOptionPane.WARNING_MESSAGE);
+                execute(n, r);
+            } else {
                 execute(n, r);
             }
-            else {
-                JOptionPane.showMessageDialog(this, "n-r >= 2r-2 even", "Error" ,JOptionPane.ERROR_MESSAGE);
-            }
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             System.err.println(e.getMessage());
         }
     }
-    
+
     private void execute(int n, int r) {
         long startTime = System.currentTimeMillis();
         String result;
@@ -214,33 +210,39 @@ public class MainWindow extends javax.swing.JFrame {
         Table3 table3 = new Table3(n, r);
         for (Vertex vertex : graphCopy.getVertices()) {
             tCheck.setType(vertex);
-            if(vertex.getVertexClassification().getType().length >= 1) {
-                result += (vertex.getLabel() + ": Type=[" + 
-                        vertex.getVertexClassification().getType()[0]);
-                if(vertex.getVertexClassification().getType().length > 1) {
+            if (vertex.getVertexClassification().getType().length >= 1) {
+                result += (vertex.getLabel() + ": Type=["
+                        + vertex.getVertexClassification().getType()[0]);
+                if (vertex.getVertexClassification().getType().length > 1) {
                     result += ",";
                     result += vertex.getVertexClassification().getType()[1];
                 }
                 result += "] ";
-                
-                try{
+
+                try {
                     table3.checkType(vertex);
-                    result+= ", degree: " + Arrays.toString(
+                    result += ", degree: " + Arrays.toString(
                             vertex.getVertexClassification().getDegree()
                     );
-                }catch(SubTypeNotFound | DegreeMismatch e){
+                } catch (SubTypeNotFound | DegreeMismatch | InOutBitMismatch e) {
                     result += e.getMessage();
                 }
-                
+
                 result += "\n";
             }
         }
+
+        // add seed edge
+        graphCopy.addSeedEdge(seed.toString(), n);
+
         graphCopy.stitch();
+
         long endTime = System.currentTimeMillis();
+        result += graphCopy.getVertexTypeCount();
         jTextArea1.setText(result);
         this.jLabel3.setText("Execution Time: " + (endTime - startTime) + " milliseconds");
     }
-    
+
     /**
      * @param args the command line arguments
      */

@@ -21,10 +21,12 @@ public class Graph {
      */
     private final HashMap<String, Edge> edges;
 
+
     private Set<Vertex> workingSet;
     private int children10;
 
     private Set<String> traversals;
+
 
     /* 
      * Creates an empty graph that requires construction
@@ -221,9 +223,10 @@ public class Graph {
     public String printVertices() {
 
         String tmp = "";
-        tmp = vertices.keySet().stream().map((key) -> key + " ").reduce(tmp, String::concat);
+        for (String key : vertices.keySet()) {
+            tmp += vertices.get(key).getLabel();
+        }
         return tmp;
-
     }
 
     /*
@@ -259,17 +262,19 @@ public class Graph {
             // debug //            System.out.println("Edge " + sw + " removed");
         }
 
-        //add seed edge
-        Vertex sOrigin = graphCopy.getVertex(seed.substring(0, n - 1));
-        // debug // System.out.println(sOrigin.getLabel());
-        Vertex sDestination
-                = this.getVertex(seed.substring(seed.length() - n + 1));
-        // debug // System.out.println(sDestination.getLabel());
+//        //add seed edge
+//        Vertex sOrigin = graphCopy.getVertex(seed.substring(0, n - 1));
+//        // debug // System.out.println(sOrigin.getLabel());
+//        Vertex sDestination
+//                = this.getVertex(seed.substring(seed.length() - n + 1));
+//        // debug // System.out.println(sDestination.getLabel());
+//
+//        // debug //
+//        System.out.println("Adding seed edge " + seed + " from " + sOrigin.getLabel() + " to " + sDestination.getLabel());
+//
+//        graphCopy.addEdge(sOrigin, sDestination, seed);
 
-        // debug //
-        System.out.println("Adding seed edge " + seed + " from " + sOrigin.getLabel() + " to " + sDestination.getLabel());
-
-        graphCopy.addEdge(sOrigin, sDestination, seed);
+        // remove any (0, 0) vertices
 
         Graph graphCopyIter = new Graph(graphCopy);
         for (String vStr : graphCopyIter.vertexKeys()) {
@@ -286,6 +291,25 @@ public class Graph {
         return graphCopy;
     }
 
+
+    /**
+     * Method adds seed edge to graph (this)
+     * @param seed
+     * @param n
+     */
+    public void addSeedEdge(String seed, int n) {
+        Vertex sOrigin = this.getVertex(seed.substring(0, n - 1));
+        // debug // System.out.println(sOrigin.getLabel());
+        Vertex sDestination = this.getVertex(seed.substring(seed.length() - n + 1));
+        // debug // System.out.println(sDestination.getLabel());
+
+        this.addEdge(sOrigin, sDestination, seed);
+
+        // debug //
+        System.out.println("Added seed edge " + seed + " from " + sOrigin.getLabel() + " to " + sDestination.getLabel());
+    }
+
+
     /**
      * Method returns an array of the vertices contained in the graph
      *
@@ -296,6 +320,7 @@ public class Graph {
         this.vertices.values().toArray(temp);
         return temp;
     }
+
 
     /**
      * Stitches together the disjointed graph;
@@ -736,4 +761,87 @@ public class Graph {
 
     };
 
+
+    public String getVertexTypeCount() {
+        int type1 = 0;
+        int type2 = 0;
+        int type3 = 0;
+        int type4 = 0;
+        int type5 = 0;
+        int type6 = 0;
+        int type7 = 0;
+        int type26 = 0;
+        int type27 = 0;
+        int type37 = 0;
+        String result = "";
+
+        for (String label : vertices.keySet()) {
+            Vertex vertex = vertices.get(label);
+            if (vertex.getVertexClassification().getType().length == 1) {
+                switch (vertex.getVertexClassification().getType()[0]) {
+                    case 1:
+                        type1++;
+                        break;
+                    case 2:
+                        type2++;
+                        break;
+                    case 3:
+                        type3++;
+                        break;
+                    case 4:
+                        type4++;
+                        break;
+                    case 5:
+                        type5++;
+                        break;
+                    case 6:
+                        type6++;
+                        break;
+                    case 7:
+                        type7++;
+                        break;
+                }
+            }
+            if (vertex.getVertexClassification().getType().length == 2) {
+                if (vertex.getVertexClassification().getType()[0] == 2
+                        && vertex.getVertexClassification().getType()[1] == 6) {
+                    type26++;
+                }
+                if (vertex.getVertexClassification().getType()[0] == 2
+                        && vertex.getVertexClassification().getType()[1] == 7) {
+                    type27++;
+                }
+                if (vertex.getVertexClassification().getType()[0] == 3
+                        && vertex.getVertexClassification().getType()[1] == 7) {
+                    type37++;
+                }
+            }
+        }
+        result += "********************";
+        result += "\n";
+        result += "Type[1]:" + type1;
+        result += "\n";
+        result += "Type[2]:" + type2;
+        result += "\n";
+        result += "Type[2,6]:" + type26;
+        result += "\n";
+        result += "Type[2,7]:" + type27;
+        result += "\n";
+        result += "Type[3]:" + type3;
+        result += "\n";
+        result += "Type[3,7]:" + type37;
+        result += "\n";
+        result += "Type[4]:" + type4;
+        result += "\n";
+        result += "Type[5]:" + type5;
+        result += "\n";
+        result += "Type[6]:" + type6;
+        result += "\n";
+        result += "Type[7]:" + type7;
+        result += "\n";
+        result += "********************";
+        result += "\n";
+
+        return result;
+    }
 }
