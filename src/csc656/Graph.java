@@ -252,8 +252,9 @@ public class Graph {
         }
 
         // remove any (0, 0) vertices
-        Graph graphCopyIter = new Graph(graphCopy);
-        for (String vStr : graphCopyIter.vertexKeys()) {
+        String [] keys = new String [graphCopy.vertexKeys().size()];
+        graphCopy.vertexKeys().toArray(keys);
+        for (String vStr : keys) {
 
             Vertex v = graphCopy.getVertex(vStr);
             // if vertex has zero edges, remove
