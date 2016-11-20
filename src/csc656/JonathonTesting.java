@@ -17,8 +17,8 @@ public class JonathonTesting {
 
     public static void main(String args[]) {
 
-        int n = 10;
-        int r = 4;
+        int n = 9;
+        int r = 3;
 
         long startTime = System.nanoTime();
 
@@ -157,9 +157,20 @@ public class JonathonTesting {
 //        Edge startEdge = startVertex.getOutEdges().get(0);
 //        
 //        graphCopy2.traverseReconnected(edgeSet, traversalStr, startEdge);
+
+
+
+
         String minTraversal = graphCopy2.startTraversal(startVertex, endVertex);
 
         System.out.println("traversal: " + minTraversal + " (" + minTraversal.length() + ")");
+
+	System.out.println(graphCopy2.verifyTraversals() + " traversals verified");
+
+//	for(Edge e : actualEdges){
+//		System.out.println("edge: " + e.getLabel() + " from " + e.getStartVertex().getLabel() + " to " + e.getEndVertex().getLabel());
+//	}
+	System.out.println("edge cout: " + actualEdges.size());
 
         long endTime = System.nanoTime();
 

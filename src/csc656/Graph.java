@@ -29,6 +29,8 @@ public class Graph {
 
     private Set<String> traversals;
 
+	private boolean stopRecursion;
+
 
     /* 
      * Creates an empty graph that requires construction
@@ -594,11 +596,11 @@ public class Graph {
                 numReconnected++;
 
                 // debug //
-//                System.out.println("reconnected " + origin.getLabel() + " to "
-//                        + destination.getLabel() + " with overlap "
-//                        + c.getOverlap() + " (" + c.getOverlapSize() + ") and edge " + e.getLabel());
-//                System.out.println("total reconnected so far: " + numReconnected
-//                        + " and pq size " + pq.size());
+                System.out.println("reconnected " + origin.getLabel() + " to "
+                        + destination.getLabel() + " with overlap "
+                        + c.getOverlap() + " (" + c.getOverlapSize() + ") and edge " + e.getLabel());
+                System.out.println("total reconnected so far: " + numReconnected
+                        + " and pq size " + pq.size());
 
             } else {
 
@@ -636,7 +638,14 @@ public class Graph {
 //            return true;
 //        }
         // debug //        System.out.println("(2,2) children: " + children22);
-        return (children22 > 1);
+	/*
+	if(children22 > 0 || !workingSet.contains(v1)){
+		return true;
+	} else {
+		return false;
+	}
+	*/
+        return (children22 > 0);
     }
 
     /**
@@ -665,6 +674,8 @@ public class Graph {
 
         // debug //
         System.out.println("looking at traversals from: " + v.getLabel());
+
+	stopRecursion = false;
 
         traversals = new HashSet();
 
@@ -702,6 +713,12 @@ public class Graph {
     }
 
     public void traverseReconnected(Set<Edge> edgeSet, String currString, Edge e, String pathTaken, Vertex end) {
+
+	/*
+	if(stopRecursion){
+		return;
+	}
+	*/
 
         pathTaken += " --> " + e.getEndVertex().getLabel();
 
@@ -764,6 +781,8 @@ public class Graph {
             System.out.println("----- ----- -----");
             traversals.add(newString);
 
+		stopRecursion = true;
+
         } else {
 
             // recursion control :: should die at a dead end (no new edges and incomplete set)
@@ -776,6 +795,24 @@ public class Graph {
             }
         }
     }
+
+	public int verifyTraversals(){
+		int numVerified = 0;
+		for(String str : traversals){
+			boolean verified = true;
+			for(Vertex v : getVertices()){
+				for(Edge ie : v.getInEdges()){
+					if(!str.contains(ie.getLabel())) verified = false;
+				}
+				for(Edge oe : v.getOutEdges()){
+					if(!str.contains(oe.getLabel())) verified = false;
+				}
+			}
+			if(verified = true) numVerified++;
+		}
+		return numVerified;
+	}
+
 
     public void traverseHierholzer(Vertex start, Vertex end) {
         Stack<Vertex> tempPath = new Stack();
