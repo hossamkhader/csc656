@@ -28,6 +28,8 @@ public class Graph {
     private int numEdges;
 
     private Set<String> traversals;
+    
+    private boolean stopRecursion;
 
 
     /* 
@@ -667,6 +669,7 @@ public class Graph {
         System.out.println("looking at traversals from: " + v.getLabel());
 
         traversals = new HashSet();
+        stopRecursion = false;
 
         Set<Edge> actualEdges = new HashSet();
         for (Vertex ver : this.getVertices()) {
@@ -703,6 +706,10 @@ public class Graph {
 
     public void traverseReconnected(Set<Edge> edgeSet, String currString, Edge e, String pathTaken, Vertex end) {
 
+        if(stopRecursion){
+            return;
+        }
+        
         pathTaken += " --> " + e.getEndVertex().getLabel();
 
         Set<Edge> newSet = new HashSet(edgeSet);
@@ -763,6 +770,8 @@ public class Graph {
             System.out.println(pathTaken);
             System.out.println("----- ----- -----");
             traversals.add(newString);
+            
+            stopRecursion = true;
 
         } else {
 

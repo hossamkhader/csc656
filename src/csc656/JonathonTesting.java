@@ -112,51 +112,7 @@ public class JonathonTesting {
         System.out.println("computed edges: " + actualEdges.size());
         System.out.println("----- ----- ----- ----- -----");
 
-//        System.out.println("total edges: " + graphCopy2.getNumEdges());
-//        for(Edge e : graphCopy2.getEdges()){
-//            System.out.print("\t" + e.getLabel());
-//        }
-//        actualEdges = new HashSet();
-//        Set<Edge> actualEdgesIter = new HashSet();
-//        for (Vertex v : graphCopy2.getVertices()) {
-//            for (Edge e : v.getInEdges()) {
-//                actualEdges.add(e);
-//            }
-//            for (Edge e : v.getOutEdges()) {
-//                actualEdges.add(e);
-//            }
-//        }
-//        System.out.println("actual edges: " + actualEdges.size());
-//
-//        Set<Edge> reportedEdges = graphCopy2.getEdges();
-//
-//        System.out.print("edges that mismatch: ");
-//        for (Edge e : actualEdges) {
-//            if (!reportedEdges.contains(e)) {
-//                System.out.print("\t" + e.getLabel() + " (" + e.getLabel().length() + ")");
-//            }
-//        }
-//        System.out.println("");
-//
-//        for (Edge e : actualEdgesIter) {
-//            //if (e.getLabel().length() < (n - 1)) {
-//            if (!reportedEdges.contains(e)) {
-//                System.out.println("invalid edge removed: " + e.getLabel());
-//                actualEdges.remove(e);
-//            }
-//        }
-//        System.out.println("actual edges: " + actualEdges.size());
-//
-//        System.out.println("");
-//        for (Edge e : actualEdges) {
-//            System.out.print("\t" + e.getLabel());
-//        }
-//        System.out.println("");
-//        Set<Edge> edgeSet = new HashSet();
-//        String traversalStr = startVertex.getLabel();
-//        Edge startEdge = startVertex.getOutEdges().get(0);
-//        
-//        graphCopy2.traverseReconnected(edgeSet, traversalStr, startEdge);
+
         String minTraversal = graphCopy2.startTraversal(startVertex, endVertex);
 
         System.out.println("traversal: " + minTraversal + " (" + minTraversal.length() + ")");
