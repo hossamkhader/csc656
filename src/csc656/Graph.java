@@ -521,6 +521,7 @@ public class Graph {
             }
         }
         result += "********************";
+        result += "Counts of each type of vertex:";
         result += "\n";
         result += "Type[1]:" + type1;
         result += "\n";
