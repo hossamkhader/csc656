@@ -520,7 +520,7 @@ public class Graph {
                 }
             }
         }
-        result += "********************";
+        result += "********************\n";
         result += "Counts of each type of vertex:";
         result += "\n";
         result += "Type[1]:" + type1;
