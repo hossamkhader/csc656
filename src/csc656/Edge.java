@@ -18,7 +18,6 @@ public class Edge
      */
     private boolean visited;
     
-    private boolean artificial;
     /**
      * Creates an edge
      * @param one origin vertex
@@ -31,7 +30,6 @@ public class Edge
         this.end = two;
         this.label = label;
         this.visited = false;
-        this.artificial=false;
     }
 	
     /**
@@ -73,19 +71,5 @@ public class Edge
     
     public boolean isVisited(){
         return visited;
-    }
-    
-    public void setArtificial()
-    {
-        this.artificial = true;
-    }
-    
-    public void setNotArtificial()
-    {
-        this.artificial = false;
-    }
-    
-    public boolean isArtificial(){
-        return artificial;
     }
 }
