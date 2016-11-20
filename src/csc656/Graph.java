@@ -326,7 +326,6 @@ public class Graph {
             sBuilder.append(((Edge) traveler.next()).getLabel().
                     substring(vertexLength));
         }
-
         return sBuilder.toString();
     }
 
@@ -547,43 +546,5 @@ public class Graph {
         result += "\n";
 
         return result;
-    }
-
-    private int checkCycle(Vertex rootVertex) {
-        List<Vertex> children = new ArrayList<>();
-        HashMap<String, Integer> visitedTwoTwos = new HashMap<>();
-        addChildren(rootVertex, rootVertex.getOutEdges().get(0).getEndVertex(),
-                children, visitedTwoTwos);
-
-        if (children.contains(rootVertex)) {
-            return 0;
-        } else {
-            return 1;
-        }
-    }
-
-    private void addChildren(Vertex root, Vertex currVertex,
-            List<Vertex> children, HashMap<String, Integer> visitedTwoTwos) {
-        children.add(currVertex);
-        if (currVertex != root && currVertex.getOutEdgesCount() != 0
-                && !children.contains(currVertex)) {
-            if (currVertex.getOutEdgesCount() > 1) {
-                if (!visitedTwoTwos.containsKey(currVertex.getLabel())) {
-                    visitedTwoTwos.put(currVertex.getLabel(), 0);
-                    addChildren(root,
-                            currVertex.getOutEdges().get(0).getEndVertex(),
-                            children, visitedTwoTwos);
-                } else {
-                    addChildren(root,
-                            currVertex.getOutEdges().get(1).getEndVertex(),
-                            children, visitedTwoTwos);
-                }
-
-            } else {
-                addChildren(root,
-                        currVertex.getOutEdges().get(0).getEndVertex(),
-                        children, visitedTwoTwos);
-            }
-        }
     }
 }
